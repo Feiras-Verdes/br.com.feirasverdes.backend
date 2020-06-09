@@ -27,50 +27,53 @@ import br.com.feirasverdes.backend.entidade.Usuario;
 @CrossOrigin
 @RequestMapping(value = "/feirante")
 public class FeiranteController {
-							
 
-	@Autowired		
+	@Autowired
 	private UsuarioDao dao;
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response salvarUsuario(Usuario usuario) {
 		dao.save(usuario);
 		return Response.status(Status.CREATED).entity(usuario).build();
 	}
+
 	@PUT
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response atualizarUsuario(@PathParam("id") long id, @RequestBody Usuario Usuario) {
 		dao.save(Usuario);
 		return Response.ok().build();
 	}
+
 	@DELETE
 	@Path("/{id}")
 	public Response excluir(@PathParam("id") long id) {
-        dao.deleteById(id);
-        return Response.ok().build();
-    }
-	@GET       
-    @Produces(MediaType.APPLICATION_JSON)
+		dao.deleteById(id);
+		return Response.ok().build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarTodos() {
 		return Response.ok(dao.findAll()).build();
 	}
-	
+
 	@GET
 	@Path("{nome}")
-    @Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorNome(@PathParam("nome") String nome) {
 		List<Usuario> usuarios = dao.pesquisarPorNome(nome);
 		return Response.ok(usuarios).build();
 	}
+
 	@GET
 	@Path("/Usuario/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorId(@PathParam("id") long id) {
 		Usuario usuario = dao.getOne(id);
 		return Response.ok(usuario).build();
 	}
-	
-	
+
 }

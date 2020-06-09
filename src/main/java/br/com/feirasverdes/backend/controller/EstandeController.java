@@ -28,45 +28,49 @@ import br.com.feirasverdes.backend.entidade.Estande;
 @RequestMapping(value = "/estande")
 public class EstandeController {
 
-
 	@Autowired
 	private EstandeDao dao;
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response salvarEstande(Estande estande) {
 		dao.save(estande);
 		return Response.status(Status.CREATED).entity(estande).build();
 	}
+
 	@PUT
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response atualizarEstande(@PathParam("id") long id, @RequestBody Estande Estande) {
 		dao.save(Estande);
 		return Response.ok().build();
 	}
+
 	@DELETE
 	@Path("/{id}")
 	public Response excluir(@PathParam("id") long id) {
-        dao.deleteById(id);
-        return Response.ok().build();
-    }
-	@GET       
-    @Produces(MediaType.APPLICATION_JSON)
+		dao.deleteById(id);
+		return Response.ok().build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarTodos() {
 		return Response.ok(dao.findAll()).build();
 	}
-	
+
 	@GET
 	@Path("{nome}")
-    @Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorNome(@PathParam("nome") String nome) {
 		List<Estande> Estandes = dao.pesquisarPorNome(nome);
 		return Response.ok(Estandes).build();
 	}
+
 	@GET
 	@Path("/Estande/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorId(@PathParam("id") long id) {
 		Estande estandes = dao.getOne(id);
 		return Response.ok(estandes).build();
