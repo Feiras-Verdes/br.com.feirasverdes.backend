@@ -30,7 +30,6 @@ public class UsuarioController {
 		Usuario usuarioSalvo = new Usuario();
 		try {
 			usuarioSalvo = dao.save(usuario);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(usuarioSalvo, HttpStatus.INTERNAL_SERVER_ERROR);

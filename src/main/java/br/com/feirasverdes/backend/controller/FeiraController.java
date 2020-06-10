@@ -15,13 +15,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.entidade.Feira;
+import br.com.feirasverdes.backend.entidade.Usuario;
 
 @RestController
 @CrossOrigin
@@ -31,48 +36,45 @@ public class FeiraController {
 	@Autowired
 	private FeiraDao dao;
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response salvarFeira(Feira Feira) {
-		dao.save(Feira);
-		return Response.status(Status.CREATED).entity(Feira).build();
+	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
+	public ResponseEntity<Feira> salvarFeira(@RequestBody Feira feira) {
+		Feira feiraSalva = new Feira();
+		try {
+			feiraSalva = dao.save(feira);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(feiraSalva, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(feiraSalva, HttpStatus.OK);
 	}
 
-	@PUT
-	@Path("/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response atualizarFeira(@PathParam("id") long id, @RequestBody Feira Feira) {
-		dao.save(Feira);
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	public Response atualizarFeira(@PathVariable(value = "id", required = true) Long id, @RequestBody Feira feira) {
+		feira.setId(id);
+		dao.save(feira);
 		return Response.ok().build();
 	}
 
-	@DELETE
-	@Path("/{id}")
-	public Response excluir(@PathParam("id") long id) {
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
+	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarTodos() {
-		return Response.ok(dao.findAll()).build();
+	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	public ResponseEntity<List> listarTodos() {
+		return ResponseEntity.ok(dao.findAll());
 	}
 
-	@GET
-	@Path("{nome}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisarPorNome(@PathParam("nome") String nome) {
-		List<Feira> Feiras = dao.pesquisarPorNome(nome);
-		return Response.ok(Feiras).build();
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
+	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
+		List<Feira> feiras = dao.pesquisarPorNome(nome);
+		return ResponseEntity.ok(feiras);
 	}
 
-	@GET
-	@Path("/Feira/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisarPorId(@PathParam("id") long id) {
-		Feira Feira = dao.getOne(id);
-		return Response.ok(Feira).build();
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	public ResponseEntity<Feira> pesquisarPorId(@PathVariable(value = "id") Long id) {
+		Feira feira = dao.getOne(id);
+		return ResponseEntity.ok(feira);
 	}
 }
