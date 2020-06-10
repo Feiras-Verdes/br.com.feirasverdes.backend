@@ -41,22 +41,26 @@ public class Usuario implements Serializable {
 
 	@Column(name = "email", nullable = false, length = 200)
 	private String email;
+	
+	@Column(name = "flag_ativo", nullable = false, length = 200)
+	private boolean flag_ativo;
 
 	public Usuario() {
 		super();
 	}
 
-	public Usuario(Long id, String usuario, String senha, String nome, String cpf, String telefone, String email,
-			Integer tipo) {
+	public Usuario(Long id, String usuario, Integer tipo, String senha, String nome, String cpf, String telefone,
+			String email, boolean flag_ativo) {
 		super();
 		this.id = id;
 		this.usuario = usuario;
+		this.tipo = tipo;
 		this.senha = senha;
 		this.nome = nome;
 		this.cpf = cpf;
 		this.telefone = telefone;
 		this.email = email;
-		this.tipo = tipo;
+		this.flag_ativo = flag_ativo;
 	}
 
 	public Long getId() {
@@ -73,6 +77,14 @@ public class Usuario implements Serializable {
 
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
+	}
+
+	public Integer getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getSenha() {
@@ -115,12 +127,12 @@ public class Usuario implements Serializable {
 		this.email = email;
 	}
 
-	public Integer getTipo() {
-		return tipo;
+	public boolean isFlag_ativo() {
+		return flag_ativo;
 	}
 
-	public void setTipo(Integer tipo) {
-		this.tipo = tipo;
+	public void setFlag_ativo(boolean flag_ativo) {
+		this.flag_ativo = flag_ativo;
 	}
 
 }
