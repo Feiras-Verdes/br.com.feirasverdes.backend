@@ -2,12 +2,6 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,35 +14,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.ProdutoDao;
-import br.com.feirasverdes.backend.entidade.Produto;
+import br.com.feirasverdes.backend.dao.NoticiaDao;
+import br.com.feirasverdes.backend.entidade.Noticia;
+
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/produto")
-public class ProdutoController {
+@RequestMapping(value = "/noticia")
+public class NoticiaController {
+
 
 	@Autowired
-	private ProdutoDao dao;
+	private NoticiaDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Produto> salvarProduto(@RequestBody Produto produto) {
-		Produto produtoSalvo = new Produto();
+	public ResponseEntity<Noticia> salvarNoticia(@RequestBody Noticia noticia) {
+		Noticia noticiaSalvo = new Noticia();
 		try {
-			produtoSalvo = dao.save(produto);
+			noticiaSalvo = dao.save(noticia);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(produtoSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(noticiaSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(produtoSalvo, HttpStatus.OK);
+		return new ResponseEntity<>(noticiaSalvo, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarproduto(@PathVariable(value = "id", required = true) Long id,
-			@RequestBody Produto produto) {
-		produto.setId(id);
-		dao.save(produto);
+	public Response atualizarNoticia(@PathVariable(value = "id", required = true) Long id,
+			@RequestBody Noticia noticia) {
+		noticia.setId(id);
+		dao.save(noticia);
 		return Response.ok().build();
 	}
 
@@ -63,16 +59,10 @@ public class ProdutoController {
 		return ResponseEntity.ok(dao.findAll());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Produto> produto = dao.pesquisarPorNome(nome);
-		return ResponseEntity.ok(produto);
-	}
-
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
-	public ResponseEntity<Produto> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Produto produto = dao.getOne(id);
-		return ResponseEntity.ok(produto);
+	public ResponseEntity<Noticia> pesquisarPorId(@PathVariable(value = "id") Long id) {
+		Noticia noticia = dao.getOne(id);
+		return ResponseEntity.ok(noticia);
 	}
-
+	
 }
