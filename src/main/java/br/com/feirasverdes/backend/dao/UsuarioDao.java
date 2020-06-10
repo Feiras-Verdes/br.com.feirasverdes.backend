@@ -11,18 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.feirasverdes.backend.entidade.Usuario;
 
 @Repository
-public interface UsuarioDao extends JpaRepository<Usuario,Long>{
+public interface UsuarioDao extends JpaRepository<Usuario, Long> {
 	@Transactional
-    @Modifying
-    @Query(value = "select * from usuario u where nome like '%?1%'", nativeQuery = true)
-	List<Usuario>pesquisarPorNome(String nome);
+	@Modifying
+	@Query(value = "select * from usuario where nome like '%?1%'", nativeQuery = true)
+	List<Usuario> pesquisarPorNome(String nome);
 
-	Usuario getOne(long id);
-	
-	void delete(Usuario entity);
-	
-	void deleteById(Long id);
-	
-	List<Usuario> findAll();
-	
 }

@@ -9,41 +9,45 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "usuario")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Usuario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@Column(name="usuario", nullable = false, length = 200)
+
+	@Column(name = "usuario", nullable = false, length = 200)
 	private String usuario;
-	
-	//Os seguintes tipos sao:1- usuario, 2-Organizador, 3-feirante
-	@Column(name="tipo", nullable = false, length = 10)
+
+	// Os seguintes tipos sao:1- usuario, 2-Organizador, 3-feirante
+	@Column(name = "tipo", nullable = false, length = 10)
 	private Integer tipo;
-	
-	@Column(name="senha", nullable = false, length = 200)
+
+	@Column(name = "senha", nullable = false, length = 200)
 	private String senha;
-	
-	@Column(name="nome", nullable = false, length = 200)
+
+	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
-	
-	@Column(name="cpf", nullable = false, length = 200)
+
+	@Column(name = "cpf", nullable = false, length = 200)
 	private String cpf;
-	
-	@Column(name="telefone", nullable = false, length = 200)
+
+	@Column(name = "telefone", nullable = false, length = 200)
 	private String telefone;
-	
-	@Column(name="email", nullable = false, length = 200)
+
+	@Column(name = "email", nullable = false, length = 200)
 	private String email;
 
 	public Usuario() {
 		super();
 	}
 
-	public Usuario(Long id, String usuario, String senha, String nome, String cpf, String telefone, String email,Integer tipo) {
+	public Usuario(Long id, String usuario, String senha, String nome, String cpf, String telefone, String email,
+			Integer tipo) {
 		super();
 		this.id = id;
 		this.usuario = usuario;
@@ -52,7 +56,7 @@ public class Usuario implements Serializable {
 		this.cpf = cpf;
 		this.telefone = telefone;
 		this.email = email;
-		this.tipo= tipo;
+		this.tipo = tipo;
 	}
 
 	public Long getId() {
@@ -118,10 +122,5 @@ public class Usuario implements Serializable {
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
 	}
-	
-	
-	
-	
-	
-	
+
 }

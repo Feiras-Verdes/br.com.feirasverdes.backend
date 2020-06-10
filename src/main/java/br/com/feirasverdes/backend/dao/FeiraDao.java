@@ -8,21 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.entidade.Feira;
-import br.com.feirasverdes.backend.entidade.Produto;
 
-public interface FeiraDao extends JpaRepository<Feira,Long>{
+public interface FeiraDao extends JpaRepository<Feira, Long> {
 
 	@Transactional
-    @Modifying
-    @Query(value = "select * from produto u where nome like '%?1%'", nativeQuery = true)
+	@Modifying
+	@Query(value = "select * from produto u where nome like '%?1%'", nativeQuery = true)
 	List<Feira> pesquisarPorNome(String nome);
 
-	Feira getOne(long id);
-	
-	void delete(Produto entity);
-	
-	void deleteById(Long id);
-	
-	List<Feira> findAll();
-	
 }
