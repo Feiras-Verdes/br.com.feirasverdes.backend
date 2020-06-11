@@ -7,37 +7,46 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "noticia")
-public class Noticia  implements Serializable {
+public class Noticia implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@Column(name="titulo", nullable = false, length = 200)
+
+	@Column(name = "titulo", nullable = false, length = 200)
 	private String titulo;
-	
-	@Column(name="descricao", nullable = false, length = 200)
+
+	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
-	
-	@Column(name="foto", nullable = false, length = 200)
-	private String foto;
-	
+
+	@OneToOne
+	private Imagem imagem;
+
+	@ManyToOne
+	@JoinColumn(name = "id_estande")
 	private Estande estande;
+
+	@ManyToOne
+	@JoinColumn(name = "id_feira")
 	private Feira feira;
-	
+
 	public Noticia() {
 		super();
 	}
 
-	public Noticia(Long id, String titulo, String descricao, String foto, Estande estande, Feira feira) {
+	public Noticia(Long id, String titulo, String descricao, Imagem imagem, Estande estande, Feira feira) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.descricao = descricao;
-		this.foto = foto;
+		this.imagem = imagem;
 		this.estande = estande;
 		this.feira = feira;
 	}
@@ -66,12 +75,12 @@ public class Noticia  implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public String getFoto() {
-		return foto;
+	public Imagem getImagem() {
+		return imagem;
 	}
 
-	public void setFoto(String foto) {
-		this.foto = foto;
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
 	}
 
 	public Estande getEstande() {
@@ -89,6 +98,5 @@ public class Noticia  implements Serializable {
 	public void setFeira(Feira feira) {
 		this.feira = feira;
 	}
-	
-	
+
 }

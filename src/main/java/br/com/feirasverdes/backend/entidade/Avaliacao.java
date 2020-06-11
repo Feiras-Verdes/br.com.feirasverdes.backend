@@ -7,26 +7,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "avaliacao")
-public class Avaliacao  implements Serializable {
+public class Avaliacao implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@Column(name="nota", nullable = false, length = 200)
+
+	@Column(name = "nota", nullable = false, length = 200)
 	private String nota;
-	
-	@Column(name="comentario", nullable = false, length = 200)
+
+	@Column(name = "comentario", nullable = false, length = 200)
 	private String comentario;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
+
+	@ManyToOne
+	@JoinColumn(name = "id_estande")
 	private Estande estande;
+
+	@ManyToOne
+	@JoinColumn(name = "id_feira")
 	private Feira feira;
-	
+
 	public Avaliacao() {
 		super();
 	}
@@ -88,6 +98,5 @@ public class Avaliacao  implements Serializable {
 	public void setFeira(Feira feira) {
 		this.feira = feira;
 	}
-	
-	
+
 }

@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,47 +23,58 @@ public class Usuario implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "usuario", nullable = false, length = 200)
-	private String usuario;
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_usuario")
+	private TipoUsuario tipo;
 
-	// Os seguintes tipos sao:1- usuario, 2-Organizador, 3-feirante
-	@Column(name = "tipo", nullable = false, length = 10)
-	private Integer tipo;
-
-	@Column(name = "senha", nullable = false, length = 200)
+	@Column(nullable = false)
 	private String senha;
 
-	@Column(name = "nome", nullable = false, length = 200)
+	@Column(nullable = false)
 	private String nome;
 
-	@Column(name = "cpf", nullable = false, length = 200)
+	@Column()
 	private String cpf;
 
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column()
+	private String cnpj;
+
+	@Column(nullable = false)
 	private String telefone;
 
-	@Column(name = "email", nullable = false, length = 200)
+	@Column(nullable = false, unique = true)
 	private String email;
-	
-	@Column(name = "flag_ativo", nullable = false, length = 200)
+
+	@Column(nullable = false)
 	private boolean flag_ativo;
+
+	@OneToOne
+	private Imagem imagem;
 
 	public Usuario() {
 		super();
 	}
 
-	public Usuario(Long id, String usuario, Integer tipo, String senha, String nome, String cpf, String telefone,
+	public Usuario(Long id, TipoUsuario tipo, String senha, String nome, String cpf, String cnpj, String telefone,
 			String email, boolean flag_ativo) {
 		super();
 		this.id = id;
-		this.usuario = usuario;
 		this.tipo = tipo;
 		this.senha = senha;
 		this.nome = nome;
 		this.cpf = cpf;
+		this.cnpj = cnpj;
 		this.telefone = telefone;
 		this.email = email;
 		this.flag_ativo = flag_ativo;
+	}
+
+	public String getCnpj() {
+		return this.cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
 	}
 
 	public Long getId() {
@@ -71,19 +85,11 @@ public class Usuario implements Serializable {
 		this.id = id;
 	}
 
-	public String getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-
-	public Integer getTipo() {
+	public TipoUsuario getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(TipoUsuario tipo) {
 		this.tipo = tipo;
 	}
 
