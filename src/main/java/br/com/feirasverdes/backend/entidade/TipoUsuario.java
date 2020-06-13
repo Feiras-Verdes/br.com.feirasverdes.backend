@@ -4,18 +4,20 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "tipo_usuario")
+@Table(name = "tipoUsuario")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class TipoUsuario implements Serializable {
 
 	@Id
-	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@Column(nullable = false)
@@ -26,7 +28,6 @@ public class TipoUsuario implements Serializable {
 	}
 
 	public TipoUsuario(Integer id, String descricao) {
-		super();
 		this.id = id;
 		this.descricao = descricao;
 	}

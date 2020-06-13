@@ -1,6 +1,7 @@
 package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,8 +25,8 @@ public class Usuario implements Serializable {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "id_tipo_usuario")
-	private TipoUsuario tipo;
+	@JoinColumn(name = "id_tipo_usuario", nullable = false)
+	private TipoUsuario tipoUsuario;
 
 	@Column(nullable = false)
 	private String senha;
@@ -33,20 +34,23 @@ public class Usuario implements Serializable {
 	@Column(nullable = false)
 	private String nome;
 
-	@Column()
+	@Column(nullable = true)
 	private String cpf;
 
-	@Column()
+	@Column(nullable = true)
 	private String cnpj;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String telefone;
 
 	@Column(nullable = false, unique = true)
 	private String email;
 
+	@Column(nullable = true)
+	private Date dataNascimento;
+
 	@Column(nullable = false)
-	private boolean flag_ativo;
+	private boolean ativo;
 
 	@OneToOne
 	private Imagem imagem;
@@ -55,18 +59,20 @@ public class Usuario implements Serializable {
 		super();
 	}
 
-	public Usuario(Long id, TipoUsuario tipo, String senha, String nome, String cpf, String cnpj, String telefone,
-			String email, boolean flag_ativo) {
+	public Usuario(Long id, TipoUsuario tipoUsuario, String senha, String nome, String cpf, String cnpj,
+			String telefone, String email, Date dataNascimento, boolean ativo, Imagem imagem) {
 		super();
 		this.id = id;
-		this.tipo = tipo;
+		this.tipoUsuario = tipoUsuario;
 		this.senha = senha;
 		this.nome = nome;
 		this.cpf = cpf;
 		this.cnpj = cnpj;
 		this.telefone = telefone;
 		this.email = email;
-		this.flag_ativo = flag_ativo;
+		this.dataNascimento = dataNascimento;
+		this.ativo = ativo;
+		this.imagem = imagem;
 	}
 
 	public String getCnpj() {
@@ -85,12 +91,12 @@ public class Usuario implements Serializable {
 		this.id = id;
 	}
 
-	public TipoUsuario getTipo() {
-		return tipo;
+	public TipoUsuario getTipoUsuario() {
+		return tipoUsuario;
 	}
 
-	public void setTipo(TipoUsuario tipo) {
-		this.tipo = tipo;
+	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
 	}
 
 	public String getSenha() {
@@ -133,12 +139,28 @@ public class Usuario implements Serializable {
 		this.email = email;
 	}
 
-	public boolean isFlag_ativo() {
-		return flag_ativo;
+	public boolean isAtivo() {
+		return ativo;
 	}
 
-	public void setFlag_ativo(boolean flag_ativo) {
-		this.flag_ativo = flag_ativo;
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public Date getDataNascimento() {
+		return this.dataNascimento;
+	}
+
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	public Imagem getImagem() {
+		return this.imagem;
+	}
+
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
 	}
 
 }

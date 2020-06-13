@@ -18,24 +18,28 @@ public class Imagem {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@Column(name = "nome", nullable = true, length = 200)
+	private String nome;
+
 	@Column(name = "legenda", nullable = true, length = 200)
 	private String legenda;
 
 	@Column(name = "tipo", nullable = false, length = 200)
 	private String tipo;
 
-	@Column(name = "imagem", nullable = false, length = 1000)
-	private byte[] imagem;
+	@Column(name = "bytesImagem", nullable = false, length = 1000)
+	private byte[] bytesImagem;
 
 	public Imagem() {
 		super();
 	}
 
-	public Imagem(Long id, String legenda, String tipo, byte[] imagem) {
+	public Imagem(Long id, String nome, String legenda, String tipo, byte[] bytesImagem) {
 		this.id = id;
+		this.nome = nome;
 		this.legenda = legenda;
 		this.tipo = tipo;
-		this.imagem = imagem;
+		this.bytesImagem = bytesImagem;
 	}
 
 	public Long getId() {
@@ -62,12 +66,20 @@ public class Imagem {
 		this.tipo = tipo;
 	}
 
-	public byte[] getImagem() {
-		return this.imagem;
+	public byte[] getBytesImagem() {
+		return this.bytesImagem;
 	}
 
-	public void setImagem(byte[] imagem) {
-		this.imagem = imagem;
+	public void setBytesImagem(byte[] bytesImagem) {
+		this.bytesImagem = bytesImagem;
+	}
+
+	public String getNome() {
+		return this.nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 }
