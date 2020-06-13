@@ -86,6 +86,7 @@ public class UsuarioController {
 		return ResponseEntity.of(dao.pesquisarPorId(id));
 	}
 
+	// em andamento
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
 	public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 
