@@ -3,11 +3,15 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
+import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +20,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
+import br.com.feirasverdes.backend.config.JwtTokenUtil;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.entidade.Imagem;
+import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.entidade.Usuario;
+import br.com.feirasverdes.backend.exception.AutenticacaoException;
+import br.com.feirasverdes.backend.exception.EmailInvalidoException;
+import br.com.feirasverdes.backend.exception.ServiceException;
+import br.com.feirasverdes.backend.exception.TipoInvalidoException;
+import br.com.feirasverdes.backend.service.UsuarioService;
 
 @RestController
 @CrossOrigin
@@ -27,70 +37,83 @@ import br.com.feirasverdes.backend.entidade.Usuario;
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioDao dao;
+	private UserDetailsService jwtUserDetailsService;
 
 	@Autowired
-	private TipoUsuarioDao daoTipo;
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Autowired
+	private UsuarioService service;
+
+	@Autowired
+	private UsuarioDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
-	public ResponseEntity<Usuario> salvarConsumidor(@RequestBody Usuario usuario) {
-		Usuario usuarioSalvo = new Usuario();
+	public ResponseEntity<?> salvarUsuario(@RequestBody Usuario usuario) throws ServiceException {
 		try {
-			usuario.setAtivo(true);
-			// usuario.setTipoUsuario(daoTipo.getOne((long) 1));
-			usuarioSalvo = dao.save(usuario);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(usuarioSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
+			service.salvarUsuario(usuario);
+			return ResponseEntity.ok("Cadastrado com sucesso.");
+		} catch (final EmailInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDto(e.getMessage()));
+		} catch (final TipoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDto(e.getMessage()));
+		} catch (final Exception e) {
+			throw new br.com.feirasverdes.backend.exception.ServiceException();
 		}
-		return new ResponseEntity<>(usuarioSalvo, HttpStatus.OK);
 	}
 
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarCliente(@PathVariable(value = "id", required = true) Long id, @RequestBody Usuario usuario,
-			MultipartFile foto) {
+	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
+			@RequestBody Usuario usuario, MultipartFile foto) {
 		try {
-			Imagem imagem = new Imagem();
-			imagem.setNome(foto.getOriginalFilename());
-			imagem.setTipo(foto.getContentType());
-			imagem.setBytesImagem(foto.getBytes());
-			usuario.setId(id);
-			dao.save(usuario);
-			return Response.ok().build();
+			service.atualizarUsuario(id, usuario, foto);
+			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {
-			return Response.serverError().build();
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
 		}
 
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
-	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		Usuario usuario = dao.getOne(id);
-		usuario.setAtivo(false);
-		dao.save(usuario);
-		return Response.ok().build();
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
+	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
+		try {
+			service.excluirUsuario(id);
+			return ResponseEntity.ok("Excluído com sucesso.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
 	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.listarTodos());
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		return ResponseEntity.ok(dao.pesquisarPorNome(nome));
+		return ResponseEntity.ok(service.pesquisarPorNome(nome));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
 	public ResponseEntity<Usuario> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		return ResponseEntity.of(dao.pesquisarPorId(id));
+		return ResponseEntity.of(service.pesquisarPorId(id));
 	}
 
-	// em andamento
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
-	public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+	@RequestMapping(method = RequestMethod.POST, value = "login")
+	public ResponseEntity<?> login(@RequestBody Usuario usuario) throws Exception {
 
-		return (ResponseEntity<?>) ResponseEntity.ok();
+		try {
+			service.autenticar(usuario.getEmail(), usuario.getSenha());
+			final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(usuario.getEmail());
+			final String token = jwtTokenUtil.generateToken(userDetails);
+			return ResponseEntity.ok(new RespostaJwt(token));
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
+		} catch (final Exception e) {
+			throw new AutenticacaoException();
+		}
 	}
 
 }

@@ -18,7 +18,7 @@ public class TipoUsuario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Long id;
 
 	@Column(nullable = false)
 	private String descricao;
@@ -27,16 +27,16 @@ public class TipoUsuario implements Serializable {
 		super();
 	}
 
-	public TipoUsuario(Integer id, String descricao) {
+	public TipoUsuario(Long id, String descricao) {
 		this.id = id;
 		this.descricao = descricao;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

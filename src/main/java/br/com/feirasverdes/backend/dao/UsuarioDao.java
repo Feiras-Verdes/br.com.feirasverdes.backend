@@ -25,4 +25,8 @@ public interface UsuarioDao extends JpaRepository<Usuario, Long> {
 	@Query(value = "select * from usuario where id = ?1 and ativo = 1", nativeQuery = true)
 	Optional<Usuario> pesquisarPorId(Long id);
 
+	@Transactional
+	@Query(value = "select * from usuario where email = ?1 and ativo = 1", nativeQuery = true)
+	Usuario pesquisarPorEmail(String email);
+
 }
