@@ -32,7 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 			return new UserContext(usuario.getId(), usuario.getEmail(), usuario.getSenha(),
 					getAuthorities(usuario.getTipoUsuario().getDescricao()));
 		} else {
-			throw new UsernameNotFoundException("Usuário com não encontrado: " + email);
+			throw new UsernameNotFoundException("Usuário não encontrado: " + email);
 		}
 	}
 

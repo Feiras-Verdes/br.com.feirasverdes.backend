@@ -112,4 +112,10 @@ public class UsuarioController {
 		}
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
+	public ResponseEntity<?> getDetalhes() throws Exception {
+		// TODO implementar
+		return null;
+	}
+
 }
