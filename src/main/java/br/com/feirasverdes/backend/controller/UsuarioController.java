@@ -2,6 +2,7 @@ package br.com.feirasverdes.backend.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -13,14 +14,15 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.config.JwtTokenUtil;
+import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -61,9 +63,9 @@ public class UsuarioController {
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
-			@RequestBody Usuario usuario, MultipartFile foto) {
+			@ModelAttribute AtualizarUsuarioDto usuario) {
 		try {
-			service.atualizarUsuario(id, usuario, foto);
+			service.atualizarUsuario(id, usuario);
 			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
@@ -114,8 +116,13 @@ public class UsuarioController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
 	public ResponseEntity<?> getDetalhes() throws Exception {
-		// TODO implementar
-		return null;
+		try {
+			return ResponseEntity.ok(service.getDetalhes());
+		} catch (final IOException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		} catch (final DataFormatException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 }

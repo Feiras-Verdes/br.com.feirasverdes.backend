@@ -1,5 +1,7 @@
 package br.com.feirasverdes.backend.entidade;
 
+import java.util.Base64;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -80,6 +82,14 @@ public class Imagem {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getImagemBase64() {
+		if (getBytesImagem() != null) {
+			return Base64.getEncoder().encodeToString(getBytesImagem());
+		} else {
+			return null;
+		}
 	}
 
 }

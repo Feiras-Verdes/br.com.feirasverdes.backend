@@ -12,7 +12,6 @@ public class RespostaJwt implements Serializable {
 		this.jwttoken = jwttoken;
 	}
 
-
 	public String getToken() {
 		return jwttoken;
 	}

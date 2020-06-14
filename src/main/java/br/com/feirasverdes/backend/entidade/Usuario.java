@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.entidade;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,7 +53,7 @@ public class Usuario implements Serializable {
 	@Column(nullable = false)
 	private boolean ativo;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	public Usuario() {

@@ -3,21 +3,26 @@ package br.com.feirasverdes.backend.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
+import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.exception.EmailInvalidoException;
 import br.com.feirasverdes.backend.exception.TipoInvalidoException;
+import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
 public class UsuarioService {
@@ -50,16 +55,23 @@ public class UsuarioService {
 		dao.save(usuario);
 	}
 
-	public void atualizarUsuario(final Long id, final Usuario usuario, final MultipartFile foto) throws IOException {
-		if (foto != null) {
+	public void atualizarUsuario(final Long id, final AtualizarUsuarioDto usuarioAtualizado) throws IOException {
+		Usuario usuario = dao.getOne(id);
+		if (usuarioAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
+			MultipartFile foto = usuarioAtualizado.getImagem();
 			imagem.setNome(foto.getOriginalFilename());
 			imagem.setTipo(foto.getContentType());
-			imagem.setBytesImagem(foto.getBytes());
+			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
+
+			usuario.setImagem(imagem);
 		}
-		usuario.setId(id);
-		usuario.setAtivo(true);
-		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+		usuario.setCnpj(usuarioAtualizado.getCnpj());
+		usuario.setCpf(usuarioAtualizado.getCpf());
+		usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
+		usuario.setEmail(usuarioAtualizado.getEmail());
+		usuario.setNome(usuarioAtualizado.getNome());
+		usuario.setTelefone(usuarioAtualizado.getTelefone());
 		dao.save(usuario);
 	}
 
@@ -83,6 +95,24 @@ public class UsuarioService {
 
 	public Optional pesquisarPorId(Long id) {
 		return dao.pesquisarPorId(id);
+	}
+
+	public DetalhesDoUsuarioDto getDetalhes() throws IOException, DataFormatException {
+		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		final Usuario usuario = dao.pesquisarPorEmail(email);
+
+		if (usuario != null) {
+			if (usuario.getImagem() != null) {
+				usuario.getImagem().setBytesImagem(ImagemUtils.decompressBytes(usuario.getImagem().getBytesImagem()));
+			}
+			return DetalhesDoUsuarioDto.builder().withNome(usuario.getNome()).withEmail(usuario.getEmail())
+					.withCpf(usuario.getCpf()).withCnpj(usuario.getCnpj())
+					.withDataNascimento(usuario.getDataNascimento()).withTelefone(usuario.getTelefone())
+					.withTipoUsuario(usuario.getTipoUsuario()).withImagem(usuario.getImagem()).withId(usuario.getId())
+					.build();
+		} else {
+			return null;
+		}
 	}
 
 }
