@@ -2,12 +2,6 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,35 +14,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.ProdutoDao;
-import br.com.feirasverdes.backend.entidade.Produto;
+import br.com.feirasverdes.backend.dao.AvaliacaoDao;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/produto")
-public class ProdutoController {
+@RequestMapping(value = "/avaliacao")
+public class AvaliacaoController {
 
 	@Autowired
-	private ProdutoDao dao;
+	private AvaliacaoDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Produto> salvarProduto(@RequestBody Produto produto) {
-		Produto produtoSalvo = new Produto();
+	public ResponseEntity<Avaliacao> salvarNoticia(@RequestBody Avaliacao avaliacao) {
+		Avaliacao avaliacaoSalvo = new Avaliacao();
 		try {
-			produtoSalvo = dao.save(produto);
+			avaliacaoSalvo = dao.save(avaliacao);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(produtoSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(avaliacaoSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(produtoSalvo, HttpStatus.OK);
+		return new ResponseEntity<>(avaliacaoSalvo, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarproduto(@PathVariable(value = "id", required = true) Long id,
-			@RequestBody Produto produto) {
-		produto.setId(id);
-		dao.save(produto);
+	public Response atualizarAvaliacao(@PathVariable(value = "id", required = true) Long id,
+			@RequestBody Avaliacao avaliacao) {
+		avaliacao.setId(id);
+		dao.save(avaliacao);
 		return Response.ok().build();
 	}
 
@@ -63,16 +57,10 @@ public class ProdutoController {
 		return ResponseEntity.ok(dao.findAll());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Produto> produto = dao.pesquisarPorNome(nome);
-		return ResponseEntity.ok(produto);
-	}
-
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
-	public ResponseEntity<Produto> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Produto produto = dao.getOne(id);
-		return ResponseEntity.ok(produto);
+	public ResponseEntity<Avaliacao> pesquisarPorId(@PathVariable(value = "id") Long id) {
+		Avaliacao avaliacao = dao.getOne(id);
+		return ResponseEntity.ok(avaliacao);
 	}
-
+	
 }
