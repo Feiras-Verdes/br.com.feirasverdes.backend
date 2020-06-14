@@ -32,12 +32,11 @@ public class UsuarioController {
 	@Autowired
 	private TipoUsuarioDao daoTipo;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
+	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
 	public ResponseEntity<Usuario> salvarConsumidor(@RequestBody Usuario usuario) {
 		Usuario usuarioSalvo = new Usuario();
 		try {
 			usuario.setAtivo(true);
-			// usuario.setTipoUsuario(daoTipo.getOne((long) 1));
 			usuarioSalvo = dao.save(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,7 +70,7 @@ public class UsuarioController {
 		return Response.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	@RequestMapping(method = RequestMethod.GET, value = "listarTodos")
 	public ResponseEntity<List> listarTodos() {
 		return ResponseEntity.ok(dao.listarTodos());
 	}
@@ -87,7 +86,7 @@ public class UsuarioController {
 	}
 
 	// em andamento
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	@RequestMapping(method = RequestMethod.POST, value = "login")
 	public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 
 		return (ResponseEntity<?>) ResponseEntity.ok();
