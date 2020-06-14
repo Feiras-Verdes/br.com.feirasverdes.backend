@@ -1,37 +1,65 @@
 package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "estande")
 public class Estande implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
-	@Column(name="hora_inicio", nullable = false, length = 200)
+
+	@Column(name = "hora_inicio", nullable = false, length = 200)
 	private String hora_inicio;
-	
-	@Column(name="frequencia", nullable = false, length = 200)
+
+	@Column(name = "frequencia", nullable = false, length = 200)
 	private String frequencia;
-	
-	@Column(name="hora_fim", nullable = false, length = 200)
+
+	@Column(name = "hora_fim", nullable = false, length = 200)
 	private String hora_fim;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "id_feira")
 	private Feira feira;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
-	
+	@OneToOne
+	@JoinColumn(name = "id_endereco")
+	private Endereco endereco;
 
-	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, Feira feira, Usuario usuario) {
+	@OneToOne
+	private Imagem imagem;
+
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Noticia> noticias;
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "vende", joinColumns = {
+			@JoinColumn(name = "id_produto", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
+	private List<Produto> produtos;
+
+	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, Feira feira, Usuario usuario,
+			Endereco endereco, Imagem imagem) {
 		super();
 		this.id = id;
 		this.hora_inicio = hora_inicio;
@@ -39,6 +67,8 @@ public class Estande implements Serializable {
 		this.hora_fim = hora_fim;
 		this.feira = feira;
 		this.usuario = usuario;
+		this.endereco = endereco;
+		this.imagem = imagem;
 	}
 
 	public Long getId() {
@@ -88,7 +118,37 @@ public class Estande implements Serializable {
 	public void setFeirante(Usuario feirante) {
 		this.usuario = feirante;
 	}
-	
-	
-	
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+	public Imagem getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
+	}
+
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<Noticia> getNoticias() {
+		return this.noticias;
+	}
+
+	public void setNoticias(List<Noticia> noticias) {
+		this.noticias = noticias;
+	}
+
 }

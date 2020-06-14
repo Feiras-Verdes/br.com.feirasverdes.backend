@@ -1,12 +1,17 @@
 package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,47 +25,63 @@ public class Usuario implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "usuario", nullable = false, length = 200)
-	private String usuario;
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_usuario", nullable = false)
+	private TipoUsuario tipoUsuario;
 
-	// Os seguintes tipos sao:1- usuario, 2-Organizador, 3-feirante
-	@Column(name = "tipo", nullable = false, length = 10)
-	private Integer tipo;
-
-	@Column(name = "senha", nullable = false, length = 200)
+	@Column(nullable = false)
 	private String senha;
 
-	@Column(name = "nome", nullable = false, length = 200)
+	@Column(nullable = false)
 	private String nome;
 
-	@Column(name = "cpf", nullable = false, length = 200)
+	@Column(nullable = true)
 	private String cpf;
 
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column(nullable = true)
+	private String cnpj;
+
+	@Column(nullable = true)
 	private String telefone;
 
-	@Column(name = "email", nullable = false, length = 200)
+	@Column(nullable = false, unique = true)
 	private String email;
-	
-	@Column(name = "flag_ativo", nullable = false, length = 200)
-	private boolean flag_ativo;
+
+	@Column(nullable = true)
+	private Date dataNascimento;
+
+	@Column(nullable = false)
+	private boolean ativo;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private Imagem imagem;
 
 	public Usuario() {
 		super();
 	}
 
-	public Usuario(Long id, String usuario, Integer tipo, String senha, String nome, String cpf, String telefone,
-			String email, boolean flag_ativo) {
+	public Usuario(Long id, TipoUsuario tipoUsuario, String senha, String nome, String cpf, String cnpj,
+			String telefone, String email, Date dataNascimento, boolean ativo, Imagem imagem) {
 		super();
 		this.id = id;
-		this.usuario = usuario;
-		this.tipo = tipo;
+		this.tipoUsuario = tipoUsuario;
 		this.senha = senha;
 		this.nome = nome;
 		this.cpf = cpf;
+		this.cnpj = cnpj;
 		this.telefone = telefone;
 		this.email = email;
-		this.flag_ativo = flag_ativo;
+		this.dataNascimento = dataNascimento;
+		this.ativo = ativo;
+		this.imagem = imagem;
+	}
+
+	public String getCnpj() {
+		return this.cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
 	}
 
 	public Long getId() {
@@ -71,20 +92,12 @@ public class Usuario implements Serializable {
 		this.id = id;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public TipoUsuario getTipoUsuario() {
+		return tipoUsuario;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-
-	public Integer getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(Integer tipo) {
-		this.tipo = tipo;
+	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
 	}
 
 	public String getSenha() {
@@ -127,12 +140,28 @@ public class Usuario implements Serializable {
 		this.email = email;
 	}
 
-	public boolean isFlag_ativo() {
-		return flag_ativo;
+	public boolean isAtivo() {
+		return ativo;
 	}
 
-	public void setFlag_ativo(boolean flag_ativo) {
-		this.flag_ativo = flag_ativo;
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public Date getDataNascimento() {
+		return this.dataNascimento;
+	}
+
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	public Imagem getImagem() {
+		return this.imagem;
+	}
+
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
 	}
 
 }

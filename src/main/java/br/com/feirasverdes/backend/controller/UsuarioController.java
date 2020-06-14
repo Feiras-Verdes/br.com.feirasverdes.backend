@@ -1,71 +1,128 @@
 package br.com.feirasverdes.backend.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
-import javax.ws.rs.core.Response;
+import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.UsuarioDao;
+import br.com.feirasverdes.backend.config.JwtTokenUtil;
+import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.entidade.Usuario;
+import br.com.feirasverdes.backend.exception.AutenticacaoException;
+import br.com.feirasverdes.backend.exception.EmailInvalidoException;
+import br.com.feirasverdes.backend.exception.ServiceException;
+import br.com.feirasverdes.backend.exception.TipoInvalidoException;
+import br.com.feirasverdes.backend.service.UsuarioService;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/usuario")
+@RequestMapping(value = "/usuarios")
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioDao dao;
+	private UserDetailsService jwtUserDetailsService;
 
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Usuario> salvarCliente(@RequestBody Usuario usuario) {
-		Usuario usuarioSalvo = new Usuario();
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Autowired
+	private UsuarioService service;
+
+	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
+	public ResponseEntity<?> salvarUsuario(@RequestBody Usuario usuario) throws ServiceException {
 		try {
-			usuarioSalvo = dao.save(usuario);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(usuarioSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
+			service.salvarUsuario(usuario);
+			return ResponseEntity.ok("Cadastrado com sucesso.");
+		} catch (final EmailInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDto(e.getMessage()));
+		} catch (final TipoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RespostaDto(e.getMessage()));
+		} catch (final Exception e) {
+			throw new br.com.feirasverdes.backend.exception.ServiceException();
 		}
-		return new ResponseEntity<>(usuarioSalvo, HttpStatus.OK);
 	}
 
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarCliente(@PathVariable(value = "id", required = true) Long id,
-			@RequestBody Usuario usuario) {
-		usuario.setId(id);
-		dao.save(usuario);
-		return Response.ok().build();
+	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
+			@ModelAttribute AtualizarUsuarioDto usuario) {
+		try {
+			service.atualizarUsuario(id, usuario);
+			return ResponseEntity.ok("Atualizado com sucesso.");
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
+		}
+
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
-	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		dao.deleteById(id);
-		return Response.ok().build();
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
+	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
+		try {
+			service.excluirUsuario(id);
+			return ResponseEntity.ok("Excluído com sucesso.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
 	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.findAll());
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Usuario> usuarios = dao.pesquisarPorNome(nome);
-		return ResponseEntity.ok(usuarios);
+		return ResponseEntity.ok(service.pesquisarPorNome(nome));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
 	public ResponseEntity<Usuario> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Usuario usuario = dao.getOne(id);
-		return ResponseEntity.ok(usuario);
+		return ResponseEntity.of(service.pesquisarPorId(id));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "login")
+	public ResponseEntity<?> login(@RequestBody Usuario usuario) throws Exception {
+
+		try {
+			service.autenticar(usuario.getEmail(), usuario.getSenha());
+			final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(usuario.getEmail());
+			final String token = jwtTokenUtil.generateToken(userDetails);
+			return ResponseEntity.ok(new RespostaJwt(token));
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
+		} catch (final Exception e) {
+			throw new AutenticacaoException();
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
+	public ResponseEntity<?> getDetalhes() throws Exception {
+		try {
+			return ResponseEntity.ok(service.getDetalhes());
+		} catch (final IOException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		} catch (final DataFormatException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 }

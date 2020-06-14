@@ -15,5 +15,8 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 	@Modifying
 	@Query(value = "select * from produto u where nome like '%?1%'", nativeQuery = true)
 	List<Feira> pesquisarPorNome(String nome);
-
+	
+	//, avg( avaliacao.nota), count(avaliacao.id)
+	@Query("select distinct feira from Avaliacao avaliacao join avaliacao.feira feira order by avg( avaliacao.nota) desc")
+	public List<Feira> buscarMelhoresFeiras();
 }

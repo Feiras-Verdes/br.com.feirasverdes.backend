@@ -2,20 +2,12 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
+import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.entidade.Feira;
-import br.com.feirasverdes.backend.entidade.Usuario;
+import br.com.feirasverdes.backend.entidade.Noticia;
 
 @RestController
 @CrossOrigin
@@ -35,8 +29,15 @@ public class FeiraController {
 
 	@Autowired
 	private FeiraDao dao;
-
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
+	
+	@Autowired
+	private AvaliacaoDao avaliacaodao;
+	
+	@Autowired
+	private NoticiaDao noticiadao;
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Feira> salvarFeira(@RequestBody Feira feira) {
 		Feira feiraSalva = new Feira();
 		try {
@@ -76,5 +77,40 @@ public class FeiraController {
 	public ResponseEntity<Feira> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		Feira feira = dao.getOne(id);
 		return ResponseEntity.ok(feira);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/listarAvaliacaoUsuario/{idUsuario}")
+	public ResponseEntity<List> listarAvaliacaoUsuario(@PathParam("idUsuario") Long idUsuario) {
+		return ResponseEntity.ok(avaliacaodao.findByUsuarioId(idUsuario));
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoFeira")
+	public ResponseEntity<Feira> salvarAvaliacaoFeira(@RequestBody Feira avalicaofeira) {
+		Feira feiracadastro = new Feira();
+		try {
+			feiracadastro = dao.save(avalicaofeira);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(feiracadastro, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(feiracadastro, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-estandes-da-feira/{nome}")
+	public ResponseEntity<List> pesquisarPortodosEstandesdaFeira(@PathVariable(value = "nome") String nome) {
+		List<Feira> feiras = dao.pesquisarPorNome(nome);
+		return ResponseEntity.ok(feiras);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-melhores-feiras")
+	public ResponseEntity<List> pesquisarPorMelhoresFeiras() {
+		List<Feira> feiras = dao.buscarMelhoresFeiras();
+		return ResponseEntity.ok(feiras);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-noticias-feiras/{idFeira}")
+	public ResponseEntity<List> pesquisarPorNoticiasdasFeiras(@PathVariable(value = "idFeira") Long idFeira) {
+		List<Noticia> noticiadasfeiras = noticiadao.buscarUltimasNoticiadaFeira(idFeira);
+		return ResponseEntity.ok(noticiadasfeiras);
 	}
 }

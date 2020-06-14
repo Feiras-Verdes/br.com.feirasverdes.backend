@@ -14,7 +14,9 @@ import br.com.feirasverdes.backend.entidade.Estande;
 public interface EstandeDao extends JpaRepository<Estande, Long> {
 	@Transactional
 	@Modifying
-	@Query(value = "select * from estande u where nome like '%?1%'", nativeQuery = true)
+	@Query(value = "select * from Estande u where nome like '%?1%'", nativeQuery = true)
 	List<Estande> pesquisarPorNome(String nome);
-
+	
+	@Query(value = "select e from Estande e where e.feira.id = ?1")
+	List<Estande> pesquisarPortodosEstandesdaFeira(Long idFeira);
 }
