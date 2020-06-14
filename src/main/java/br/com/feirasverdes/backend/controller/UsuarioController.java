@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.config.JwtTokenUtil;
-import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -44,9 +43,6 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService service;
-
-	@Autowired
-	private UsuarioDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
 	public ResponseEntity<?> salvarUsuario(@RequestBody Usuario usuario) throws ServiceException {
