@@ -1,5 +1,6 @@
 package br.com.feirasverdes.backend.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -19,14 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
+import br.com.feirasverdes.backend.dto.FeiraDto;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Noticia;
+import br.com.feirasverdes.backend.service.FeiraService;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/feira")
 public class FeiraController {
 
+	@Autowired
+	private FeiraService service;
+	
 	@Autowired
 	private FeiraDao dao;
 	
@@ -50,13 +57,13 @@ public class FeiraController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarFeira(@PathVariable(value = "id", required = true) Long id, @RequestBody Feira feira) {
+	public Response atualizarFeira(@PathVariable(value = "id", required = true) Long id, @RequestBody FeiraDto feira) throws IOException {
 		feira.setId(id);
-		dao.save(feira);
+		service.atualizarFeira(feira);
 		return Response.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
 	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
@@ -69,7 +76,7 @@ public class FeiraController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Feira> feiras = dao.pesquisarPorNome(nome);
+		List<Feira> feiras = dao.pesquisarPorNome("%" + nome + "%" );
 		return ResponseEntity.ok(feiras);
 	}
 
@@ -85,15 +92,15 @@ public class FeiraController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoFeira")
-	public ResponseEntity<Feira> salvarAvaliacaoFeira(@RequestBody Feira avalicaofeira) {
-		Feira feiracadastro = new Feira();
+	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@RequestBody Avaliacao avaliacaofeira) {
+		Avaliacao cadastro = new Avaliacao();
 		try {
-			feiracadastro = dao.save(avalicaofeira);
+			cadastro = avaliacaodao.save(avaliacaofeira);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(feiracadastro, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(feiracadastro, HttpStatus.OK);
+		return new ResponseEntity<>(cadastro, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-estandes-da-feira/{nome}")
