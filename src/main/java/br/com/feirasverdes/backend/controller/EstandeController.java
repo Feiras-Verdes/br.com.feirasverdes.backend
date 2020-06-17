@@ -39,7 +39,7 @@ public class EstandeController {
 	}
 
 	@PUT
-	@Path("/{id}")
+	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response atualizarEstande(@PathParam("id") long id, @RequestBody Estande Estande) {
@@ -48,7 +48,7 @@ public class EstandeController {
 	}
 
 	@DELETE
-	@Path("/{id}")
+	@Path("{id}")
 	public Response excluir(@PathParam("id") long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
@@ -69,7 +69,7 @@ public class EstandeController {
 	}
 
 	@GET
-	@Path("/Estande/{id}")
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorId(@PathParam("id") long id) {
 		Estande estandes = dao.getOne(id);
