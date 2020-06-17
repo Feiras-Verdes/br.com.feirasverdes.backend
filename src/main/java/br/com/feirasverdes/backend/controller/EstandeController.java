@@ -1,5 +1,6 @@
 package br.com.feirasverdes.backend.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,19 +16,31 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
+import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
+import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.service.EstandeService;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/estande")
 public class EstandeController {
-
+	
+	@Autowired
+	EstandeService service;
+	
 	@Autowired
 	private EstandeDao dao;
 
@@ -38,13 +51,15 @@ public class EstandeController {
 		return Response.status(Status.CREATED).entity(estande).build();
 	}
 
-	@PUT
-	@Path("{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response atualizarEstande(@PathParam("id") long id, @RequestBody Estande Estande) {
-		dao.save(Estande);
-		return Response.ok().build();
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	public ResponseEntity<?> atualizarEstande(@PathVariable(value = "id", required = true) Long id,
+			@ModelAttribute AtualizarEstandeDto estande) {
+		try {
+			service.atualizarEstande(id, estande);
+			return ResponseEntity.ok("Atualizado com sucesso.");
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@DELETE

@@ -19,4 +19,7 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	
 	@Query(value = "select e from Estande e where e.feira.id = ?1")
 	List<Estande> pesquisarPortodosEstandesdaFeira(Long idFeira);
+	
+	
+	
 }
