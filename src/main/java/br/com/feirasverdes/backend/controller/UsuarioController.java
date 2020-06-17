@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,7 @@ public class UsuarioController {
 	private UsuarioService service;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
-	public ResponseEntity<?> salvarUsuario(@RequestBody Usuario usuario) throws ServiceException {
+	public ResponseEntity<?> salvarUsuario(@Valid @RequestBody Usuario usuario) throws ServiceException {
 		try {
 			service.salvarUsuario(usuario);
 			return ResponseEntity.ok("Cadastrado com sucesso.");
@@ -101,7 +102,6 @@ public class UsuarioController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "login")
 	public ResponseEntity<?> login(@RequestBody Usuario usuario) throws Exception {
-
 		try {
 			service.autenticar(usuario.getEmail(), usuario.getSenha());
 			final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(usuario.getEmail());

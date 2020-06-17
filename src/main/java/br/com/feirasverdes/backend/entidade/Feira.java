@@ -56,6 +56,9 @@ public class Feira implements Serializable {
 
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Noticia> noticias;
+	
+	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Avaliacao> avaliacoes;
 
 	public Feira() {
 		super();
@@ -131,20 +134,8 @@ public class Feira implements Serializable {
 		this.endereco = endereco;
 	}
 
-	public Usuario getOrganizador() {
-		return usuario;
-	}
-
-	public void setOrganizador(Usuario organizador) {
-		this.usuario = organizador;
-	}
-
 	public List<Estande> getEstande() {
 		return estandes;
-	}
-
-	public void setOrganizador(List<Estande> estandes) {
-		this.estandes = estandes;
 	}
 
 	public Imagem getImagem() {

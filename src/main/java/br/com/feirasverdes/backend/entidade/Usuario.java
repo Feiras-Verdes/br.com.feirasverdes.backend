@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -25,13 +27,16 @@ public class Usuario implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotNull(message = "Tipo de usuário não pode ser vazio")
 	@ManyToOne
 	@JoinColumn(name = "id_tipo_usuario", nullable = false)
 	private TipoUsuario tipoUsuario;
 
+	@NotBlank(message = "Senha não pode ser vazia")
 	@Column(nullable = false)
 	private String senha;
 
+	@NotBlank(message = "Nome não pode ser vazio")
 	@Column(nullable = false)
 	private String nome;
 
@@ -44,6 +49,7 @@ public class Usuario implements Serializable {
 	@Column(nullable = true)
 	private String telefone;
 
+	@NotBlank(message = "E-mail não pode ser vazio")
 	@Column(nullable = false, unique = true)
 	private String email;
 
@@ -74,6 +80,11 @@ public class Usuario implements Serializable {
 		this.dataNascimento = dataNascimento;
 		this.ativo = ativo;
 		this.imagem = imagem;
+	}
+	
+	public Usuario(Long id) {
+		super();
+		this.id = id;
 	}
 
 	public String getCnpj() {
