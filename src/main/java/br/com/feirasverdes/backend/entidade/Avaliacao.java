@@ -20,10 +20,7 @@ public class Avaliacao implements Serializable {
 	private Long id;
 
 	@Column(name = "nota", nullable = false, length = 200)
-	private String nota;
-
-	@Column(name = "comentario", nullable = false, length = 200)
-	private String comentario;
+	private Double nota;
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
@@ -41,11 +38,10 @@ public class Avaliacao implements Serializable {
 		super();
 	}
 
-	public Avaliacao(Long id, String nota, String comentario, Usuario usuario, Estande estande, Feira feira) {
+	public Avaliacao(Long id, Double nota, Usuario usuario, Estande estande, Feira feira) {
 		super();
 		this.id = id;
 		this.nota = nota;
-		this.comentario = comentario;
 		this.usuario = usuario;
 		this.estande = estande;
 		this.feira = feira;
@@ -59,20 +55,12 @@ public class Avaliacao implements Serializable {
 		this.id = id;
 	}
 
-	public String getNota() {
+	public Double getNota() {
 		return nota;
 	}
 
-	public void setNota(String nota) {
+	public void setNota(Double nota) {
 		this.nota = nota;
-	}
-
-	public String getComentario() {
-		return comentario;
-	}
-
-	public void setComentario(String comentario) {
-		this.comentario = comentario;
 	}
 
 	public Usuario getUsuario() {
