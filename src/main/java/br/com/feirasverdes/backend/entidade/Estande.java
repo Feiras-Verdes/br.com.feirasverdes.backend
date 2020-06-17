@@ -33,6 +33,12 @@ public class Estande implements Serializable {
 
 	@Column(name = "hora_fim", nullable = false, length = 200)
 	private String hora_fim;
+	
+	@Column(name = "telefone", nullable = false, length = 200)
+	private String telefone;
+	
+	@Column(name = "nome", nullable = false, length = 200)
+	private String nome;
 
 	@ManyToOne
 	@JoinColumn(name = "id_feira")
@@ -58,17 +64,22 @@ public class Estande implements Serializable {
 					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
 	private List<Produto> produtos;
 
-	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, Feira feira, Usuario usuario,
-			Endereco endereco, Imagem imagem) {
+	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone, String nome,
+			Feira feira, Usuario usuario, Endereco endereco, Imagem imagem, List<Noticia> noticias,
+			List<Produto> produtos) {
 		super();
 		this.id = id;
 		this.hora_inicio = hora_inicio;
 		this.frequencia = frequencia;
 		this.hora_fim = hora_fim;
+		this.telefone = telefone;
+		this.nome = nome;
 		this.feira = feira;
 		this.usuario = usuario;
 		this.endereco = endereco;
 		this.imagem = imagem;
+		this.noticias = noticias;
+		this.produtos = produtos;
 	}
 
 	public Long getId() {
@@ -103,6 +114,22 @@ public class Estande implements Serializable {
 		this.hora_fim = hora_fim;
 	}
 
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
 	public Feira getFeira() {
 		return feira;
 	}
@@ -111,12 +138,12 @@ public class Estande implements Serializable {
 		this.feira = feira;
 	}
 
-	public Usuario getFeirante() {
+	public Usuario getUsuario() {
 		return usuario;
 	}
 
-	public void setFeirante(Usuario feirante) {
-		this.usuario = feirante;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	public Endereco getEndereco() {
@@ -135,20 +162,20 @@ public class Estande implements Serializable {
 		this.imagem = imagem;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
 	public List<Noticia> getNoticias() {
-		return this.noticias;
+		return noticias;
 	}
 
 	public void setNoticias(List<Noticia> noticias) {
 		this.noticias = noticias;
+	}
+
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
 	}
 
 }
