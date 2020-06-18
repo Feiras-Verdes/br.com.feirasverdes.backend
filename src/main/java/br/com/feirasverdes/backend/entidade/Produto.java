@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -29,6 +30,9 @@ public class Produto implements Serializable {
 	@Column(name = "preco", nullable = false, length = 200)
 	private Float preco;
 
+	@OneToOne
+	private Imagem imagem;
+
 	@ManyToMany(mappedBy = "produtos", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<Estande> estandes;
 
@@ -36,12 +40,13 @@ public class Produto implements Serializable {
 		super();
 	}
 
-	public Produto(Long id, String nome, String descricao, Float preco, List<Estande> estandes) {
+	public Produto(Long id, String nome, String descricao, Float preco, Imagem imagem, List<Estande> estandes) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
+		this.imagem = imagem;
 		this.estandes = estandes;
 	}
 
@@ -77,11 +82,19 @@ public class Produto implements Serializable {
 		this.preco = preco;
 	}
 
-	public List<Estande> getFeirante() {
+	public Imagem getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
+	}
+
+	public List<Estande> getEstandes() {
 		return estandes;
 	}
 
-	public void setFeirante(List<Estande> estandes) {
+	public void setEstandes(List<Estande> estandes) {
 		this.estandes = estandes;
 	}
 
