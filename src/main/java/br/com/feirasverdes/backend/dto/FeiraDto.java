@@ -33,7 +33,6 @@ public class FeiraDto  implements Serializable {
 
 	public FeiraDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {

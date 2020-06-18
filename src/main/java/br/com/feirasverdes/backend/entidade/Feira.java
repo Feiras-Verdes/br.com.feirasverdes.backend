@@ -45,7 +45,7 @@ public class Feira implements Serializable {
 	private Endereco endereco;
 
 	@ManyToOne
-	@JoinColumn(name = "id_uusuario")
+	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.ALL, orphanRemoval = true)

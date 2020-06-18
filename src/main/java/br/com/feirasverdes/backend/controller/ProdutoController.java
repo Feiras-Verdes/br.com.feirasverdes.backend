@@ -1,5 +1,6 @@
 package br.com.feirasverdes.backend.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +23,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.ProdutoDao;
+import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
+import br.com.feirasverdes.backend.dto.AtualizarProdutoDto;
+import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Produto;
+import br.com.feirasverdes.backend.service.ProdutoService;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/produto")
 public class ProdutoController {
+
+	@Autowired
+	private ProdutoService service;
 
 	@Autowired
 	private ProdutoDao dao;
@@ -45,11 +54,14 @@ public class ProdutoController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarproduto(@PathVariable(value = "id", required = true) Long id,
-			@RequestBody Produto produto) {
-		produto.setId(id);
-		dao.save(produto);
-		return Response.ok().build();
+	public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id", required = true) Long id,
+			@ModelAttribute AtualizarProdutoDto produto) {
+		try {
+			service.atualizarProduto(id, produto);
+			return ResponseEntity.ok("Atualizado com sucesso.");
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
