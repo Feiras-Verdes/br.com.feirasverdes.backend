@@ -3,7 +3,6 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
+import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
+import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.service.FeiraService;
@@ -42,6 +43,9 @@ public class FeiraController {
 	
 	@Autowired
 	private NoticiaDao noticiadao;
+	
+	@Autowired
+	private EstandeDao estandedao;
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -87,7 +91,7 @@ public class FeiraController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/listarAvaliacaoUsuario/{idUsuario}")
-	public ResponseEntity<List> listarAvaliacaoUsuario(@PathParam("idUsuario") Long idUsuario) {
+	public ResponseEntity<List> listarAvaliacaoUsuario(@PathVariable("idUsuario") Long idUsuario) {
 		return ResponseEntity.ok(avaliacaodao.findByUsuarioId(idUsuario));
 	}
 	
@@ -103,10 +107,10 @@ public class FeiraController {
 		return new ResponseEntity<>(cadastro, HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-estandes-da-feira/{nome}")
-	public ResponseEntity<List> pesquisarPortodosEstandesdaFeira(@PathVariable(value = "nome") String nome) {
-		List<Feira> feiras = dao.pesquisarPorNome(nome);
-		return ResponseEntity.ok(feiras);
+	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/pesquisar-por-todas-estandes-da-feira/{nome}")
+	public ResponseEntity<List<Estande>> pesquisarPortodosEstandesdaFeira(@PathVariable(value = "idFeira") Long idFeira, @PathVariable(value = "nome") String nome) {
+		List<Estande> estandes = estandedao.pesquisarPorFeiraENome(idFeira, "%"+nome+"%");
+		return ResponseEntity.ok(estandes);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-melhores-feiras")
