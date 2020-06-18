@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -48,16 +50,19 @@ public class Feira implements Serializable {
 	@JoinColumn(name = "id_uusuario")
 	private Usuario usuario;
 
-	@OneToMany(mappedBy = "feira", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Estande> estandes;
 
 	@OneToOne
 	private Imagem imagem;
 
-	@OneToMany(mappedBy = "feira", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Noticia> noticias;
 	
-	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Avaliacao> avaliacoes;
 
 	public Feira() {
@@ -132,10 +137,6 @@ public class Feira implements Serializable {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-
-	public List<Estande> getEstande() {
-		return estandes;
 	}
 
 	public Imagem getImagem() {

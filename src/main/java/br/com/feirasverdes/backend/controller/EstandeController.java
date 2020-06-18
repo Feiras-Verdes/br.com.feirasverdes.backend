@@ -7,7 +7,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
@@ -86,7 +83,7 @@ public class EstandeController {
 	@Path("{nome}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pesquisarPorNome(@PathParam("nome") String nome) {
-		List<Estande> Estandes = dao.pesquisarPorNome(nome);
+		List<Estande> Estandes = dao.pesquisarPorNome("%" + nome +"%");
 		return Response.ok(Estandes).build();
 	}
 

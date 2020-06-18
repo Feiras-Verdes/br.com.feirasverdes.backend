@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,8 +18,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
 @Entity
 @Table(name = "estande")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Estande implements Serializable {
 
 	@Id
@@ -55,13 +61,15 @@ public class Estande implements Serializable {
 	@OneToOne
 	private Imagem imagem;
 
-	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Noticia> noticias;
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
 	@JoinTable(name = "vende", joinColumns = {
 			@JoinColumn(name = "id_produto", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
+	@JsonIgnore
 	private List<Produto> produtos;
 
 	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone, String nome,
@@ -80,6 +88,10 @@ public class Estande implements Serializable {
 		this.imagem = imagem;
 		this.noticias = noticias;
 		this.produtos = produtos;
+	}
+	
+	public Estande() {
+		super();
 	}
 
 	public Long getId() {
