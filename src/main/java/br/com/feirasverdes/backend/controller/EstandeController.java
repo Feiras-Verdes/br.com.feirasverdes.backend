@@ -26,11 +26,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
 import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Feira;
+import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.service.EstandeService;
 
 @RestController
@@ -40,6 +44,9 @@ public class EstandeController {
 	
 	@Autowired
 	EstandeService service;
+	
+	@Autowired
+	private AvaliacaoDao avaliacaoDao;
 	
 	@Autowired
 	private EstandeDao dao;
@@ -90,4 +97,32 @@ public class EstandeController {
 		Estande estandes = dao.getOne(id);
 		return Response.ok(estandes).build();
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoEstande")
+	public ResponseEntity<Avaliacao> salvarAvaliacaoEstande(@RequestBody Avaliacao avalicaoEstande) {
+		Avaliacao cadastro = new Avaliacao();
+		try {
+			cadastro = avaliacaoDao.save(avalicaoEstande);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(cadastro, HttpStatus.OK);
+	}
+	
+	// Verificar com a Jhully
+	
+//	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todos-produtos-da-feira/{nome}")
+//	public ResponseEntity<List> pesquisarPortodosProdutosdaFeira(@PathVariable(value = "nome") String nome) {
+//		List<Estande> estandes = dao.pesquisarPorNome(nome);
+//		return ResponseEntity.ok(estandes);
+//	}
+	
+	
+//	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-noticias-da-feira/{nome}")
+//	public ResponseEntity<List> pesquisarPortodasNoticiasdaFeira(@PathVariable(value = "nome") String nome) {
+//		List<Estande> estandes = dao.pesquisarPorNome(nome);
+//		return ResponseEntity.ok(estandes);
+//	}
+		
 }
