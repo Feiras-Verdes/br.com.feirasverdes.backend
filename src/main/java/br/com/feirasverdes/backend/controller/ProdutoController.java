@@ -64,7 +64,7 @@ public class ProdutoController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
 	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
@@ -77,7 +77,7 @@ public class ProdutoController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Produto> produto = dao.pesquisarPorNome(nome);
+		List<Produto> produto = dao.pesquisarPorNome("%" + nome + "%");
 		return ResponseEntity.ok(produto);
 	}
 

@@ -26,7 +26,7 @@ public class AvaliacaoController {
 	private AvaliacaoDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Avaliacao> salvarNoticia(@RequestBody Avaliacao avaliacao) {
+	public ResponseEntity<Avaliacao> salvarAvaliacao(@RequestBody Avaliacao avaliacao) {
 		Avaliacao avaliacaoSalvo = new Avaliacao();
 		try {
 			avaliacaoSalvo = dao.save(avaliacao);
