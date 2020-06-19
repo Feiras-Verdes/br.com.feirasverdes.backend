@@ -12,9 +12,8 @@ import br.com.feirasverdes.backend.entidade.Produto;
 
 @Repository
 public interface ProdutoDao extends JpaRepository<Produto, Long> {
-	@Transactional
-	@Modifying
-	@Query(value = "select * from produto u where nome like '%?1%'", nativeQuery = true)
+	
+	@Query(value = "select u from Produto u where nome like %?1%")
 	List<Produto> pesquisarPorNome(String nome);
 
 }

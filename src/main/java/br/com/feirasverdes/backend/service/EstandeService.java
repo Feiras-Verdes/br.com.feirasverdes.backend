@@ -50,7 +50,6 @@ public class EstandeService {
 		estande.setFrequencia(estandeAtualizado.getFrequencia());
 		estande.setHora_fim(estandeAtualizado.getHora_fim());
 		estande.setNome(estandeAtualizado.getNome());
-		estande.setTelefone(estandeAtualizado.getTelefone());
 		dao.save(estande);
 	}
 	

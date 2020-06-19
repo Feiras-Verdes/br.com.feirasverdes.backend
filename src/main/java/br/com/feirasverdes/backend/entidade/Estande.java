@@ -190,4 +190,12 @@ public class Estande implements Serializable {
 		this.produtos = produtos;
 	}
 
+	@Override
+	public String toString() {
+		return "Estande [id=" + id + ", hora_inicio=" + hora_inicio + ", frequencia=" + frequencia + ", hora_fim="
+				+ hora_fim + ", telefone=" + telefone + ", nome=" + nome + ", feira=" + feira + ", usuario=" + usuario
+				+ ", endereco=" + endereco + ", imagem=" + imagem + ", noticias=" + noticias + ", produtos=" + produtos
+				+ "]";
+	}
+
 }

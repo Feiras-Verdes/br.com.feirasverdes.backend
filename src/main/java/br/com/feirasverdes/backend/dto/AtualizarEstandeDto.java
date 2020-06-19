@@ -94,4 +94,12 @@ public class AtualizarEstandeDto implements Serializable {
 		this.imagem = imagem;
 	}
 
+	@Override
+	public String toString() {
+		return "AtualizarEstandeDto [id=" + id + ", hora_inicio=" + hora_inicio + ", frequencia=" + frequencia
+				+ ", hora_fim=" + hora_fim + ", telefone=" + telefone + ", nome=" + nome + ", imagem=" + imagem + "]";
+	}
+	
+	
+
 }
