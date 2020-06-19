@@ -53,5 +53,5 @@ public class EstandeService {
 		estande.setTelefone(estandeAtualizado.getTelefone());
 		dao.save(estande);
 	}
-
+	
 }
