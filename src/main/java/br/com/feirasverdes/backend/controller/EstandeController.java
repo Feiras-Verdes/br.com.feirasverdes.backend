@@ -48,16 +48,9 @@ public class EstandeController {
 	
 	@Autowired
 	private EstandeDao dao;
-
-//	@POST
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public Response salvarEstande(Estande estande) {
-//		dao.save(estande);
-//		return Response.status(Status.CREATED).entity(estande).build();
-//	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Estande> salvarFeira(@RequestBody Estande estande) {
+	public ResponseEntity<Estande> salvarEstande(@RequestBody Estande estande) {
 		Estande estandeSalva = new Estande();
 		try {
 			estandeSalva = dao.save(estande);
@@ -72,6 +65,8 @@ public class EstandeController {
 	public ResponseEntity<?> atualizarEstande(@PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarEstandeDto estande) {
 		try {
+
+			System.out.println(estande.toString());
 			service.atualizarEstande(id, estande);
 			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {
@@ -79,48 +74,43 @@ public class EstandeController {
 		}
 	}
 
-	@DELETE
-	@Path("{id}")
-	public Response excluir(@PathParam("id") long id) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
+	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarTodos() {
-		return Response.ok(dao.findAll()).build();
+	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	public ResponseEntity<List> listarTodos() {
+		return ResponseEntity.ok(dao.findAll());
 	}
 
-	@GET
-	@Path("{nome}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisarPorNome(@PathParam("nome") String nome) {
-		List<Estande> Estandes = dao.pesquisarPorNome("%" + nome +"%");
-		return Response.ok(Estandes).build();
-	}
 
-	@GET
-	@Path("{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisarPorId(@PathParam("id") long id) {
-		Estande estandes = dao.getOne(id);
-		return Response.ok(estandes).build();
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
+	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
+		List<Estande> estandes = dao.pesquisarPorNome("%" + nome + "%" );
+		return ResponseEntity.ok(estandes);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoEstande")
-	public ResponseEntity<Avaliacao> salvarAvaliacaoEstande(@RequestBody Avaliacao avalicaoEstande) {
-		Avaliacao cadastro = new Avaliacao();
-		try {
-			cadastro = avaliacaoDao.save(avalicaoEstande);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<>(cadastro, HttpStatus.OK);
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
+		Estande estande = dao.getOne(id);
+		return ResponseEntity.ok(estande);
 	}
 	
-	// Verificar com a Jhully
+	// Métodos que prentencem em outros controllers
+	
+//	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoEstande")
+//	public ResponseEntity<Avaliacao> salvarAvaliacaoEstande(@RequestBody Avaliacao avalicaoEstande) {
+//		Avaliacao cadastro = new Avaliacao();
+//		try {
+//			cadastro = avaliacaoDao.save(avalicaoEstande);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//		return new ResponseEntity<>(cadastro, HttpStatus.OK);
+//	}
 	
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todos-produtos-da-feira/{nome}")
 //	public ResponseEntity<List> pesquisarPortodosProdutosdaFeira(@PathVariable(value = "nome") String nome) {
@@ -130,7 +120,7 @@ public class EstandeController {
 	
 	
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-noticias-da-feira/{nome}")
-//	public ResponseEntity<List> pesquisarPortodasNoticiasdaFeira(@PathVariable(value = "nome") String nome) {
+//	public ResponseEntity<List> pesquisarPortodasNoticiasdaEstande(@PathVariable(value = "nome") String nome) {
 //		List<Estande> estandes = dao.pesquisarPorNome(nome);
 //		return ResponseEntity.ok(estandes);
 //	}
