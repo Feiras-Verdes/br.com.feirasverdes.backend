@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
+import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
@@ -62,16 +63,10 @@ public class EstandeController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public ResponseEntity<?> atualizarEstande(@PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarEstandeDto estande) {
-		try {
-
-			System.out.println(estande.toString());
-			service.atualizarEstande(id, estande);
-			return ResponseEntity.ok("Atualizado com sucesso.");
-		} catch (IOException e) {
-			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
-		}
+	public Response atualizarEstande(@PathVariable(value = "id", required = true) Long id, @RequestBody AtualizarEstandeDto estandeAtualizado) throws IOException {
+		estandeAtualizado.setId(id);
+		service.atualizarEstande(estandeAtualizado);
+		return Response.ok().build();
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
 import br.com.feirasverdes.backend.dto.AtualizarProdutoDto;
+import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.service.ProdutoService;
@@ -54,14 +55,10 @@ public class ProdutoController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarProdutoDto produto) {
-		try {
-			service.atualizarProduto(id, produto);
-			return ResponseEntity.ok("Atualizado com sucesso.");
-		} catch (IOException e) {
-			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
-		}
+	public Response atualizarProduto(@PathVariable(value = "id", required = true) Long id, @RequestBody AtualizarProdutoDto atualizarProdutoDto) throws IOException {
+		atualizarProdutoDto.setId(id);
+		service.atualizarProduto(atualizarProdutoDto);
+		return Response.ok().build();
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")

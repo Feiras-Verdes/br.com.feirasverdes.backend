@@ -36,23 +36,23 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoDao dao;
 
-	public void atualizarProduto(final Long id, AtualizarProdutoDto produtoAtualizado) throws IOException{
-		
-		Produto produto = dao.getOne(id);
-		
+	public Produto atualizarProduto(AtualizarProdutoDto produtoAtualizado) throws IOException {
+
+		Produto produto = dao.getOne(produtoAtualizado.getId());
+
 		if (produtoAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
 			MultipartFile foto = produtoAtualizado.getImagem();
 			imagem.setNome(foto.getOriginalFilename());
 			imagem.setTipo(foto.getContentType());
 			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
-			
+
 			produto.setImagem(imagem);
 		}
 		produto.setNome(produtoAtualizado.getNome());
 		produto.setDescricao(produtoAtualizado.getDescricao());
 		produto.setPreco(produtoAtualizado.getPreco());
-		dao.save(produto);
+		return dao.save(produto);
 	}
 
 }

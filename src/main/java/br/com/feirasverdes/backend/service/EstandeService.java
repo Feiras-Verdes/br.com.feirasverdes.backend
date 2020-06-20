@@ -33,9 +33,9 @@ public class EstandeService {
 	@Autowired
 	private EstandeDao dao;
 
-	public void atualizarEstande(final Long id, AtualizarEstandeDto estandeAtualizado) throws IOException{
+	public Estande atualizarEstande(AtualizarEstandeDto estandeAtualizado) throws IOException{
 		
-		Estande estande = dao.getOne(id);
+		Estande estande = dao.getOne(estandeAtualizado.getId());
 		
 		if (estandeAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
@@ -50,7 +50,7 @@ public class EstandeService {
 		estande.setFrequencia(estandeAtualizado.getFrequencia());
 		estande.setHora_fim(estandeAtualizado.getHora_fim());
 		estande.setNome(estandeAtualizado.getNome());
-		dao.save(estande);
+		return dao.save(estande);
 	}
 	
 }
