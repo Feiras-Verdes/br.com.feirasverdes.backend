@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class NoticiaController {
 	private NoticiaDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Noticia> salvarNoticia(@RequestBody Noticia noticia) {
+	public ResponseEntity<Noticia> salvarNoticia(@Valid @RequestBody Noticia noticia) {
 		Noticia noticiaSalvo = new Noticia();
 		try {
 			noticiaSalvo = dao.save(noticia);
@@ -49,7 +50,7 @@ public class NoticiaController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public ResponseEntity<?> atualizarNoticia(@PathVariable(value = "id", required = true) Long id,
+	public ResponseEntity<?> atualizarNoticia(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarNoticiaDto noticia) {
 		try {
 			service.atualizarNoticia(id, noticia);
