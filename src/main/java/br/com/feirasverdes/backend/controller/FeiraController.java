@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class FeiraController {
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Feira> salvarFeira(@RequestBody Feira feira) {
+	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody Feira feira) {
 		Feira feiraSalva = new Feira();
 		try {
 			feiraSalva = dao.save(feira);
@@ -61,7 +62,7 @@ public class FeiraController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarFeira(@PathVariable(value = "id", required = true) Long id, @RequestBody FeiraDto feira) throws IOException {
+	public Response atualizarFeira(@Valid @PathVariable(value = "id", required = true) Long id, @RequestBody FeiraDto feira) throws IOException {
 		feira.setId(id);
 		service.atualizarFeira(feira);
 		return Response.ok().build();
@@ -79,7 +80,7 @@ public class FeiraController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
+	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome", required = true) String nome) {
 		List<Feira> feiras = dao.pesquisarPorNome("%" + nome + "%" );
 		return ResponseEntity.ok(feiras);
 	}

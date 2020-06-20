@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,7 +31,8 @@ public class Feira implements Serializable {
 
 	@Column(name = "hora_inicio", nullable = false, length = 200)
 	private String hora_inicio;
-
+	
+	@NotNull(message = "Nome de feira não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
 
@@ -40,9 +42,11 @@ public class Feira implements Serializable {
 	@Column(name = "hora_fim", nullable = false, length = 200)
 	private String hora_fim;
 
+	
 	@Column(name = "telefone", nullable = false, length = 200)
 	private String telefone;
-
+	
+	@NotNull(message = "Endereço de feira não pode ser vazio")
 	@OneToOne
 	private Endereco endereco;
 
