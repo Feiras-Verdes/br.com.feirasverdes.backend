@@ -1,7 +1,10 @@
 package br.com.feirasverdes.backend.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -16,9 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
+import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dto.EstabelecimentoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.exception.AutenticacaoException;
 
 @RestController
@@ -29,6 +35,9 @@ public class BuscaController {
 	@Autowired
 	private EstandeDao estanteDao;
 
+	@Autowired
+	private FeiraDao feiraDao;
+
 	@GetMapping("/estabelecimentos")
 	@ResponseBody
 	public ResponseEntity<?> buscaEstabelecimento(@RequestParam(required = false) String nome,
@@ -36,9 +45,15 @@ public class BuscaController {
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
-			Page<Estande> estande = verificarOrdenacao(nome, limite, pagina, ordenacao, tipoOrdenacao);
-
-			return ResponseEntity.ok(estande);
+			
+			final Page<Estande> estande = verificarOrdenacaoEstande(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			final Page<Feira> feira = verificarOrdenacaoFeira(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			
+			final Page<EstabelecimentoDto> feiras = new PageImpl(feira.getContent(), feira.getPageable(), feira.getTotalElements());
+			final Page<EstabelecimentoDto> estandes = new PageImpl(estande.getContent(), estande.getPageable(), estande.getTotalElements());	
+			Page<EstabelecimentoDto> estabelecimento = feiras;
+			
+			return ResponseEntity.ok(estabelecimento);
 
 		} catch (final BadCredentialsException | DisabledException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
@@ -47,7 +62,7 @@ public class BuscaController {
 		}
 	}
 
-	public Page<Estande> verificarOrdenacao(String nome, Integer limite, Integer pagina, String ordenacao,
+	public Page<Estande> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina, String ordenacao,
 			String tipoOrdenacao) {
 		Page<Estande> estande = null;
 		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
@@ -61,6 +76,22 @@ public class BuscaController {
 			}
 		}
 		return estande;
+	}
+
+	public Page<Feira> verificarOrdenacaoFeira(String nome, Integer limite, Integer pagina, String ordenacao,
+			String tipoOrdenacao) {
+		Page<Feira> feira = null;
+		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
+			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+				feira = feiraDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
+						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+			}
+			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+				feira = feiraDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
+						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
+			}
+		}
+		return feira;
 	}
 
 }

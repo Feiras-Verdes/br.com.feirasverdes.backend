@@ -5,35 +5,29 @@ import br.com.feirasverdes.backend.entidade.Imagem;
 
 public class EstabelecimentoDto {
 	
-	private Imagem imagem;
-	
+	private Long id;
 	private String nome;
-	
-	private double mediaAvaliacao;
-	
-	private Endereco endereco;
-	
-	private String contato;
+	private String telefone;
+	private Imagem imagem;
 
 	public EstabelecimentoDto() {
 		super();
 	}
 
-	public EstabelecimentoDto(Imagem imagem, String nome, double mediaAvaliacao, Endereco endereco, String contato) {
+	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem) {
 		super();
-		this.imagem = imagem;
+		this.id = id;
 		this.nome = nome;
-		this.mediaAvaliacao = mediaAvaliacao;
-		this.endereco = endereco;
-		this.contato = contato;
-	}
-
-	public Imagem getImagem() {
-		return imagem;
-	}
-
-	public void setImagem(Imagem imagem) {
+		this.telefone = telefone;
 		this.imagem = imagem;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -44,28 +38,22 @@ public class EstabelecimentoDto {
 		this.nome = nome;
 	}
 
-	public double getMediaAvaliacao() {
-		return mediaAvaliacao;
+	public String getTelefone() {
+		return telefone;
 	}
 
-	public void setMediaAvaliacao(double mediaAvaliacao) {
-		this.mediaAvaliacao = mediaAvaliacao;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
-	public Endereco getEndereco() {
-		return endereco;
+	public Imagem getImagem() {
+		return imagem;
 	}
 
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
+	public void setImagem(Imagem imagem) {
+		this.imagem = imagem;
 	}
 
-	public String getContato() {
-		return contato;
-	}
 
-	public void setContato(String contato) {
-		this.contato = contato;
-	}
 		
 }
