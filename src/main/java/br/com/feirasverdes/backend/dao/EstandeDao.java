@@ -19,7 +19,7 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	@Query(value = "select e from Estande e where e.nome like ?1")
 	List<Estande> pesquisarPorNome(String nome);
 	
-	@Query(value = "select e from Estande e where e.feira.id = ?1 and e.nome like ?2")
+	@Query(value = "select e from Estande e where e.feira.id = ?1 and upper(e.nome) like ?2")
 	List<Estande> pesquisarPorFeiraENome(Long idFeira, String nome);
 	
 	@Query(value = "select e from Estande e where e.feira.id = ?1")

@@ -175,4 +175,12 @@ public class Feira implements Serializable {
 		this.noticias = noticias;
 	}
 
+	public List<Avaliacao> getAvaliacoes() {
+		return avaliacoes;
+	}
+
+	public void setAvaliacoes(List<Avaliacao> avaliacoes) {
+		this.avaliacoes = avaliacoes;
+	}
+
 }
