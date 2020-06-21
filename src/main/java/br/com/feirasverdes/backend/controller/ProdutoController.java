@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,7 +42,7 @@ public class ProdutoController {
 	private ProdutoDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Produto> salvarProduto(@RequestBody Produto produto) {
+	public ResponseEntity<Produto> salvarProduto(@Valid @RequestBody Produto produto) {
 		Produto produtoSalvo = new Produto();
 		try {
 			produtoSalvo = dao.save(produto);
@@ -54,7 +55,7 @@ public class ProdutoController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id", required = true) Long id,
+	public ResponseEntity<?> atualizarProduto(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarProdutoDto produto) {
 		try {
 			service.atualizarProduto(id, produto);

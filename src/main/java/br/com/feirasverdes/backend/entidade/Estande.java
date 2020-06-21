@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -43,6 +44,7 @@ public class Estande implements Serializable {
 	@Column(name = "telefone", nullable = false, length = 200)
 	private String telefone;
 	
+	@NotNull(message = "Nome do estande não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
 

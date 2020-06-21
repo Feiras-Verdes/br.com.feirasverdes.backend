@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "noticia")
@@ -19,10 +20,11 @@ public class Noticia implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	@NotNull(message = "Titulo de noticia não pode ser vazio")
 	@Column(name = "titulo", nullable = false, length = 200)
 	private String titulo;
-
+	
+	@NotNull(message = "Descrição de noticia não pode ser vazio")
 	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
 
