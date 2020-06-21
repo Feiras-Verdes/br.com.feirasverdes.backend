@@ -2,6 +2,8 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -35,7 +37,7 @@ public class FeiranteController {
 	@GET
 	@Path("{nome}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response pesquisarPorNome(@PathParam("nome") String nome) {
+	public Response pesquisarPorNome(@PathParam(value = "nome") String nome) {
 		List<Usuario> usuarios = dao.pesquisarPorNome(nome);
 		return Response.ok(usuarios).build();
 	}
