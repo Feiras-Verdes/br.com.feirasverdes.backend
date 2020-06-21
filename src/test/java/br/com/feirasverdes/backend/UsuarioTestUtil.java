@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
+import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
 
 @Component
