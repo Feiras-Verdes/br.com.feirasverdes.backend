@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.NoticiaDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarNoticiaDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.NoticiaDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.service.NoticiaService;
@@ -51,7 +51,7 @@ public class NoticiaController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarNoticia(@Valid @PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarNoticiaDto noticia) {
+			@ModelAttribute NoticiaDto noticia) {
 		try {
 			service.atualizarNoticia(id, noticia);
 			return ResponseEntity.ok("Atualizado com sucesso.");

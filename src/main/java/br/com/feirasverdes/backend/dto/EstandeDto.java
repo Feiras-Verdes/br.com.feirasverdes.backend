@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class AtualizarEstandeDto implements Serializable {
+public class EstandeDto implements Serializable {
 	
 	private Long id;
 
@@ -21,12 +21,12 @@ public class AtualizarEstandeDto implements Serializable {
 
 	private MultipartFile imagem;
 
-	public AtualizarEstandeDto() {
+	public EstandeDto() {
 		super();
 		
 	}
 
-	public AtualizarEstandeDto(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
+	public EstandeDto(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
 			String nome, MultipartFile imagem) {
 		super();
 		this.id = id;

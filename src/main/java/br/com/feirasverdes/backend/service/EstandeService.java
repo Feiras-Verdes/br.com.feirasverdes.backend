@@ -16,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -33,7 +33,7 @@ public class EstandeService {
 	@Autowired
 	private EstandeDao dao;
 
-	public void atualizarEstande(final Long id, AtualizarEstandeDto estandeAtualizado) throws IOException{
+	public void atualizarEstande(final Long id, EstandeDto estandeAtualizado) throws IOException{
 		
 		Estande estande = dao.getOne(id);
 		

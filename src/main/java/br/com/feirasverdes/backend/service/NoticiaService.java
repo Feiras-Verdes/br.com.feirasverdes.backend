@@ -17,9 +17,9 @@ import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarNoticiaDto;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.NoticiaDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -36,7 +36,7 @@ public class NoticiaService {
 	@Autowired
 	private NoticiaDao dao;
 
-	public void atualizarNoticia(final Long id, AtualizarNoticiaDto noticiaAtualizada) throws IOException {
+	public void atualizarNoticia(final Long id, NoticiaDto noticiaAtualizada) throws IOException {
 
 		Noticia noticia = dao.getOne(id);
 

@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class AtualizarUsuarioDto implements Serializable {
+public class UsuarioDto implements Serializable {
 
 	private String nome;
 
@@ -23,11 +23,11 @@ public class AtualizarUsuarioDto implements Serializable {
 
 	private MultipartFile imagem;
 
-	public AtualizarUsuarioDto() {
+	public UsuarioDto() {
 		super();
 	}
 
-	public AtualizarUsuarioDto(String nome, String cpf, String cnpj, String telefone, String email, Date dataNascimento,
+	public UsuarioDto(String nome, String cpf, String cnpj, String telefone, String email, Date dataNascimento,
 			boolean ativo, MultipartFile imagem) {
 		super();
 		this.nome = nome;

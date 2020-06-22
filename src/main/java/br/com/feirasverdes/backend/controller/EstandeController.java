@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.service.EstandeService;
@@ -52,7 +52,7 @@ public class EstandeController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarEstandeDto estande) {
+			@ModelAttribute EstandeDto estande) {
 		try {
 
 			System.out.println(estande.toString());
