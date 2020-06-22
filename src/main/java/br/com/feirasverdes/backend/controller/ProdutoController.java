@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.ProdutoDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarProdutoDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.ProdutoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.service.ProdutoService;
@@ -56,7 +56,7 @@ public class ProdutoController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarProduto(@Valid @PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarProdutoDto produto) {
+			@ModelAttribute ProdutoDto produto) {
 		try {
 			service.atualizarProduto(id, produto);
 			return ResponseEntity.ok("Atualizado com sucesso.");

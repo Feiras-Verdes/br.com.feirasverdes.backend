@@ -2,21 +2,28 @@ package br.com.feirasverdes.backend.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class AtualizarNoticiaDto {
+public class ProdutoDto {
 
 	private Long id;
 
-	private String titulo;
+	private String nome;
 
 	private String descricao;
 
-	private MultipartFile imagem;
+	private Float preco;
 
-	public AtualizarNoticiaDto(Long id, String titulo, String descricao, MultipartFile imagem) {
+	private MultipartFile imagem;
+	
+	public ProdutoDto() {
+		super();
+	}
+
+	public ProdutoDto(Long id, String nome, String descricao, Float preco, MultipartFile imagem) {
 		super();
 		this.id = id;
-		this.titulo = titulo;
+		this.nome = nome;
 		this.descricao = descricao;
+		this.preco = preco;
 		this.imagem = imagem;
 	}
 
@@ -28,12 +35,12 @@ public class AtualizarNoticiaDto {
 		this.id = id;
 	}
 
-	public String getTitulo() {
-		return titulo;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public String getDescricao() {
@@ -42,6 +49,14 @@ public class AtualizarNoticiaDto {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public Float getPreco() {
+		return preco;
+	}
+
+	public void setPreco(Float preco) {
+		this.preco = preco;
 	}
 
 	public MultipartFile getImagem() {

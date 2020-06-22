@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.config.JwtTokenUtil;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -64,7 +64,7 @@ public class UsuarioController {
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarUsuarioDto usuario) {
+			@ModelAttribute UsuarioDto usuario) {
 		try {
 			service.atualizarUsuario(id, usuario);
 			return ResponseEntity.ok("Atualizado com sucesso.");

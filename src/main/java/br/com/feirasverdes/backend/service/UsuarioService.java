@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
@@ -55,7 +55,7 @@ public class UsuarioService {
 		dao.save(usuario);
 	}
 
-	public void atualizarUsuario(final Long id, final AtualizarUsuarioDto usuarioAtualizado) throws IOException {
+	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
 		Usuario usuario = dao.getOne(id);
 		if (usuarioAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
