@@ -8,7 +8,6 @@ import java.util.zip.DataFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,9 +75,11 @@ public class UsuarioService {
 	}
 
 	public void excluirUsuario(final Long id) {
-		Usuario usuario = dao.getOne(id);
-		usuario.setAtivo(false);
-		dao.save(usuario);
+		Optional<Usuario> usuario = dao.pesquisarPorId(id);
+		if (usuario.isPresent()) {
+			usuario.get().setAtivo(false);
+			dao.save(usuario.get());
+		}
 	}
 
 	public List<?> listarTodos() {
@@ -93,23 +94,23 @@ public class UsuarioService {
 		return dao.pesquisarPorNome(nome);
 	}
 
-	public Optional pesquisarPorId(Long id) {
+	public Optional<?> pesquisarPorId(Long id) {
 		return dao.pesquisarPorId(id);
 	}
 
-	public DetalhesDoUsuarioDto getDetalhes() throws IOException, DataFormatException {
-		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		final Usuario usuario = dao.pesquisarPorEmail(email);
+	public DetalhesDoUsuarioDto getDetalhes(Long idUsuario) throws IOException, DataFormatException {
+		final Optional<Usuario> usuario = dao.pesquisarPorId(idUsuario);
 
-		if (usuario != null) {
-			if (usuario.getImagem() != null) {
-				usuario.getImagem().setBytesImagem(ImagemUtils.decompressBytes(usuario.getImagem().getBytesImagem()));
+		if (usuario.isPresent()) {
+			if (usuario.get().getImagem() != null) {
+				usuario.get().getImagem()
+						.setBytesImagem(ImagemUtils.decompressBytes(usuario.get().getImagem().getBytesImagem()));
 			}
-			return DetalhesDoUsuarioDto.builder().withNome(usuario.getNome()).withEmail(usuario.getEmail())
-					.withCpf(usuario.getCpf()).withCnpj(usuario.getCnpj())
-					.withDataNascimento(usuario.getDataNascimento()).withTelefone(usuario.getTelefone())
-					.withTipoUsuario(usuario.getTipoUsuario()).withImagem(usuario.getImagem()).withId(usuario.getId())
-					.build();
+			return DetalhesDoUsuarioDto.builder().withNome(usuario.get().getNome()).withEmail(usuario.get().getEmail())
+					.withCpf(usuario.get().getCpf()).withCnpj(usuario.get().getCnpj())
+					.withDataNascimento(usuario.get().getDataNascimento()).withTelefone(usuario.get().getTelefone())
+					.withTipoUsuario(usuario.get().getTipoUsuario()).withImagem(usuario.get().getImagem())
+					.withId(usuario.get().getId()).build();
 		} else {
 			return null;
 		}

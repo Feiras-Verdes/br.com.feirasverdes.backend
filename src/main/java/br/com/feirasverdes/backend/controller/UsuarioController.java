@@ -1,7 +1,6 @@
 package br.com.feirasverdes.backend.controller;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 import javax.annotation.security.RolesAllowed;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.config.JwtTokenUtil;
+import br.com.feirasverdes.backend.config.UserContext;
 import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
@@ -86,17 +85,17 @@ public class UsuarioController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
-	public ResponseEntity<List> listarTodos() {
+	public ResponseEntity<?> listarTodos() {
 		return ResponseEntity.ok(service.listarTodos());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
+	public ResponseEntity<?> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
 		return ResponseEntity.ok(service.pesquisarPorNome(nome));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
-	public ResponseEntity<Usuario> pesquisarPorId(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<?> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		return ResponseEntity.of(service.pesquisarPorId(id));
 	}
 
@@ -104,9 +103,9 @@ public class UsuarioController {
 	public ResponseEntity<?> login(@RequestBody Usuario usuario) throws Exception {
 		try {
 			service.autenticar(usuario.getEmail(), usuario.getSenha());
-			final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(usuario.getEmail());
+			final UserContext userDetails = (UserContext) jwtUserDetailsService.loadUserByUsername(usuario.getEmail());
 			final String token = jwtTokenUtil.generateToken(userDetails);
-			return ResponseEntity.ok(new RespostaJwt(token));
+			return ResponseEntity.ok(new RespostaJwt(token, userDetails.getidUsuario()));
 		} catch (final BadCredentialsException | DisabledException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
 		} catch (final Exception e) {
@@ -114,10 +113,10 @@ public class UsuarioController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
-	public ResponseEntity<?> getDetalhes() throws Exception {
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/detalhes")
+	public ResponseEntity<?> getDetalhes(@PathVariable(value = "id") Long id) throws Exception {
 		try {
-			return ResponseEntity.ok(service.getDetalhes());
+			return ResponseEntity.ok(service.getDetalhes(id));
 		} catch (final IOException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
 		} catch (final DataFormatException e) {
