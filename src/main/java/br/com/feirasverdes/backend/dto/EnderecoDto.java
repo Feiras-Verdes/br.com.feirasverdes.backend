@@ -1,55 +1,37 @@
-package br.com.feirasverdes.backend.entidade;
+package br.com.feirasverdes.backend.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "endereco")
-public class Endereco implements Serializable{
+public class EnderecoDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="rua", nullable = false, length = 120)
+	@NotBlank
 	private String rua;
 	
-	@Column(name="numero",nullable = false)
+	@NotNull
 	private Integer numero;
 	
-	@Column(name="bairro", length = 100)
 	private String bairro;
 	
-	@Column(name="cidade", nullable = false, length = 100)
+	@NotBlank
 	private String cidade;
 	
-	@Column(name="cep",nullable = false, length = 45)
+	@NotBlank
 	private String cep;
 	
-	@Column(name="complemento", length = 100)
 	private String complemento;
 	
-	@Column(name="estado", nullable = false, length = 2)
+	@NotBlank
 	private String estado;
 	
-	public Endereco() {
+	public EnderecoDto() {
 		super();
-	}
-
-	public Endereco(Long id, String rua, int numero, String bairro, String cidade, String cep, String complemento,
-			String estado) {
-		super();
-		this.id = id;
-		this.rua = rua;
-		this.numero = numero;
-		this.bairro = bairro;
-		this.cidade = cidade;
-		this.cep = cep;
-		this.complemento = complemento;
-		this.estado = estado;
 	}
 
 	public Long getId() {

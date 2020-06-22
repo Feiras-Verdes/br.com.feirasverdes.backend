@@ -57,10 +57,6 @@ public class Estande implements Serializable {
 	private Usuario usuario;
 
 	@OneToOne
-	@JoinColumn(name = "id_endereco")
-	private Endereco endereco;
-
-	@OneToOne
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -86,7 +82,6 @@ public class Estande implements Serializable {
 		this.nome = nome;
 		this.feira = feira;
 		this.usuario = usuario;
-		this.endereco = endereco;
 		this.imagem = imagem;
 		this.noticias = noticias;
 		this.produtos = produtos;
@@ -160,14 +155,6 @@ public class Estande implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Endereco getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
-	}
-
 	public Imagem getImagem() {
 		return imagem;
 	}
@@ -196,7 +183,7 @@ public class Estande implements Serializable {
 	public String toString() {
 		return "Estande [id=" + id + ", hora_inicio=" + hora_inicio + ", frequencia=" + frequencia + ", hora_fim="
 				+ hora_fim + ", telefone=" + telefone + ", nome=" + nome + ", feira=" + feira + ", usuario=" + usuario
-				+ ", endereco=" + endereco + ", imagem=" + imagem + ", noticias=" + noticias + ", produtos=" + produtos
+				+ ", imagem=" + imagem + ", noticias=" + noticias + ", produtos=" + produtos
 				+ "]";
 	}
 

@@ -2,34 +2,41 @@ package br.com.feirasverdes.backend.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import br.com.feirasverdes.backend.entidade.Endereco;
-
 @JsonInclude(Include.NON_NULL)
-public class FeiraDto  implements Serializable {
+public class FeiraDto implements Serializable {
 
 	private Long id;
 
+	@NotBlank
 	private String hora_inicio;
 
+	@NotBlank
 	private String nome;
 
+	@NotBlank
 	private String frequencia;
 
+	@NotBlank
 	private String hora_fim;
 
+	@NotBlank
 	private String telefone;
 
-	private Endereco endereco;
+	@NotNull
+	private EnderecoDto endereco;
 
+	@NotNull
 	private Long idUsuario;
 
 	private MultipartFile imagem;
-
 
 	public FeiraDto() {
 		super();
@@ -83,15 +90,13 @@ public class FeiraDto  implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public Endereco getEndereco() {
+	public EnderecoDto getEndereco() {
 		return endereco;
 	}
 
-	public void setEndereco(Endereco endereco) {
+	public void setEndereco(EnderecoDto endereco) {
 		this.endereco = endereco;
 	}
-
-	
 
 	public MultipartFile getImagem() {
 		return imagem;
@@ -108,8 +113,5 @@ public class FeiraDto  implements Serializable {
 	public void setIdUsuario(Long idUsuario) {
 		this.idUsuario = idUsuario;
 	}
-
-	
-	
 
 }

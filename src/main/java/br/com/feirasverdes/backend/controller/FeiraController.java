@@ -50,15 +50,14 @@ public class FeiraController {
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody Feira feira) {
-		Feira feiraSalva = new Feira();
+	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody FeiraDto feira) {
 		try {
-			feiraSalva = dao.save(feira);
+			return new ResponseEntity<>(service.cadastrarFeira(feira), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(feiraSalva, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(feiraSalva, HttpStatus.OK);
+		
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
@@ -81,7 +80,7 @@ public class FeiraController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome", required = true) String nome) {
-		List<Feira> feiras = dao.pesquisarPorNome("%" + nome + "%" );
+		List<Feira> feiras = dao.pesquisarPorNome("%" + nome.toUpperCase() + "%" );
 		return ResponseEntity.ok(feiras);
 	}
 
@@ -110,7 +109,7 @@ public class FeiraController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/pesquisar-por-todas-estandes-da-feira/{nome}")
 	public ResponseEntity<List<Estande>> pesquisarPortodosEstandesdaFeira(@PathVariable(value = "idFeira") Long idFeira, @PathVariable(value = "nome") String nome) {
-		List<Estande> estandes = estandedao.pesquisarPorFeiraENome(idFeira, "%"+nome+"%");
+		List<Estande> estandes = estandedao.pesquisarPorFeiraENome(idFeira, "%"+nome.toUpperCase()+"%");
 		return ResponseEntity.ok(estandes);
 	}
 	
