@@ -2,6 +2,7 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class AvaliacaoController {
 	private AvaliacaoDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Avaliacao> salvarAvaliacao(@RequestBody Avaliacao avaliacao) {
+	public ResponseEntity<Avaliacao> salvarAvaliacao(@Valid @RequestBody Avaliacao avaliacao) {
 		Avaliacao avaliacaoSalvo = new Avaliacao();
 		try {
 			avaliacaoSalvo = dao.save(avaliacao);
@@ -39,7 +40,7 @@ public class AvaliacaoController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public Response atualizarAvaliacao(@PathVariable(value = "id", required = true) Long id,
+	public Response atualizarAvaliacao(@Valid @PathVariable(value = "id", required = true) Long id,
 			@RequestBody Avaliacao avaliacao) {
 		avaliacao.setId(id);
 		dao.save(avaliacao);

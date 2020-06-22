@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -50,7 +51,7 @@ public class EstandeController {
 	private EstandeDao dao;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Estande> salvarEstande(@RequestBody Estande estande) {
+	public ResponseEntity<Estande> salvarEstande(@Valid @RequestBody Estande estande) {
 		Estande estandeSalva = new Estande();
 		try {
 			estandeSalva = dao.save(estande);
@@ -62,7 +63,7 @@ public class EstandeController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
-	public ResponseEntity<?> atualizarEstande(@PathVariable(value = "id", required = true) Long id,
+	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarEstandeDto estande) {
 		try {
 
