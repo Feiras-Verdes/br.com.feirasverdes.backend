@@ -1,7 +1,5 @@
 package br.com.feirasverdes.backend.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
+import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.EstabelecimentoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
-import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
+import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.exception.AutenticacaoException;
 
 @RestController
@@ -37,6 +36,9 @@ public class BuscaController {
 
 	@Autowired
 	private FeiraDao feiraDao;
+	
+	@Autowired
+	private ProdutoDao produtoDao;
 
 	@GetMapping("/estabelecimentos")
 	@ResponseBody
@@ -56,7 +58,26 @@ public class BuscaController {
 			return ResponseEntity.ok(estabelecimento);
 
 		} catch (final BadCredentialsException | DisabledException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de estabelecimento inválida"));
+		} catch (final Exception e) {
+			throw new AutenticacaoException();
+		}
+	}
+	
+	@GetMapping("/produtos")
+	@ResponseBody
+	public ResponseEntity<?> buscaProduto(@RequestParam(required = false) String nome,
+			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
+			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
+			throws Exception {
+		try {
+			
+			final Page<Produto> produto = verificarOrdenacaoProduto(nome, limite, pagina, ordenacao, tipoOrdenacao);
+
+			return ResponseEntity.ok(produto);
+
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de produtos inválida"));
 		} catch (final Exception e) {
 			throw new AutenticacaoException();
 		}
@@ -94,4 +115,20 @@ public class BuscaController {
 		return feira;
 	}
 
+	public Page<Produto> verificarOrdenacaoProduto(String nome, Integer limite, Integer pagina, String ordenacao,
+			String tipoOrdenacao) {
+		Page<Produto> produto = null;
+		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
+			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+				produto = produtoDao.buscaProdutoPorFiltro("%" + nome.toUpperCase() + "%",
+						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+			}
+			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+				produto = produtoDao.buscaProdutoPorFiltro("%" + nome.toUpperCase() + "%",
+						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
+			}
+		}
+		return produto;
+	}
+	
 }

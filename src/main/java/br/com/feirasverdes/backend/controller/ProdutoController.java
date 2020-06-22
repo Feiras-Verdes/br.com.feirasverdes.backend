@@ -58,7 +58,7 @@ public class ProdutoController {
 	public ResponseEntity<?> atualizarProduto(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarProdutoDto produto) {
 		try {
-			service.atualizarProduto(id, produto);
+			service.atualizarProduto(produto);
 			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));

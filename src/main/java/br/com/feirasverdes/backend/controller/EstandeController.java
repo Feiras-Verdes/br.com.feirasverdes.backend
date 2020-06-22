@@ -49,7 +49,7 @@ public class EstandeController {
 		}
 		return new ResponseEntity<>(estandeSalva, HttpStatus.OK);
 	}
-
+	
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute AtualizarEstandeDto estande) {

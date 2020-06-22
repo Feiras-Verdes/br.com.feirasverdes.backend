@@ -36,9 +36,9 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoDao dao;
 
-	public void atualizarProduto(final Long id, AtualizarProdutoDto produtoAtualizado) throws IOException{
+	public void atualizarProduto(AtualizarProdutoDto produtoAtualizado) throws IOException{
 		
-		Produto produto = dao.getOne(id);
+		Produto produto = dao.getOne(produtoAtualizado.getId());
 		
 		if (produtoAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
