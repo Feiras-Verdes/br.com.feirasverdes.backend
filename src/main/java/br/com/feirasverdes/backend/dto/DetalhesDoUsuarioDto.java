@@ -43,6 +43,10 @@ public class DetalhesDoUsuarioDto implements Serializable {
 		dataNascimento = builder.dataNascimento;
 		tipoUsuario = builder.tipoUsuario;
 	}
+	
+	public DetalhesDoUsuarioDto() {
+		super();
+	}
 
 	public Long getId() {
 		return id;
