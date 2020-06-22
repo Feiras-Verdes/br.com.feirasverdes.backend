@@ -15,7 +15,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,7 +63,7 @@ public class UsuarioController {
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
 	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute AtualizarUsuarioDto usuario) {
+			@RequestBody AtualizarUsuarioDto usuario) {
 		try {
 			service.atualizarUsuario(id, usuario);
 			return ResponseEntity.ok("Atualizado com sucesso.");

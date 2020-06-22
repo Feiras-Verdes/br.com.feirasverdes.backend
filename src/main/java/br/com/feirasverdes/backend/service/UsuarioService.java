@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
@@ -25,6 +26,7 @@ import br.com.feirasverdes.backend.exception.TipoInvalidoException;
 import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
+@Transactional
 public class UsuarioService {
 
 	@Autowired
@@ -38,7 +40,7 @@ public class UsuarioService {
 
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	public void salvarUsuario(final Usuario usuario) throws EmailInvalidoException, TipoInvalidoException {
+	public Usuario salvarUsuario(final Usuario usuario) throws EmailInvalidoException, TipoInvalidoException {
 
 		Usuario mesmoEmail = dao.pesquisarPorEmail(usuario.getEmail());
 		if (mesmoEmail != null) {
@@ -52,7 +54,7 @@ public class UsuarioService {
 
 		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
 		usuario.setAtivo(true);
-		dao.save(usuario);
+		return dao.save(usuario);
 	}
 
 	public void atualizarUsuario(final Long id, final AtualizarUsuarioDto usuarioAtualizado) throws IOException {
@@ -90,10 +92,10 @@ public class UsuarioService {
 	}
 
 	public List<?> pesquisarPorNome(String nome) {
-		return dao.pesquisarPorNome(nome);
+		return dao.pesquisarPorNome(nome.toUpperCase());
 	}
 
-	public Optional pesquisarPorId(Long id) {
+	public Optional<Usuario> pesquisarPorId(Long id) {
 		return dao.pesquisarPorId(id);
 	}
 
