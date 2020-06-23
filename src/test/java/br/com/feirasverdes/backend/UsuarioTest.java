@@ -26,10 +26,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.service.UsuarioService;
@@ -78,13 +79,18 @@ public class UsuarioTest {
 		Usuario usuario = criarUsuario("B", "b@localhost");
 		Usuario usuarioCadastrado = service.salvarUsuario(usuario);
 		
-		AtualizarUsuarioDto usuarAtualizarUsuarioDto = criarAtualizarUsuarioDto();
+		UsuarioDto usuarAtualizarUsuarioDto = criarAtualizarUsuarioDto();
 		usuarAtualizarUsuarioDto.setNome("Usuario 2");
 		usuarAtualizarUsuarioDto.setEmail("usuarioatualizar@localhost");
+		usuarAtualizarUsuarioDto.setDataNascimento(null);
 		mockMvc.perform(put("/usuarios/"+usuarioCadastrado.getId()+"/atualizar")
 				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(usuarAtualizarUsuarioDto)))
+				.param("nome", usuarAtualizarUsuarioDto.getNome())
+				.param("cnpj", usuarAtualizarUsuarioDto.getCnpj())
+				.param("cpf", usuarAtualizarUsuarioDto.getCpf())
+				.param("telefone", usuarAtualizarUsuarioDto.getTelefone())
+				.param("email", usuarAtualizarUsuarioDto.getEmail())
+				.param("ativo", String.valueOf(usuarAtualizarUsuarioDto.isAtivo())))
 				.andExpect(status().isOk())
 				.andReturn();
 		Usuario usuarioSalvo = service.pesquisarPorId(usuarioCadastrado.getId()).get();
@@ -184,7 +190,7 @@ public class UsuarioTest {
 		assertEquals(usuario.getTipoUsuario().getId(), usuarioSalvo.getTipoUsuario().getId());
 	}
 
-	private void assertUsuario(AtualizarUsuarioDto usuario, Usuario usuarioSalvo) {
+	private void assertUsuario(UsuarioDto usuario, Usuario usuarioSalvo) {
 		assertNotNull(usuarioSalvo);
 		assertEquals(usuario.getNome(), usuarioSalvo.getNome());
 		assertEquals(usuario.getCnpj(), usuarioSalvo.getCnpj());
@@ -206,8 +212,8 @@ public class UsuarioTest {
 		return usuario;
 	}
 	
-	private AtualizarUsuarioDto criarAtualizarUsuarioDto() {
-		AtualizarUsuarioDto  usuario = new AtualizarUsuarioDto();
+	private UsuarioDto criarAtualizarUsuarioDto() {
+		UsuarioDto  usuario = new UsuarioDto();
 		usuario.setNome("Atualizar");
 		usuario.setCpf("000.000.000-01");
 		usuario.setDataNascimento(Date.from(LocalDate.of(2020, 6, 21).atStartOfDay(ZoneId.systemDefault()).toInstant()));
