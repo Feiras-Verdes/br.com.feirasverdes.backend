@@ -53,7 +53,7 @@ public class BuscaController {
 			
 			final Page<EstabelecimentoDto> feiras = new PageImpl(feira.getContent(), feira.getPageable(), feira.getTotalElements());
 			final Page<EstabelecimentoDto> estandes = new PageImpl(estande.getContent(), estande.getPageable(), estande.getTotalElements());	
-			Page<EstabelecimentoDto> estabelecimento = feiras;
+			Page<EstabelecimentoDto> estabelecimento = estandes;
 			
 			return ResponseEntity.ok(estabelecimento);
 
