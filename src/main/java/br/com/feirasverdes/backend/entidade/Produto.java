@@ -29,7 +29,7 @@ public class Produto implements Serializable {
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
 
-	@Column(name = "descricao", nullable = false, length = 200)
+	@Column(name = "descricao", length = 200)
 	private String descricao;
 
 	@Column(name = "preco", nullable = false, length = 200)
