@@ -17,9 +17,9 @@ import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarProdutoDto;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.ProdutoDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -36,7 +36,7 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoDao dao;
 
-	public void atualizarProduto(AtualizarProdutoDto produtoAtualizado) throws IOException{
+	public void atualizarProduto(final Long id, ProdutoDto produtoAtualizado) throws IOException{
 		
 		Produto produto = dao.getOne(produtoAtualizado.getId());
 		

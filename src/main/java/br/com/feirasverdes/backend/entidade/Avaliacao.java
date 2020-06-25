@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "avaliacao")
 public class Avaliacao implements Serializable {
@@ -19,20 +21,24 @@ public class Avaliacao implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
 	@NotNull(message = "Nota de feira não pode ser vazio")
 	@Column(name = "nota", nullable = false, length = 200)
 	private Double nota;
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
+	@JsonIgnore
 	private Usuario usuario;
 
 	@ManyToOne
 	@JoinColumn(name = "id_estande")
+	@JsonIgnore
 	private Estande estande;
 
 	@ManyToOne
 	@JoinColumn(name = "id_feira")
+	@JsonIgnore
 	private Feira feira;
 
 	public Avaliacao() {

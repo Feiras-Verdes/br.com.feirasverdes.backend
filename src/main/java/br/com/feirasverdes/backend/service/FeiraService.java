@@ -55,7 +55,6 @@ public class FeiraService {
 		return dao.save(feira);
 	}
 
-
 	private void paraFeira(FeiraDto feiraDto, Feira feira) throws IOException {
 		feira.setHora_inicio(feiraDto.getHora_inicio());
 		feira.setHora_fim(feiraDto.getHora_fim());

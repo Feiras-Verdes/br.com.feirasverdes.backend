@@ -67,8 +67,7 @@ public class Estande implements Serializable {
 	@JsonIgnore
 	private List<Noticia> noticias;
 	
-	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JsonIgnore
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Avaliacao> avaliacoes;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)

@@ -47,14 +47,8 @@ public class BuscaController {
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
-			
-			final Page<Estande> estande = verificarOrdenacaoEstande(nome, limite, pagina, ordenacao, tipoOrdenacao);
-			final Page<Feira> feira = verificarOrdenacaoFeira(nome, limite, pagina, ordenacao, tipoOrdenacao);
-			
-			final Page<EstabelecimentoDto> feiras = new PageImpl(feira.getContent(), feira.getPageable(), feira.getTotalElements());
-			final Page<EstabelecimentoDto> estandes = new PageImpl(estande.getContent(), estande.getPageable(), estande.getTotalElements());	
-			Page<EstabelecimentoDto> estabelecimento = estandes;
-			
+			Page<EstabelecimentoDto> estabelecimento = verificarOrdenacaoEstande(nome, limite, pagina, ordenacao, tipoOrdenacao);
+
 			return ResponseEntity.ok(estabelecimento);
 
 		} catch (final BadCredentialsException | DisabledException e) {
@@ -83,9 +77,9 @@ public class BuscaController {
 		}
 	}
 
-	public Page<Estande> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina, String ordenacao,
+	public Page<EstabelecimentoDto> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina, String ordenacao,
 			String tipoOrdenacao) {
-		Page<Estande> estande = null;
+		Page<EstabelecimentoDto> estande = null;
 		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
 			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
 				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",

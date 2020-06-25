@@ -1,5 +1,8 @@
 package br.com.feirasverdes.backend.dto;
 
+import java.util.List;
+
+
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Imagem;
 
@@ -9,18 +12,23 @@ public class EstabelecimentoDto {
 	private String nome;
 	private String telefone;
 	private Imagem imagem;
+	private Endereco endereco;
+	private double nota;
 
 	public EstabelecimentoDto() {
 		super();
 	}
 
-	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem) {
+	public EstabelecimentoDto(Long id, String nome, String telefone, Endereco endereco, double nota) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
-		this.imagem = imagem;
+//		this.imagem = imagem;
+		this.endereco = endereco;
+		this.nota = nota;
 	}
+
 
 	public Long getId() {
 		return id;
@@ -54,6 +62,23 @@ public class EstabelecimentoDto {
 		this.imagem = imagem;
 	}
 
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+	public double getNota() {
+		return nota;
+	}
+
+	public void setNota(double nota) {
+		this.nota = nota;
+	}
+
+	
 
 		
 }
