@@ -84,6 +84,17 @@ public class FeiraTest {
 		assertNotNull(feiraSalva);
 		assertEquals(feira.getNome(), feiraSalva.getNome());
 		assertEquals(feira.getTelefone(), feiraSalva.getTelefone());
+		assertEquals(feira.getFrequencia(), feiraSalva.getFrequencia());
+		assertEquals(feira.getHora_inicio(), feiraSalva.getHora_inicio());
+		assertEquals(feira.getHora_fim(), feiraSalva.getHora_fim());
+		assertEquals(feira.getEndereco().getCep(), feiraSalva.getEndereco().getCep());
+		assertEquals(feira.getEndereco().getBairro(), feiraSalva.getEndereco().getBairro());
+		assertEquals(feira.getEndereco().getCidade(), feiraSalva.getEndereco().getCidade());
+		assertEquals(feira.getEndereco().getComplemento(), feiraSalva.getEndereco().getComplemento());
+		assertEquals(feira.getEndereco().getEstado(), feiraSalva.getEndereco().getEstado());
+		assertEquals(feira.getEndereco().getNumero(), feiraSalva.getEndereco().getNumero());
+		assertEquals(feira.getEndereco().getRua(), feiraSalva.getEndereco().getRua());
+		
 	}
 	
 	@Test
