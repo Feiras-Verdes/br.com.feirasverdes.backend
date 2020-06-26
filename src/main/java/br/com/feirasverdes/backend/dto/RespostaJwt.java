@@ -8,19 +8,12 @@ public class RespostaJwt implements Serializable {
 
 	private final String token;
 
-	private final Long idUsuario;
-
-	public RespostaJwt(final String token, final Long idUsuario) {
+	public RespostaJwt(final String token) {
 		this.token = token;
-		this.idUsuario = idUsuario;
 	}
 
 	public String getToken() {
 		return this.token;
-	}
-
-	public Long getIdUsuario() {
-		return this.idUsuario;
 	}
 
 }
