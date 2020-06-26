@@ -33,4 +33,5 @@ public class UsuarioTestUtil {
 		usuario.setCpf("000.000.000-00");
 		return dao.save(usuario);
 	}
+
 }

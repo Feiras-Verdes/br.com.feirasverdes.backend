@@ -11,15 +11,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarEstandeDto;
-import br.com.feirasverdes.backend.dto.AtualizarProdutoDto;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.EstandeDto;
+import br.com.feirasverdes.backend.dto.ProdutoDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -31,12 +32,13 @@ import br.com.feirasverdes.backend.exception.TipoInvalidoException;
 import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
+@Transactional
 public class ProdutoService {
 
 	@Autowired
 	private ProdutoDao dao;
 
-	public void atualizarProduto(final Long id, AtualizarProdutoDto produtoAtualizado) throws IOException{
+	public void atualizarProduto(final Long id, ProdutoDto produtoAtualizado) throws IOException{
 		
 		Produto produto = dao.getOne(id);
 		

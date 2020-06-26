@@ -8,13 +8,15 @@ import java.util.zip.DataFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.AtualizarUsuarioDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
@@ -24,6 +26,7 @@ import br.com.feirasverdes.backend.exception.TipoInvalidoException;
 import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
+@Transactional
 public class UsuarioService {
 
 	@Autowired
@@ -37,7 +40,7 @@ public class UsuarioService {
 
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	public void salvarUsuario(final Usuario usuario) throws EmailInvalidoException, TipoInvalidoException {
+	public Usuario salvarUsuario(final Usuario usuario) throws EmailInvalidoException, TipoInvalidoException {
 
 		Usuario mesmoEmail = dao.pesquisarPorEmail(usuario.getEmail());
 		if (mesmoEmail != null) {
@@ -51,10 +54,10 @@ public class UsuarioService {
 
 		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
 		usuario.setAtivo(true);
-		dao.save(usuario);
+		return dao.save(usuario);
 	}
 
-	public void atualizarUsuario(final Long id, final AtualizarUsuarioDto usuarioAtualizado) throws IOException {
+	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
 		Usuario usuario = dao.getOne(id);
 		if (usuarioAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
@@ -91,26 +94,26 @@ public class UsuarioService {
 	}
 
 	public List<?> pesquisarPorNome(String nome) {
-		return dao.pesquisarPorNome(nome);
+		return dao.pesquisarPorNome(nome.toUpperCase());
 	}
 
-	public Optional<?> pesquisarPorId(Long id) {
+	public Optional<Usuario> pesquisarPorId(Long id) {
 		return dao.pesquisarPorId(id);
 	}
 
-	public DetalhesDoUsuarioDto getDetalhes(Long idUsuario) throws IOException, DataFormatException {
-		final Optional<Usuario> usuario = dao.pesquisarPorId(idUsuario);
+	public DetalhesDoUsuarioDto getDetalhes() throws IOException, DataFormatException {
+		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		final Usuario usuario = dao.pesquisarPorEmail(email);
 
-		if (usuario.isPresent()) {
-			if (usuario.get().getImagem() != null) {
-				usuario.get().getImagem()
-						.setBytesImagem(ImagemUtils.decompressBytes(usuario.get().getImagem().getBytesImagem()));
+		if (usuario != null) {
+			if (usuario.getImagem() != null) {
+				usuario.getImagem().setBytesImagem(ImagemUtils.decompressBytes(usuario.getImagem().getBytesImagem()));
 			}
-			return DetalhesDoUsuarioDto.builder().withNome(usuario.get().getNome()).withEmail(usuario.get().getEmail())
-					.withCpf(usuario.get().getCpf()).withCnpj(usuario.get().getCnpj())
-					.withDataNascimento(usuario.get().getDataNascimento()).withTelefone(usuario.get().getTelefone())
-					.withTipoUsuario(usuario.get().getTipoUsuario()).withImagem(usuario.get().getImagem())
-					.withId(usuario.get().getId()).build();
+			return DetalhesDoUsuarioDto.builder().withNome(usuario.getNome()).withEmail(usuario.getEmail())
+					.withCpf(usuario.getCpf()).withCnpj(usuario.getCnpj())
+					.withDataNascimento(usuario.getDataNascimento()).withTelefone(usuario.getTelefone())
+					.withTipoUsuario(usuario.getTipoUsuario()).withImagem(usuario.getImagem()).withId(usuario.getId())
+					.build();
 		} else {
 			return null;
 		}

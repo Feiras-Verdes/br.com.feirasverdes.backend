@@ -27,6 +27,11 @@ public class TipoUsuario implements Serializable {
 		super();
 	}
 
+	public TipoUsuario(Long id) {
+		this.id = id;
+	}
+	
+
 	public TipoUsuario(Long id, String descricao) {
 		this.id = id;
 		this.descricao = descricao;
