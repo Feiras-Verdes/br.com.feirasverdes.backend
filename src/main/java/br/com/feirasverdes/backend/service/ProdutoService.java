@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
@@ -31,6 +32,7 @@ import br.com.feirasverdes.backend.exception.TipoInvalidoException;
 import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
+@Transactional
 public class ProdutoService {
 
 	@Autowired
