@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +61,7 @@ public class NoticiaController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
 	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
