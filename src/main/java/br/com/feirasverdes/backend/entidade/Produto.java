@@ -35,7 +35,7 @@ public class Produto implements Serializable {
 	@Column(name = "preco", nullable = false, length = 200)
 	private Float preco;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@ManyToMany(mappedBy = "produtos", cascade = { CascadeType.PERSIST, CascadeType.MERGE })

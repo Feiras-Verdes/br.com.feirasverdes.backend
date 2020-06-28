@@ -25,18 +25,11 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	@Query(value = "select e from Estande e where e.feira.id = ?1") 
 	List<Estande> pesquisarPortodosEstandesdaFeira(Long idFeira);
 	
-//	@Query(value = "select e.id, e.nome, e.endereco, e.telefone, a.nota from Estande e " +
-//			       " join e.avaliacoes a "  +
-//			       "where upper(e.nome) like ?1 ")
-//	Page<Estande> buscaEstandePorFiltro(String nome, Pageable pageable);
-	
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
-			 + "(e.id, e.nome, e.telefone, e.endereco, avg(a.nota)) "
+			 + "(e.id, e.nome, e.telefone, e.imagem, e.endereco , COALESCE(avg(a.nota), 0)) "
 			 + " from Estande e " +
-		       " join e.avaliacoes a "  +
-		       "where upper(e.nome) like ?1 ")
+		       " left join e.avaliacoes a "  +
+		       "where upper(e.nome) like ?1 group by e.nome, e.id, e.telefone, e.endereco")
     Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
-	
-	// select e.nome from Estande e join Avaliacao a on e.id = a.id_estande  join Endereco c on join Endereco c on where upper(e.nome) like ?1 
 	
 }

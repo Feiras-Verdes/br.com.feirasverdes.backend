@@ -21,36 +21,47 @@ import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.EstabelecimentoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
-import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.exception.AutenticacaoException;
+import br.com.feirasverdes.backend.service.BuscaService;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/busca")
 public class BuscaController {
-
-	@Autowired
-	private EstandeDao estanteDao;
-
-	@Autowired
-	private FeiraDao feiraDao;
 	
 	@Autowired
-	private ProdutoDao produtoDao;
+	private BuscaService service;
 
-	@GetMapping("/estabelecimentos")
+	@GetMapping("/estandes")
 	@ResponseBody
-	public ResponseEntity<?> buscaEstabelecimento(@RequestParam(required = false) String nome,
+	public ResponseEntity<?> buscaEstande(@RequestParam(required = false) String nome,
 			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
-			Page<EstabelecimentoDto> estabelecimento = verificarOrdenacaoEstande(nome, limite, pagina, ordenacao, tipoOrdenacao);
-
-			return ResponseEntity.ok(estabelecimento);
-
+			
+			Page<EstabelecimentoDto> estande = service.verificarOrdenacaoEstande(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			
+			return ResponseEntity.ok(estande);	
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de estabelecimento inválida"));
+		} catch (final Exception e) {
+			throw new AutenticacaoException();
+		}
+	}
+	
+	@GetMapping("/feiras")
+	@ResponseBody
+	public ResponseEntity<?> buscaFeira(@RequestParam(required = false) String nome,
+			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
+			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
+			throws Exception {
+		try {
+			Page<EstabelecimentoDto> feira = service.verificarOrdenacaoFeira(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			
+			return ResponseEntity.ok(feira);	
 		} catch (final BadCredentialsException | DisabledException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de estabelecimento inválida"));
 		} catch (final Exception e) {
@@ -66,63 +77,13 @@ public class BuscaController {
 			throws Exception {
 		try {
 			
-			final Page<Produto> produto = verificarOrdenacaoProduto(nome, limite, pagina, ordenacao, tipoOrdenacao);
-
+			final Page<Produto> produto = service.verificarOrdenacaoProduto(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			
 			return ResponseEntity.ok(produto);
-
 		} catch (final BadCredentialsException | DisabledException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de produtos inválida"));
 		} catch (final Exception e) {
 			throw new AutenticacaoException();
 		}
 	}
-
-	public Page<EstabelecimentoDto> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
-		Page<EstabelecimentoDto> estande = null;
-		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
-			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
-		}
-		return estande;
-	}
-
-	public Page<Feira> verificarOrdenacaoFeira(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
-		Page<Feira> feira = null;
-		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				feira = feiraDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
-			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				feira = feiraDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
-		}
-		return feira;
-	}
-
-	public Page<Produto> verificarOrdenacaoProduto(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
-		Page<Produto> produto = null;
-		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				produto = produtoDao.buscaProdutoPorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
-			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				produto = produtoDao.buscaProdutoPorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
-		}
-		return produto;
-	}
-	
 }

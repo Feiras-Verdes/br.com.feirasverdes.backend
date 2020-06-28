@@ -28,17 +28,14 @@ public class Avaliacao implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
-	@JsonIgnore
 	private Usuario usuario;
 
 	@ManyToOne
 	@JoinColumn(name = "id_estande")
-	@JsonIgnore
 	private Estande estande;
 
 	@ManyToOne
 	@JoinColumn(name = "id_feira")
-	@JsonIgnore
 	private Feira feira;
 
 	public Avaliacao() {

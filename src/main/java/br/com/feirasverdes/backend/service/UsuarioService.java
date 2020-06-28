@@ -59,6 +59,7 @@ public class UsuarioService {
 
 	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
 		Usuario usuario = dao.getOne(id);
+		
 		if (usuarioAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
 			MultipartFile foto = usuarioAtualizado.getImagem();
@@ -66,7 +67,7 @@ public class UsuarioService {
 			imagem.setTipo(foto.getContentType());
 			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
 
-			usuario.setImagem(imagem);
+			usuario.setImagem(imagem); 
 		}
 		usuario.setCnpj(usuarioAtualizado.getCnpj());
 		usuario.setCpf(usuarioAtualizado.getCpf());

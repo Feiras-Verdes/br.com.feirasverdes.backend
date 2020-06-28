@@ -58,7 +58,7 @@ public class Feira implements Serializable {
 	@JsonIgnore
 	private List<Estande> estandes;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)

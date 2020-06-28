@@ -60,7 +60,7 @@ public class Estande implements Serializable {
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

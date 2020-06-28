@@ -33,7 +33,7 @@ public class EstandeService {
 	@Autowired
 	private EstandeDao dao;
 	
-	public void atualizarEstande(final Long id, EstandeDto estandeAtualizado) throws IOException{
+	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException{
 		Estande estande = dao.getOne(id);
 
 		if (estandeAtualizado.getImagem() != null) {

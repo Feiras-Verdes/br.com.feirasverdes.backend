@@ -30,7 +30,7 @@ import br.com.feirasverdes.backend.service.EstandeService;
 public class EstandeController {
 	
 	@Autowired
-	EstandeService service;
+	private EstandeService service;
 	
 	@Autowired
 	private AvaliacaoDao avaliacaoDao;
@@ -54,8 +54,6 @@ public class EstandeController {
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute EstandeDto estande) {
 		try {
-
-			System.out.println(estande.toString());
 			service.atualizarEstande(id, estande);
 			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {

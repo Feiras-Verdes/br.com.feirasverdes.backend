@@ -2,6 +2,7 @@ package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Noticia implements Serializable {
 	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@ManyToOne
