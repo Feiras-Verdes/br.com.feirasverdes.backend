@@ -237,7 +237,13 @@ public class FeiraTest {
 				.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
 	}
 
-	private FeiraDto criarFeiraDto() {
+	public FeiraDto criarFeiraDto() {
+		FeiraDto feira = criarFeiraDtoSemUsuario();
+		feira.setIdUsuario(usuario.getId());
+		return feira;
+	}
+
+	public static FeiraDto criarFeiraDtoSemUsuario() {
 		FeiraDto feira = new FeiraDto();
 		feira.setLogradouro("Rua 1");
 		feira.setBairro("Bairro 1");
@@ -251,7 +257,6 @@ public class FeiraTest {
 		feira.setTelefone("(00) 0000-0000");
 		feira.setHora_inicio("10:00");
 		feira.setHora_fim("18:00");
-		feira.setIdUsuario(usuario.getId());
 		return feira;
 	}
 
