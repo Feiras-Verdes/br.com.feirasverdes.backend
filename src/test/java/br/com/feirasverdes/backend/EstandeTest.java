@@ -140,7 +140,7 @@ public class EstandeTest {
 	
 	}
 
-	private Estande criarEstande() {
+	public static Estande criarEstande() {
 		Estande estande = new Estande();
 		estande.setNome("barraca1");
 		estande.setTelefone("(00) 0000-0000");
