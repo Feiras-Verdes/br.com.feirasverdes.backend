@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.NoticiaDao;
-import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.NoticiaDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.service.NoticiaService;
 
-
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/noticia")
+@RequestMapping(value = "/noticias")
 public class NoticiaController {
 
 	@Autowired
@@ -76,5 +74,5 @@ public class NoticiaController {
 		Noticia noticia = dao.getOne(id);
 		return ResponseEntity.ok(noticia);
 	}
-	
+
 }

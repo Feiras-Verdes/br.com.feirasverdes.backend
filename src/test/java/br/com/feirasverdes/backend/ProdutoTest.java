@@ -26,57 +26,54 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.ProdutoDto;
 import br.com.feirasverdes.backend.entidade.Produto;
-import br.com.feirasverdes.backend.entidade.Usuario;
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = Application.class)
 public class ProdutoTest {
 
 	@Autowired
-    private MockMvc mockMvc;
-	
+	private MockMvc mockMvc;
+
 	@Autowired
 	private ProdutoDao produtodao;
-	
+
 	@Autowired
 	private UsuarioTestUtil usuarioTestUtil;
-	
+
 	@BeforeEach
 	public void iniciar() {
 		usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
 	}
-	
+
 	@Test
 	@Transactional
 	public void testCadastrarProduto() throws IOException, Exception {
 		ProdutoDto produto = criarProdutoDto();
-		MvcResult result = mockMvc.perform(post("/produto/cadastrar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(produto)))
-				.andExpect(status().isOk())
-				.andReturn();		
-	Produto produtoResult = (Produto) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(), Produto.class);
-	
-	Produto produtoSalvo = produtodao.getOne(produtoResult.getId());
-	assertNotNull(produtoSalvo);
-	assertEquals(produto.getNome(), produtoSalvo.getNome());
-	assertEquals(produto.getPreco(), produtoSalvo.getPreco());
-	assertEquals(produto.getDescricao(), produtoSalvo.getDescricao());
+		MvcResult result = mockMvc
+				.perform(post("/produtos/cadastrar").headers(TestUtil.autHeaders())
+						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
+				.andExpect(status().isOk()).andReturn();
+		Produto produtoResult = (Produto) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
+				Produto.class);
+
+		Produto produtoSalvo = produtodao.getOne(produtoResult.getId());
+		assertNotNull(produtoSalvo);
+		assertEquals(produto.getNome(), produtoSalvo.getNome());
+		assertEquals(produto.getPreco(), produtoSalvo.getPreco());
+		assertEquals(produto.getDescricao(), produtoSalvo.getDescricao());
 
 	}
+
 	@Test
 	@Transactional
 	public void testCadastrarFeiraErro() throws IOException, Exception {
 		ProdutoDto produto = criarProdutoDto();
 		produto.setNome(null);
-		mockMvc.perform(post("/produto/cadastrar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(produto)))
+		mockMvc.perform(post("/produtos/cadastrar").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
 				.andExpect(status().is(400));
 	}
-	
+
 	@Test
 	public void testAtualizarProduto() throws IOException, Exception {
 		Produto produtoCadastrado = cadastrarProduto();
@@ -84,14 +81,11 @@ public class ProdutoTest {
 		produto.setId(produtoCadastrado.getId());
 		produto.setNome("Laranja lima");
 		produto.setPreco(5.00f);
-		
-		mockMvc.perform(put("/produto/"+produto.getId()+"/atualizar")
-				.headers(TestUtil.autHeaders())
-				.param("nome", produto.getNome())
-				.param("descricao", produto.getDescricao())
-				.param("preco", produto.getPreco().toString()))
-				.andExpect(status().isOk());
-		
+
+		mockMvc.perform(put("/produtos/" + produto.getId() + "/atualizar").headers(TestUtil.autHeaders())
+				.param("nome", produto.getNome()).param("descricao", produto.getDescricao())
+				.param("preco", produto.getPreco().toString())).andExpect(status().isOk());
+
 		Produto produtoSalvo = produtodao.findById(produtoCadastrado.getId()).get();
 		assertEquals(produto.getNome(), produtoSalvo.getNome());
 		assertEquals(produto.getPreco(), produtoSalvo.getPreco());
@@ -101,51 +95,45 @@ public class ProdutoTest {
 	public void testExcluirProduto() throws IOException, Exception {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
-		
-		mockMvc.perform(delete("/produto/"+produtoCadastrado.getId()+"/excluir")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-		
+
+		mockMvc.perform(delete("/produtos/" + produtoCadastrado.getId() + "/excluir").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+
 		assertFalse(produtodao.findById(produtoCadastrado.getId()).isPresent());
 	}
-	
+
 	@Test
 	public void testListarTodos() throws Exception {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(get("/produto/listarTodos").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
+		mockMvc.perform(get("/produtos/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
 	}
-	
+
 	@Test
 	public void testListarPorNome() throws Exception {
 		Produto produto = criarProduto();
 		produto.setNome("AA");
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(get("/produto/pesquisar-por-nome/AA").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
+		mockMvc.perform(get("/produtos/pesquisar-por-nome/AA").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
 	}
-	
+
 	@Test
 	public void testPesquisarPorId() throws Exception {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(get("/produto/pesquisar-por-id/"+produtoCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.nome").value(produtoCadastrado.getNome()));
+		mockMvc.perform(
+				get("/produtos/pesquisar-por-id/" + produtoCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.nome").value(produtoCadastrado.getNome()));
 	}
-	
-	
+
 	@Transactional
 	private Produto cadastrarProduto() {
 		return produtodao.saveAndFlush(criarProduto());
 	}
-	
-	
-	
+
 	private ProdutoDto criarProdutoDto() {
 		ProdutoDto produto = new ProdutoDto();
 		produto.setNome("Laranja");
@@ -153,15 +141,14 @@ public class ProdutoTest {
 		produto.setDescricao("do sitio");
 		return produto;
 	}
-	
+
 	private Produto criarProduto() {
 		Produto produto = new Produto();
 		produto.setNome("Laranja");
 		produto.setPreco(3.00f);
 		produto.setDescricao("do sitio");
 		return produto;
-		
+
 	}
-	
-	
+
 }

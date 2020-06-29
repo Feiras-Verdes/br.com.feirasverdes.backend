@@ -4,12 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.ProdutoDao;
-import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.ProdutoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Produto;
@@ -32,7 +25,7 @@ import br.com.feirasverdes.backend.service.ProdutoService;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/produto")
+@RequestMapping(value = "/produtos")
 public class ProdutoController {
 
 	@Autowired

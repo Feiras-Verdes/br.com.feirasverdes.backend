@@ -29,25 +29,23 @@ public class Feira implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "hora_inicio", nullable = false, length = 200)
+	@Column(name = "hora_inicio", nullable = true, length = 200)
 	private String hora_inicio;
-	
+
 	@NotNull(message = "Nome de feira não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
 
-	@Column(name = "frequencia", nullable = false, length = 200)
+	@Column(name = "frequencia", nullable = true, length = 200)
 	private String frequencia;
 
-	@Column(name = "hora_fim", nullable = false, length = 200)
+	@Column(name = "hora_fim", nullable = true, length = 200)
 	private String hora_fim;
 
-	
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column(name = "telefone", nullable = true, length = 200)
 	private String telefone;
-	
-	@NotNull(message = "Endereço de feira não pode ser vazio")
-	@OneToOne
+
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Endereco endereco;
 
 	@ManyToOne
@@ -64,7 +62,7 @@ public class Feira implements Serializable {
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Noticia> noticias;
-	
+
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Avaliacao> avaliacoes;

@@ -5,31 +5,31 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class EnderecoDto implements Serializable{
+public class EnderecoDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
+
 	@NotBlank
-	private String rua;
-	
+	private String logradouro;
+
 	@NotNull
 	private Integer numero;
-	
+
 	private String bairro;
-	
+
 	@NotBlank
 	private String cidade;
-	
+
 	@NotBlank
 	private String cep;
-	
+
 	private String complemento;
-	
+
 	@NotBlank
 	private String estado;
-	
+
 	public EnderecoDto() {
 		super();
 	}
@@ -42,12 +42,12 @@ public class EnderecoDto implements Serializable{
 		this.id = id;
 	}
 
-	public String getRua() {
-		return rua;
+	public String getLogradouro() {
+		return logradouro;
 	}
 
-	public void setRua(String rua) {
-		this.rua = rua;
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
 	}
 
 	public int getNumero() {
@@ -97,5 +97,5 @@ public class EnderecoDto implements Serializable{
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
+
 }

@@ -26,18 +26,18 @@ import br.com.feirasverdes.backend.service.EstandeService;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/estande")
+@RequestMapping(value = "/estandes")
 public class EstandeController {
-	
+
 	@Autowired
 	EstandeService service;
-	
+
 	@Autowired
 	private AvaliacaoDao avaliacaoDao;
-	
+
 	@Autowired
 	private EstandeDao dao;
-	
+
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
 	public ResponseEntity<Estande> salvarEstande(@Valid @RequestBody Estande estande) {
 		Estande estandeSalva = new Estande();
@@ -54,8 +54,6 @@ public class EstandeController {
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute EstandeDto estande) {
 		try {
-
-			System.out.println(estande.toString());
 			service.atualizarEstande(id, estande);
 			return ResponseEntity.ok("Atualizado com sucesso.");
 		} catch (IOException e) {
@@ -74,21 +72,20 @@ public class EstandeController {
 		return ResponseEntity.ok(dao.findAll());
 	}
 
-
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Estande> estandes = dao.pesquisarPorNome("%" + nome + "%" );
+		List<Estande> estandes = dao.pesquisarPorNome("%" + nome + "%");
 		return ResponseEntity.ok(estandes);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
 	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		Estande estande = dao.getOne(id);
 		return ResponseEntity.ok(estande);
 	}
-	
+
 	// Métodos que prentencem em outros controllers
-	
+
 //	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoEstande")
 //	public ResponseEntity<Avaliacao> salvarAvaliacaoEstande(@RequestBody Avaliacao avalicaoEstande) {
 //		Avaliacao cadastro = new Avaliacao();
@@ -100,18 +97,17 @@ public class EstandeController {
 //		}
 //		return new ResponseEntity<>(cadastro, HttpStatus.OK);
 //	}
-	
+
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todos-produtos-da-feira/{nome}")
 //	public ResponseEntity<List> pesquisarPortodosProdutosdaFeira(@PathVariable(value = "nome") String nome) {
 //		List<Estande> estandes = dao.pesquisarPorNome(nome);
 //		return ResponseEntity.ok(estandes);
 //	}
-	
-	
+
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-noticias-da-feira/{nome}")
 //	public ResponseEntity<List> pesquisarPortodasNoticiasdaEstande(@PathVariable(value = "nome") String nome) {
 //		List<Estande> estandes = dao.pesquisarPorNome(nome);
 //		return ResponseEntity.ok(estandes);
 //	}
-		
+
 }

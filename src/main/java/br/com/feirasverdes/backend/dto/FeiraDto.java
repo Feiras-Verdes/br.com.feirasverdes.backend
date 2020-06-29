@@ -15,23 +15,30 @@ public class FeiraDto implements Serializable {
 
 	private Long id;
 
-	@NotBlank
 	private String hora_inicio;
 
 	@NotBlank
 	private String nome;
 
-	@NotBlank
 	private String frequencia;
 
-	@NotBlank
 	private String hora_fim;
 
-	@NotBlank
 	private String telefone;
 
-	@NotNull
-	private EnderecoDto endereco;
+	private String cep;
+
+	private String estado;
+
+	private String cidade;
+
+	private String bairro;
+
+	private String logradouro;
+
+	private Integer numero;
+
+	private String complemento;
 
 	@NotNull
 	private Long idUsuario;
@@ -90,14 +97,6 @@ public class FeiraDto implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public EnderecoDto getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(EnderecoDto endereco) {
-		this.endereco = endereco;
-	}
-
 	public MultipartFile getImagem() {
 		return imagem;
 	}
@@ -112,6 +111,62 @@ public class FeiraDto implements Serializable {
 
 	public void setIdUsuario(Long idUsuario) {
 		this.idUsuario = idUsuario;
+	}
+
+	public String getCep() {
+		return this.cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getCidade() {
+		return this.cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getBairro() {
+		return this.bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getLogradouro() {
+		return this.logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public Integer getNumero() {
+		return this.numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
+
+	public String getComplemento() {
+		return this.complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 
 }
