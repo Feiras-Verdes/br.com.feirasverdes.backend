@@ -50,15 +50,15 @@ public class BuscaTest {
 	@Test
 	public void testBuscaEstabelecimento() throws Exception {
 		Estande estande1 = criarEstande();
-		estande1.setNome("ab");
+		estande1.setNome("zzzz");
 		Estande estande2 = criarEstande();
-		estande2.setNome("aa");
+		estande2.setNome("zzza");
 		estandeDao.save(estande1);
 		estandeDao.save(estande2);
-		mockMvc.perform(get("/busca/estabelecimentos?nome=a&limite=10&pagina=0&ordenacao=nome&tipoOrdenacao=asc").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/busca/estabelecimentos?nome=zzz&limite=10&pagina=0&ordenacao=nome&tipoOrdenacao=asc").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.content[0].nome").value("aa"))
-		.andExpect(jsonPath("$.content[1].nome").value("ab"));
+		.andExpect(jsonPath("$.content[0].nome").value("zzza"))
+		.andExpect(jsonPath("$.content[1].nome").value("zzzz"));
 	}
 	
 	public static Estande criarEstande() {
