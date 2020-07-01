@@ -20,9 +20,11 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 	public List<Feira> buscarMelhoresFeiras();
 	
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
-			 + "(f.id, f.nome, f.telefone, f.imagem, f.endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5)) "
-			 + " from Feira f " +
-		       " left join f.avaliacoes a "  +
+			 + "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5)) "
+			 + " from Feira f "
+			 + " left join f.endereco e" 
+			 + " left join f.imagem i"
+		     + " left join f.avaliacoes a "  +
 		       "where upper(f.nome) like ?1 group by f.nome, f.id, f.telefone, f.endereco")
    Page<EstabelecimentoDto> buscaFeiraPorFiltro(String nome, Pageable pageable);
 }
