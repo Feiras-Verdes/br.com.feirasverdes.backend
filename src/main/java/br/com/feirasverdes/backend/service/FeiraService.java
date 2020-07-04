@@ -54,8 +54,8 @@ public class FeiraService {
 		if (!feira.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
 			throw new FeiraNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você.");
 		}
-
 		paraFeira(feiraDto, feira);
+		enderecoDao.save(feira.getEndereco());
 		return dao.save(feira);
 	}
 
@@ -70,11 +70,11 @@ public class FeiraService {
 	}
 
 	private void paraFeira(FeiraDto feiraDto, Feira feira) throws IOException {
-		feira.setHora_inicio(feiraDto.getHora_inicio());
-		feira.setHora_fim(feiraDto.getHora_fim());
+		feira.setHoraInicio(feiraDto.getHoraInicio());
+		feira.setHoraFim(feiraDto.getHoraFim());
 		feira.setFrequencia(feiraDto.getFrequencia());
 		feira.setNome(feiraDto.getNome());
-		feira.setUsuario(new Usuario(feiraDto.getIdUsuario()));
+		feira.setUsuario(usuarioDao.getOne(feiraDto.getIdUsuario()));
 		feira.setTelefone(feiraDto.getTelefone());
 		feira.setEndereco(paraEndereco(feiraDto));
 

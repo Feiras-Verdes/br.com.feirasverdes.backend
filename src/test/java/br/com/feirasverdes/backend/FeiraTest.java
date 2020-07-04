@@ -29,6 +29,7 @@ import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
+import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Noticia;
@@ -64,13 +65,13 @@ public class FeiraTest {
 
 	@BeforeEach
 	public void iniciar() {
-		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
+		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 3L);
 	}
 
 	@Test
 	@Transactional
 	public void testCadastrarFeira() throws IOException, Exception {
-		FeiraDto feira = criarFeiraDto();
+		Feira feira = criarFeira();
 		MvcResult result = mockMvc
 				.perform(post("/feiras/cadastrar").headers(TestUtil.autHeaders())
 						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(feira)))
@@ -83,16 +84,9 @@ public class FeiraTest {
 		assertEquals(feira.getNome(), feiraSalva.getNome());
 		assertEquals(feira.getTelefone(), feiraSalva.getTelefone());
 		assertEquals(feira.getFrequencia(), feiraSalva.getFrequencia());
-		assertEquals(feira.getHora_inicio(), feiraSalva.getHora_inicio());
-		assertEquals(feira.getHora_fim(), feiraSalva.getHora_fim());
-		assertEquals(feira.getCep(), feiraSalva.getEndereco().getCep());
-		assertEquals(feira.getBairro(), feiraSalva.getEndereco().getBairro());
-		assertEquals(feira.getCidade(), feiraSalva.getEndereco().getCidade());
-		assertEquals(feira.getComplemento(), feiraSalva.getEndereco().getComplemento());
-		assertEquals(feira.getEstado(), feiraSalva.getEndereco().getEstado());
-		assertEquals(feira.getNumero(), feiraSalva.getEndereco().getNumero());
-		assertEquals(feira.getLogradouro(), feiraSalva.getEndereco().getLogradouro());
-
+		assertEquals(feira.getHoraInicio(), feiraSalva.getHoraInicio());
+		assertEquals(feira.getHoraFim(), feiraSalva.getHoraFim());
+		assertEquals(feira.getEndereco(), feiraSalva.getEndereco());
 	}
 
 	@Test
@@ -115,8 +109,8 @@ public class FeiraTest {
 
 		mockMvc.perform(put("/feiras/" + feira.getId() + "/atualizar").headers(TestUtil.autHeaders())
 				.param("nome", feira.getNome()).param("telefone", feira.getTelefone())
-				.param("frequencia", feira.getFrequencia()).param("horaFim", feira.getHora_fim())
-				.param("horaInicio", feira.getHora_inicio())).andExpect(status().isOk());
+				.param("frequencia", feira.getFrequencia()).param("horaFim", feira.getHoraFim())
+				.param("horaInicio", feira.getHoraInicio())).andExpect(status().isOk());
 
 		Feira feiraSalva = feiraDao.getOne(feiraCadastrada.getId());
 		assertEquals(feira.getNome(), feiraSalva.getNome());
@@ -238,12 +232,12 @@ public class FeiraTest {
 	}
 
 	public FeiraDto criarFeiraDto() {
-		FeiraDto feira = criarFeiraDtoSemUsuario();
+		FeiraDto feira = criarFeiraDtoSemUsuarioDto();
 		feira.setIdUsuario(usuario.getId());
 		return feira;
 	}
 
-	public static FeiraDto criarFeiraDtoSemUsuario() {
+	public static FeiraDto criarFeiraDtoSemUsuarioDto() {
 		FeiraDto feira = new FeiraDto();
 		feira.setLogradouro("Rua 1");
 		feira.setBairro("Bairro 1");
@@ -255,8 +249,27 @@ public class FeiraTest {
 		feira.setFrequencia("Todos os dias");
 		feira.setNome("Feira");
 		feira.setTelefone("(00) 0000-0000");
-		feira.setHora_inicio("10:00");
-		feira.setHora_fim("18:00");
+		feira.setHoraInicio("10:00");
+		feira.setHoraFim("18:00");
+		return feira;
+	}
+
+	public static Feira criarFeiraDtoSemUsuario() {
+		Feira feira = new Feira();
+		Endereco endereco = new Endereco();
+		endereco.setLogradouro("Rua 1");
+		endereco.setBairro("Bairro 1");
+		endereco.setCep("00000-000");
+		endereco.setCidade("Cidade 1");
+		endereco.setEstado("SC");
+		endereco.setNumero(1);
+		feira.setEndereco(endereco);
+
+		feira.setFrequencia("Todos os dias");
+		feira.setNome("Feira");
+		feira.setTelefone("(00) 0000-0000");
+		feira.setHoraInicio("10:00");
+		feira.setHoraFim("18:00");
 		return feira;
 	}
 

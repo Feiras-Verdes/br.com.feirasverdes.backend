@@ -15,14 +15,14 @@ public class FeiraDto implements Serializable {
 
 	private Long id;
 
-	private String hora_inicio;
+	private String horaInicio;
 
 	@NotBlank
 	private String nome;
 
 	private String frequencia;
 
-	private String hora_fim;
+	private String horaFim;
 
 	private String telefone;
 
@@ -57,12 +57,12 @@ public class FeiraDto implements Serializable {
 		this.id = id;
 	}
 
-	public String getHora_inicio() {
-		return hora_inicio;
+	public String getHoraInicio() {
+		return horaInicio;
 	}
 
-	public void setHora_inicio(String hora_inicio) {
-		this.hora_inicio = hora_inicio;
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
 	}
 
 	public String getNome() {
@@ -81,12 +81,12 @@ public class FeiraDto implements Serializable {
 		this.frequencia = frequencia;
 	}
 
-	public String getHora_fim() {
-		return hora_fim;
+	public String getHoraFim() {
+		return horaFim;
 	}
 
-	public void setHora_fim(String hora_fim) {
-		this.hora_fim = hora_fim;
+	public void setHoraFim(String horaFim) {
+		this.horaFim = horaFim;
 	}
 
 	public String getTelefone() {

@@ -52,7 +52,7 @@ public class FeiraController {
 	@Autowired
 	private FeiraDao dao;
 
-	@RolesAllowed({ "ROLE_ORGANIZADOR" })
+	@RolesAllowed({ "ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody Feira feira) {
 		try {
