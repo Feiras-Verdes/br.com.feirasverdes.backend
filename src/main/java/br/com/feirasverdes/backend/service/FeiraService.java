@@ -106,7 +106,7 @@ public class FeiraService {
 			throws UsuarioNaoEOrganizadorException, IOException, DataFormatException {
 		Optional<Usuario> usuario = usuarioDao.pesquisarPorId(id);
 
-		if (usuario.isEmpty() || !usuario.get().getTipoUsuario().getDescricao().equals("ORGANIZADOR")) {
+		if (!usuario.isPresent() || !usuario.get().getTipoUsuario().getDescricao().equals("ORGANIZADOR")) {
 			throw new UsuarioNaoEOrganizadorException("Usuário de ID " + id + " não é um organizador.");
 		}
 
@@ -119,6 +119,10 @@ public class FeiraService {
 		}
 
 		return feiras;
+	}
+	
+	public List<Feira> buscarFeirasPorUsuario(Long idUsuario) {
+		return dao.findByUsuarioId(idUsuario);
 	}
 
 }

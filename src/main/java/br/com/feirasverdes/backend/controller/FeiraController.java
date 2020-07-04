@@ -93,6 +93,11 @@ public class FeiraController {
 	public ResponseEntity<List> listarTodos() {
 		return ResponseEntity.ok(dao.findAll());
 	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List> listar() {
+		return ResponseEntity.ok(dao.findAll());
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
 	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome", required = true) String nome) {
@@ -152,4 +157,8 @@ public class FeiraController {
 		}
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "ultimas-noticias")
+	public ResponseEntity<List> ultimasNoticias() {
+		return ResponseEntity.ok(noticiadao.buscarUltimasNoticias());
+	}
 }

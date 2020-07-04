@@ -53,4 +53,8 @@ public class EstandeService {
 		dao.save(estande);
 	}
 
+	public List<Estande> buscarEstandesPorUsuario(Long usuarioId) {
+		return dao.findByUsuarioId(usuarioId);
+	}
+
 }

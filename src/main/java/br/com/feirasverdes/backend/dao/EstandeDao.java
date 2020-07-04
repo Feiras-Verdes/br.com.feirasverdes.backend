@@ -27,5 +27,7 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	
 	@Query(value = "select e from Estande e where upper(e.nome) like ?1 ")
 	Page<Estande> buscaEstandePorFiltro(String nome, Pageable pageable);
+
+	List<Estande> findByUsuarioId(Long usuarioId);
 	
 }

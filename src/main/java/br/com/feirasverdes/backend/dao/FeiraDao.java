@@ -18,4 +18,6 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 
 	@Query(value = "from Feira feira where feira.usuario.id = ?1")
 	public List<Feira> buscarFeirasDeUsuario(Long id);
+
+	List<Feira> findByUsuarioId(Long idUsuario);
 }
