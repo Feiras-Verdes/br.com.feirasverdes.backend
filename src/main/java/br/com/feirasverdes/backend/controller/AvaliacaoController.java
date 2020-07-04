@@ -47,7 +47,7 @@ public class AvaliacaoController {
 		return Response.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/excluir")
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
 	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
 		dao.deleteById(id);
 		return Response.ok().build();
