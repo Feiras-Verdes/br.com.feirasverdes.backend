@@ -24,15 +24,12 @@ public class Noticia implements Serializable {
 	@NotNull(message = "Titulo de noticia não pode ser vazio")
 	@Column(name = "titulo", nullable = false, length = 200)
 	private String titulo;
-
+	
 	@NotNull(message = "Descrição de noticia não pode ser vazio")
 	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
 
-	@Column(name = "data_publicacao", nullable = false)
-	private LocalDateTime dataPublicacao;
-
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@ManyToOne

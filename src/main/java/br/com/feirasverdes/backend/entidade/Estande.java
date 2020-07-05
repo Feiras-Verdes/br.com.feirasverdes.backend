@@ -51,17 +51,24 @@ public class Estande implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "id_feira")
 	private Feira feira;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_endereco")
+	private Endereco endereco;
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Noticia> noticias;
+	
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<Avaliacao> avaliacoes;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
 	@JoinTable(name = "vende", joinColumns = {
@@ -69,9 +76,11 @@ public class Estande implements Serializable {
 					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
 	@JsonIgnore
 	private List<Produto> produtos;
-
-	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone, String nome,
-			Feira feira, Usuario usuario, Endereco endereco, Imagem imagem, List<Noticia> noticias,
+	
+	
+	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
+			@NotNull(message = "Nome do estande não pode ser vazio") String nome, Feira feira, Endereco endereco,
+			Usuario usuario, Imagem imagem, List<Noticia> noticias, List<Avaliacao> avaliacoes,
 			List<Produto> produtos) {
 		super();
 		this.id = id;
@@ -81,12 +90,14 @@ public class Estande implements Serializable {
 		this.telefone = telefone;
 		this.nome = nome;
 		this.feira = feira;
+		this.endereco = endereco;
 		this.usuario = usuario;
 		this.imagem = imagem;
 		this.noticias = noticias;
+		this.avaliacoes = avaliacoes;
 		this.produtos = produtos;
 	}
-	
+
 	public Estande() {
 		super();
 	}
@@ -177,6 +188,22 @@ public class Estande implements Serializable {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+	public List<Avaliacao> getAvaliacoes() {
+		return avaliacoes;
+	}
+
+	public void setAvaliacoes(List<Avaliacao> avaliacoes) {
+		this.avaliacoes = avaliacoes;
 	}
 
 	@Override

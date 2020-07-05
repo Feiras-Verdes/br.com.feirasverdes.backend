@@ -24,7 +24,7 @@ public class Produto implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
 	@NotNull(message = "Nome do produto não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
@@ -38,7 +38,7 @@ public class Produto implements Serializable {
 	@Column(name = "unidade", nullable = false, length = 200)
 	private String unidade;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@ManyToMany(mappedBy = "produtos", cascade = { CascadeType.PERSIST, CascadeType.MERGE })

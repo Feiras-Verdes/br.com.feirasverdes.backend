@@ -32,18 +32,17 @@ public class EstandeService {
 
 	@Autowired
 	private EstandeDao dao;
-
-	public void atualizarEstande(final Long id, EstandeDto estandeAtualizado) throws IOException{
-		
+	
+	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException{
 		Estande estande = dao.getOne(id);
-		
+
 		if (estandeAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
 			MultipartFile foto = estandeAtualizado.getImagem();
 			imagem.setNome(foto.getOriginalFilename());
 			imagem.setTipo(foto.getContentType());
 			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
-			
+
 			estande.setImagem(imagem);
 		}
 		estande.setHora_inicio(estandeAtualizado.getHora_inicio());
