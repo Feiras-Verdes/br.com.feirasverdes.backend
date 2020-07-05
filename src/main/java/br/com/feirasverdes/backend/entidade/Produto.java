@@ -24,7 +24,7 @@ public class Produto implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@NotNull(message = "Nome do produto não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
@@ -34,6 +34,9 @@ public class Produto implements Serializable {
 
 	@Column(name = "preco", nullable = false, length = 200)
 	private Float preco;
+
+	@Column(name = "unidade", nullable = false, length = 200)
+	private String unidade;
 
 	@OneToOne
 	private Imagem imagem;
@@ -45,12 +48,14 @@ public class Produto implements Serializable {
 		super();
 	}
 
-	public Produto(Long id, String nome, String descricao, Float preco, Imagem imagem, List<Estande> estandes) {
+	public Produto(Long id, String nome, String descricao, Float preco, String unidade, Imagem imagem,
+			List<Estande> estandes) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
+		this.unidade = unidade;
 		this.imagem = imagem;
 		this.estandes = estandes;
 	}
@@ -85,6 +90,14 @@ public class Produto implements Serializable {
 
 	public void setPreco(Float preco) {
 		this.preco = preco;
+	}
+
+	public String getUnidade() {
+		return this.unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
 	}
 
 	public Imagem getImagem() {

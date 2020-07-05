@@ -138,6 +138,7 @@ public class ProdutoTest {
 		ProdutoDto produto = new ProdutoDto();
 		produto.setNome("Laranja");
 		produto.setPreco(3.00f);
+		produto.setUnidade("kg");
 		produto.setDescricao("do sitio");
 		return produto;
 	}
