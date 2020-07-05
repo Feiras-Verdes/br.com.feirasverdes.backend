@@ -1,6 +1,7 @@
 package br.com.feirasverdes.backend.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,7 +10,6 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +39,7 @@ public class NoticiaController {
 	public ResponseEntity<Noticia> salvarNoticia(@Valid @RequestBody Noticia noticia) {
 		Noticia noticiaSalvo = new Noticia();
 		try {
+			noticia.setDataPublicacao(LocalDateTime.now());
 			noticiaSalvo = dao.save(noticia);
 
 		} catch (Exception e) {
