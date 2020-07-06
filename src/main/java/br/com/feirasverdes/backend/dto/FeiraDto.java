@@ -15,23 +15,30 @@ public class FeiraDto implements Serializable {
 
 	private Long id;
 
-	@NotBlank
-	private String hora_inicio;
+	private String horaInicio;
 
 	@NotBlank
 	private String nome;
 
-	@NotBlank
 	private String frequencia;
 
-	@NotBlank
-	private String hora_fim;
+	private String horaFim;
 
-	@NotBlank
 	private String telefone;
 
-	@NotNull
-	private EnderecoDto endereco;
+	private String cep;
+
+	private String estado;
+
+	private String cidade;
+
+	private String bairro;
+
+	private String logradouro;
+
+	private Integer numero;
+
+	private String complemento;
 
 	@NotNull
 	private Long idUsuario;
@@ -50,12 +57,12 @@ public class FeiraDto implements Serializable {
 		this.id = id;
 	}
 
-	public String getHora_inicio() {
-		return hora_inicio;
+	public String getHoraInicio() {
+		return horaInicio;
 	}
 
-	public void setHora_inicio(String hora_inicio) {
-		this.hora_inicio = hora_inicio;
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
 	}
 
 	public String getNome() {
@@ -74,12 +81,12 @@ public class FeiraDto implements Serializable {
 		this.frequencia = frequencia;
 	}
 
-	public String getHora_fim() {
-		return hora_fim;
+	public String getHoraFim() {
+		return horaFim;
 	}
 
-	public void setHora_fim(String hora_fim) {
-		this.hora_fim = hora_fim;
+	public void setHoraFim(String horaFim) {
+		this.horaFim = horaFim;
 	}
 
 	public String getTelefone() {
@@ -88,14 +95,6 @@ public class FeiraDto implements Serializable {
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
-	}
-
-	public EnderecoDto getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(EnderecoDto endereco) {
-		this.endereco = endereco;
 	}
 
 	public MultipartFile getImagem() {
@@ -112,6 +111,62 @@ public class FeiraDto implements Serializable {
 
 	public void setIdUsuario(Long idUsuario) {
 		this.idUsuario = idUsuario;
+	}
+
+	public String getCep() {
+		return this.cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getCidade() {
+		return this.cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getBairro() {
+		return this.bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getLogradouro() {
+		return this.logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public Integer getNumero() {
+		return this.numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
+
+	public String getComplemento() {
+		return this.complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 
 }

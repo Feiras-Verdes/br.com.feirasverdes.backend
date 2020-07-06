@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
-import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Noticia;
@@ -50,8 +49,6 @@ public class NoticiaTest {
 
 	@Autowired
 	private EstandeDao estandeDao;
-	
-	
 
 	private Feira feira;
 
@@ -62,23 +59,22 @@ public class NoticiaTest {
 	@BeforeEach
 	public void iniciar() throws IOException {
 		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
-		FeiraDto feiraDto = FeiraTest.criarFeiraDtoSemUsuario();
-		feiraDto.setIdUsuario(usuario.getId());
-		feira = feiraService.cadastrarFeira(feiraDto);
+		Feira f = FeiraTest.criarFeiraDtoSemUsuario();
+		f.setUsuario(usuario);
+		feira = feiraService.cadastrarFeira(f);
 		estande = estandeDao.save(EstandeTest.criarEstande());
 	}
-	
+
 	@Test
 	@Transactional
 	public void testCadastrarNoticia() throws IOException, Exception {
 		Noticia noticia = criarNoticia();
-		MvcResult result = mockMvc.perform(post("/noticia/cadastrar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(noticia)))
-				.andExpect(status().isOk())
-				.andReturn();
-		Noticia noticiaResult = (Noticia) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(), Noticia.class);
+		MvcResult result = mockMvc
+				.perform(post("/noticias/cadastrar").headers(TestUtil.autHeaders())
+						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(noticia)))
+				.andExpect(status().isOk()).andReturn();
+		Noticia noticiaResult = (Noticia) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
+				Noticia.class);
 
 		Noticia noticiaSalvo = dao.getOne(noticiaResult.getId());
 		assertNotNull(noticiaSalvo);
@@ -87,7 +83,7 @@ public class NoticiaTest {
 		assertEquals(noticia.getFeira().getNome(), noticiaSalvo.getFeira().getNome());
 		assertEquals(noticia.getEstande().getNome(), noticiaSalvo.getEstande().getNome());
 	}
-	
+
 	@Test
 	@Transactional
 	public void testAtualizarNoticia() throws IOException, Exception {
@@ -95,50 +91,45 @@ public class NoticiaTest {
 		Noticia noticiaCadastrada = dao.save(noticia);
 		noticia.setId(noticiaCadastrada.getId());
 		noticia.setTitulo("Chegou bananas");
-		
-		mockMvc.perform(put("/noticia/"+noticia.getId()+"/atualizar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(noticia)))
+
+		mockMvc.perform(put("/noticias/" + noticia.getId() + "/atualizar").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(noticia)))
 				.andExpect(status().isOk());
-		
+
 		Noticia noticiaSalva = dao.getOne(noticiaCadastrada.getId());
 		assertEquals(noticia.getTitulo(), noticiaSalva.getTitulo());
 
 	}
-	
+
 	@Test
 	@Transactional
-	public void testExcluirNoticia() throws Exception  {
+	public void testExcluirNoticia() throws Exception {
 		Noticia noticia = criarNoticia();
 		Noticia noticiaCadastrada = dao.save(noticia);
-		
-		mockMvc.perform(delete("/noticia/"+noticiaCadastrada.getId()+"/excluir")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+
+		mockMvc.perform(delete("/noticias/" + noticiaCadastrada.getId() + "/excluir").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		assertFalse(dao.findById(noticiaCadastrada.getId()).isPresent());
 	}
-	
+
 	@Test
 	public void testListarTodos() throws Exception {
 		Noticia noticia = criarNoticia();
 		noticia.setTitulo("BBB");
 		dao.saveAndFlush(noticia);
-		mockMvc.perform(get("/noticia/listarTodos").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
+		mockMvc.perform(get("/noticias/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
 	}
-	
+
 	@Test
 	@Transactional
 	public void testPesquisarPorId() throws Exception {
 		Noticia noticia = criarNoticia();
 		noticia.setTitulo("CCC");
 		Noticia noticiaCadastrada = dao.saveAndFlush(noticia);
-		mockMvc.perform(get("/noticia/pesquisar-por-id/" + noticiaCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.titulo").value(noticia.getTitulo()));
+		mockMvc.perform(
+				get("/noticias/pesquisar-por-id/" + noticiaCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.titulo").value(noticia.getTitulo()));
 	}
 
 	private Noticia criarNoticia() {

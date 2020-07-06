@@ -32,16 +32,16 @@ public class Estande implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "hora_inicio", nullable = false, length = 200)
+	@Column(name = "hora_inicio", length = 200)
 	private String hora_inicio;
 
-	@Column(name = "frequencia", nullable = false, length = 200)
+	@Column(name = "frequencia", length = 200)
 	private String frequencia;
 
-	@Column(name = "hora_fim", nullable = false, length = 200)
+	@Column(name = "hora_fim", length = 200)
 	private String hora_fim;
 	
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column(name = "telefone", length = 200)
 	private String telefone;
 	
 	@NotNull(message = "Nome do estande não pode ser vazio")
@@ -68,6 +68,7 @@ public class Estande implements Serializable {
 	private List<Noticia> noticias;
 	
 	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Avaliacao> avaliacoes;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
@@ -76,6 +77,7 @@ public class Estande implements Serializable {
 					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
 	@JsonIgnore
 	private List<Produto> produtos;
+
 	
 	
 	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
@@ -96,6 +98,11 @@ public class Estande implements Serializable {
 		this.noticias = noticias;
 		this.avaliacoes = avaliacoes;
 		this.produtos = produtos;
+	}
+
+	public Estande(Long id) {
+		super();
+		this.id = id;
 	}
 
 	public Estande() {
@@ -204,6 +211,14 @@ public class Estande implements Serializable {
 
 	public void setAvaliacoes(List<Avaliacao> avaliacoes) {
 		this.avaliacoes = avaliacoes;
+	}
+	
+	public String getHoraInicio() {
+		return hora_inicio;
+	}
+	
+	public String getHoraFim() {
+		return hora_fim;
 	}
 
 	@Override

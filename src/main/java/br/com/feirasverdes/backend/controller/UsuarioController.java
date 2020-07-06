@@ -26,11 +26,15 @@ import br.com.feirasverdes.backend.config.JwtTokenUtil;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
+import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.exception.AutenticacaoException;
 import br.com.feirasverdes.backend.exception.EmailInvalidoException;
 import br.com.feirasverdes.backend.exception.ServiceException;
 import br.com.feirasverdes.backend.exception.TipoInvalidoException;
+import br.com.feirasverdes.backend.service.EstandeService;
+import br.com.feirasverdes.backend.service.FeiraService;
 import br.com.feirasverdes.backend.service.UsuarioService;
 
 @RestController
@@ -46,8 +50,14 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService service;
+	
+	@Autowired
+	private FeiraService feiraService;
+	
+	@Autowired
+	private EstandeService estandeService;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> salvarUsuario(@Valid @RequestBody Usuario usuario) throws ServiceException {
 		try {
 			service.salvarUsuario(usuario);
@@ -114,7 +124,8 @@ public class UsuarioController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getDetalhes() throws Exception {
 		try {
 			return ResponseEntity.ok(service.getDetalhes());
@@ -123,6 +134,16 @@ public class UsuarioController {
 		} catch (final DataFormatException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/feiras")
+	public ResponseEntity<List<Feira>> listarFeirasPorUsuario(@PathVariable(value = "id") Long id) {
+		return ResponseEntity.ok(feiraService.buscarFeirasPorUsuario(id));
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/estandes")
+	public ResponseEntity<List<Estande>> listarEstandesPorUsuario(@PathVariable(value = "id") Long id) {
+		return ResponseEntity.ok(estandeService.buscarEstandesPorUsuario(id));
 	}
 
 }

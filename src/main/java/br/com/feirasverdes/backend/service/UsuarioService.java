@@ -1,6 +1,7 @@
 package br.com.feirasverdes.backend.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
@@ -16,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
-import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
+import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -79,9 +80,11 @@ public class UsuarioService {
 	}
 
 	public void excluirUsuario(final Long id) {
-		Usuario usuario = dao.getOne(id);
-		usuario.setAtivo(false);
-		dao.save(usuario);
+		Optional<Usuario> usuario = dao.pesquisarPorId(id);
+		if (usuario.isPresent()) {
+			usuario.get().setAtivo(false);
+			dao.save(usuario.get());
+		}
 	}
 
 	public List<?> listarTodos() {
@@ -108,11 +111,16 @@ public class UsuarioService {
 			if (usuario.getImagem() != null) {
 				usuario.getImagem().setBytesImagem(ImagemUtils.decompressBytes(usuario.getImagem().getBytesImagem()));
 			}
+
+			String dataFormatada = null;
+			if (usuario.getDataNascimento() != null) {
+				SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+				dataFormatada = formatador.format(usuario.getDataNascimento());
+			}
 			return DetalhesDoUsuarioDto.builder().withNome(usuario.getNome()).withEmail(usuario.getEmail())
-					.withCpf(usuario.getCpf()).withCnpj(usuario.getCnpj())
-					.withDataNascimento(usuario.getDataNascimento()).withTelefone(usuario.getTelefone())
-					.withTipoUsuario(usuario.getTipoUsuario()).withImagem(usuario.getImagem()).withId(usuario.getId())
-					.build();
+					.withCpf(usuario.getCpf()).withCnpj(usuario.getCnpj()).withDataNascimento(dataFormatada)
+					.withTelefone(usuario.getTelefone()).withTipoUsuario(usuario.getTipoUsuario())
+					.withImagem(usuario.getImagem()).withId(usuario.getId()).build();
 		} else {
 			return null;
 		}

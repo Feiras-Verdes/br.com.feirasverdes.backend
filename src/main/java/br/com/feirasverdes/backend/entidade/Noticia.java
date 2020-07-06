@@ -1,6 +1,7 @@
 package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,6 +29,9 @@ public class Noticia implements Serializable {
 	@NotNull(message = "Descrição de noticia não pode ser vazio")
 	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
+	
+	@Column(name = "data_publicacao", nullable = false)
+	private LocalDateTime dataPublicacao;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
@@ -44,11 +48,13 @@ public class Noticia implements Serializable {
 		super();
 	}
 
-	public Noticia(Long id, String titulo, String descricao, Imagem imagem, Estande estande, Feira feira) {
+	public Noticia(Long id, String titulo, String descricao, LocalDateTime dataPublicacao, Imagem imagem,
+			Estande estande, Feira feira) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.descricao = descricao;
+		this.dataPublicacao = dataPublicacao;
 		this.imagem = imagem;
 		this.estande = estande;
 		this.feira = feira;
@@ -76,6 +82,14 @@ public class Noticia implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public LocalDateTime getDataPublicacao() {
+		return this.dataPublicacao;
+	}
+
+	public void setDataPublicacao(LocalDateTime dataPublicacao) {
+		this.dataPublicacao = dataPublicacao;
 	}
 
 	public Imagem getImagem() {

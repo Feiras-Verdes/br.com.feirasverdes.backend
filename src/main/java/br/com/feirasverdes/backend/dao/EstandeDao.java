@@ -22,7 +22,7 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	@Query(value = "select e from Estande e where e.feira.id = ?1 and upper(e.nome) like ?2")
 	List<Estande> pesquisarPorFeiraENome(Long idFeira, String nome);
 	
-	@Query(value = "select e from Estande e where e.feira.id = ?1") 
+	@Query(value = "select e from Estande e where e.feira.id = ?1")
 	List<Estande> pesquisarPortodosEstandesdaFeira(Long idFeira);
 	
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
@@ -31,5 +31,9 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 		       " left join e.avaliacoes a "  +
 		       "where upper(e.nome) like ?1 group by e.nome, e.id, e.telefone, e.endereco")
     Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
+
+	List<Estande> findByUsuarioId(Long usuarioId);
+	
+	List<Estande> findByFeiraId(Long idFeira);
 	
 }

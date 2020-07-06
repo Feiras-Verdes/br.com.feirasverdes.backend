@@ -9,17 +9,31 @@ public class EstandeDto implements Serializable {
 	
 	private Long id;
 
-	private String hora_inicio;
+	private String horaInicio;
 
 	private String frequencia;
 
-	private String hora_fim;
+	private String horaFim;
 	
 	private String telefone;
 	
 	private String nome;
 
 	private MultipartFile imagem;
+	
+	private String cep;
+
+	private String estado;
+
+	private String cidade;
+
+	private String bairro;
+
+	private String logradouro;
+
+	private Integer numero;
+
+	private String complemento;
 
 	public EstandeDto() {
 		super();
@@ -30,9 +44,9 @@ public class EstandeDto implements Serializable {
 			String nome, MultipartFile imagem) {
 		super();
 		this.id = id;
-		this.hora_inicio = hora_inicio;
+		this.horaInicio = hora_inicio;
 		this.frequencia = frequencia;
-		this.hora_fim = hora_fim;
+		this.horaFim = hora_fim;
 		this.telefone = telefone;
 		this.nome = nome;
 		this.imagem = imagem;
@@ -46,13 +60,7 @@ public class EstandeDto implements Serializable {
 		this.id = id;
 	}
 
-	public String getHora_inicio() {
-		return hora_inicio;
-	}
-
-	public void setHora_inicio(String hora_inicio) {
-		this.hora_inicio = hora_inicio;
-	}
+	
 
 	public String getFrequencia() {
 		return frequencia;
@@ -62,13 +70,6 @@ public class EstandeDto implements Serializable {
 		this.frequencia = frequencia;
 	}
 
-	public String getHora_fim() {
-		return hora_fim;
-	}
-
-	public void setHora_fim(String hora_fim) {
-		this.hora_fim = hora_fim;
-	}
 
 	public String getTelefone() {
 		return telefone;
@@ -93,13 +94,77 @@ public class EstandeDto implements Serializable {
 	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
-
-	@Override
-	public String toString() {
-		return "AtualizarEstandeDto [id=" + id + ", hora_inicio=" + hora_inicio + ", frequencia=" + frequencia
-				+ ", hora_fim=" + hora_fim + ", telefone=" + telefone + ", nome=" + nome + ", imagem=" + imagem + "]";
+	
+	public String getCep() {
+		return cep;
 	}
-	
-	
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getLogradouro() {
+		return logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public Integer getNumero() {
+		return numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
+	}
+
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	public String getHoraInicio() {
+		return horaInicio;
+	}
+
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
+	}
+
+	public String getHoraFim() {
+		return horaFim;
+	}
+
+	public void setHoraFim(String horaFim) {
+		this.horaFim = horaFim;
+	}
 
 }

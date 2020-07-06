@@ -12,18 +12,21 @@ public class ProdutoDto {
 
 	private Float preco;
 
+	private String unidade;
+
 	private MultipartFile imagem;
-	
+
 	public ProdutoDto() {
 		super();
 	}
 
-	public ProdutoDto(Long id, String nome, String descricao, Float preco, MultipartFile imagem) {
+	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, MultipartFile imagem) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
+		this.unidade = unidade;
 		this.imagem = imagem;
 	}
 
@@ -57,6 +60,14 @@ public class ProdutoDto {
 
 	public void setPreco(Float preco) {
 		this.preco = preco;
+	}
+
+	public String getUnidade() {
+		return this.unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
 	}
 
 	public MultipartFile getImagem() {
