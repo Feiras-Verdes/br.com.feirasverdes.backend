@@ -20,17 +20,10 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoDao dao;
 
-<<<<<<< HEAD
 	public void atualizarProduto(final Long id, ProdutoDto produtoAtualizado) throws IOException {
 
 		Produto produto = dao.getOne(id);
 
-=======
-	public void atualizarProduto(final Long id, ProdutoDto produtoAtualizado) throws IOException{
-		
-		Produto produto = dao.getOne(produtoAtualizado.getId());
-		
->>>>>>> refs/remotes/origin/busca
 		if (produtoAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
 			MultipartFile foto = produtoAtualizado.getImagem();

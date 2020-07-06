@@ -70,6 +70,11 @@ public class Feira implements Serializable {
 	public Feira() {
 		super();
 	}
+	
+	public Feira(Long id) {
+		super();
+		this.id = id;
+	}
 
 	public Feira(Long id, String horaInicio, String nome, String frequencia, String horaFim, String telefone,
 			Endereco endereco, Usuario usuario, Imagem imagem) {

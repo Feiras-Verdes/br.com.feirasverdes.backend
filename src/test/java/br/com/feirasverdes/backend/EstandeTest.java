@@ -150,8 +150,8 @@ public class EstandeTest {
 		estande.setNome("barraca1");
 		estande.setTelefone("(00) 0000-0000");
 		estande.setFrequencia("segunda á sexta");
-		estande.setHora_inicio("09:00");
-		estande.setHora_fim("18:00");
+		estande.setHoraInicio("09:00");
+		estande.setHoraFim("18:00");
 		return estande;
 
 	}

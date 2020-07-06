@@ -31,5 +31,9 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 		       " left join e.avaliacoes a "  +
 		       "where upper(e.nome) like ?1 group by e.nome, e.id, e.telefone, e.endereco")
     Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
+
+	List<Estande> findByUsuarioId(Long usuarioId);
+	
+	List<Estande> findByFeiraId(Long idFeira);
 	
 }

@@ -53,7 +53,7 @@ public class FeiraController {
 	private FeiraDao dao;
 
 	@RolesAllowed({ "ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody Feira feira) {
 		try {
 			return new ResponseEntity<>(service.cadastrarFeira(feira), HttpStatus.OK);
@@ -65,7 +65,7 @@ public class FeiraController {
 	}
 
 	@RolesAllowed({ "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarFeira(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute FeiraDto feira) throws IOException {
 		try {
@@ -78,7 +78,7 @@ public class FeiraController {
 	}
 
 	@RolesAllowed({ "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
 		try {
 			service.excluirFeira(id);
@@ -117,10 +117,11 @@ public class FeiraController {
 	}
 
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoFeira")
-	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@RequestBody Avaliacao avaliacaofeira) {
+	@RequestMapping(method = RequestMethod.POST, value = "{idFeira}/avaliar")
+	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "idFeira") Long idFeira, @RequestBody Avaliacao avaliacaofeira) {
 		Avaliacao cadastro = new Avaliacao();
 		try {
+			avaliacaofeira.setFeira(new Feira(idFeira));
 			cadastro = avaliacaodao.save(avaliacaofeira);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,6 +136,12 @@ public class FeiraController {
 		List<Estande> estandes = estandedao.pesquisarPorFeiraENome(idFeira, "%" + nome.toUpperCase() + "%");
 		return ResponseEntity.ok(estandes);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/estandes")
+	public ResponseEntity<List<Estande>> estandesDaFeira(@PathVariable(value = "idFeira") Long idFeira) {
+		List<Estande> estandes = estandedao.findByFeiraId(idFeira);
+		return ResponseEntity.ok(estandes);
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-melhores-feiras")
 	public ResponseEntity<List> pesquisarPorMelhoresFeiras() {
@@ -142,7 +149,7 @@ public class FeiraController {
 		return ResponseEntity.ok(feiras);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-noticias-feiras/{idFeira}")
+	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/noticias")
 	public ResponseEntity<List> pesquisarPorNoticiasDasFeiras(@PathVariable(value = "idFeira") Long idFeira) {
 		List<Noticia> noticiadasfeiras = noticiadao.buscarUltimasNoticiadaFeira(idFeira);
 		return ResponseEntity.ok(noticiadasfeiras);

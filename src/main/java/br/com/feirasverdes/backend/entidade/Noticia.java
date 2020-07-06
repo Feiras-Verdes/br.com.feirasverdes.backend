@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.entidade;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +29,9 @@ public class Noticia implements Serializable {
 	@NotNull(message = "Descrição de noticia não pode ser vazio")
 	@Column(name = "descricao", nullable = false, length = 200)
 	private String descricao;
+	
+	@Column(name = "data_publicacao", nullable = false)
+	private LocalDateTime dataPublicacao;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;

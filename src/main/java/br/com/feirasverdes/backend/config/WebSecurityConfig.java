@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(final HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests().antMatchers(HttpMethod.OPTIONS).permitAll()
-				.antMatchers(HttpMethod.GET).permitAll().antMatchers("/").permitAll().antMatchers("/usuarios/cadastrar")
+				.antMatchers(HttpMethod.GET).permitAll().antMatchers("/").permitAll().antMatchers("/usuarios")
 				.permitAll().antMatchers("/usuarios/login").permitAll().antMatchers("/nova-senha").permitAll().anyRequest().authenticated().and()
 				.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

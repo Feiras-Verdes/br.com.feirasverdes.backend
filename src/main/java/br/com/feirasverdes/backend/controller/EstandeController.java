@@ -3,6 +3,7 @@ package br.com.feirasverdes.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
@@ -19,9 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
+import br.com.feirasverdes.backend.dao.NoticiaDao;
+import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Noticia;
+import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.service.EstandeService;
 
 @RestController
@@ -38,7 +44,13 @@ public class EstandeController {
 	@Autowired
 	private EstandeDao dao;
 	
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
+	@Autowired
+	private NoticiaDao noticiaDao;
+	
+	@Autowired
+	private ProdutoDao produtoDao;
+	
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Estande> salvarEstande(@Valid @RequestBody Estande estande) {
 		Estande estandeSalva = new Estande();
 		try {
@@ -50,7 +62,7 @@ public class EstandeController {
 		return new ResponseEntity<>(estandeSalva, HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute EstandeDto estande) {
 		try {
@@ -79,10 +91,36 @@ public class EstandeController {
 		return ResponseEntity.ok(estandes);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		Estande estande = dao.getOne(id);
 		return ResponseEntity.ok(estande);
+	}
+	
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.POST, value = "{id}/avaliar")
+	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "id") Long idEstande, @RequestBody Avaliacao avaliacao) {
+		Avaliacao cadastro = new Avaliacao();
+		try {
+			avaliacao.setEstande(new Estande(idEstande));
+			cadastro = avaliacaoDao.save(avaliacao);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(cadastro, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/noticias")
+	public ResponseEntity<List> pesquisarPorNoticiasDasFeiras(@PathVariable(value = "id") Long idEstande) {
+		List<Noticia> noticias = noticiaDao.buscarUltimasNoticiadaEstande(idEstande);
+		return ResponseEntity.ok(noticias);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/produtos")
+	public ResponseEntity<List> produtosDoEstande(@PathVariable(value = "id") Long idEstande) {
+		List<Produto> produtos = produtoDao.findByEstandeId(idEstande);
+		return ResponseEntity.ok(produtos);
 	}
 	
 	// Métodos que prentencem em outros controllers
