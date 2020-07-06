@@ -22,7 +22,7 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 	@Query(value = "from Feira feira where feira.usuario.id = ?1")
 	public List<Feira> buscarFeirasDeUsuario(Long id);
 
-	List<Feira> findByUsuarioId(Long idUsuario);
+	List<Feira> findByUsuarioId(Long idUsuario); 
 	
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
 			 + "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5)) "
@@ -30,6 +30,6 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 			 + " left join f.endereco e" 
 			 + " left join f.imagem i"
 		     + " left join f.avaliacoes a "  +
-		       "where upper(f.nome) like ?1 group by f.nome, f.id, f.telefone, f.endereco")
+		       "where upper(f.nome) like ?1 group by f.nome, f.id, f.telefone, a.nota")
    Page<EstabelecimentoDto> buscaFeiraPorFiltro(String nome, Pageable pageable);
 }

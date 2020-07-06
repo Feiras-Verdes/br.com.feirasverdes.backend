@@ -19,14 +19,16 @@ public class EstabelecimentoDto {
 		super();
 	}
 
-	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem, Endereco endereco, double nota) {
+	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem, Endereco endereco, Number nota) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
 		this.imagem = imagem;
 		this.endereco = endereco;
-		this.nota = nota;
+		if(nota != null) {
+			this.nota = nota.doubleValue();
+		}
 	}
 
 
