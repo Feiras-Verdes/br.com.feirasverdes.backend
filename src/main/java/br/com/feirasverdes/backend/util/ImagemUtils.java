@@ -36,5 +36,19 @@ public class ImagemUtils {
 		outputStream.close();
 		return outputStream.toByteArray();
 	}
+	
+	// uncompress the image bytes before returning it to the angular application
+		public static byte[] decompressBytesBusca(byte[] data) throws IOException, DataFormatException {
+			Inflater inflater = new Inflater();
+			inflater.setInput(data);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+			byte[] buffer = new byte[1024];
+			while (!inflater.finished()) {
+				int count = inflater.inflate(buffer);
+				outputStream.write(buffer, 0, count);
+			}
+			outputStream.close();
+			return outputStream.toByteArray();
+		}
 
 }

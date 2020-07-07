@@ -1,7 +1,13 @@
 package br.com.feirasverdes.backend.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.DataFormatException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -46,7 +52,7 @@ public class BuscaService {
 	}
 
 	public Page<EstabelecimentoDto> verificarOrdenacaoFeira(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
+			String tipoOrdenacao) throws IOException, DataFormatException {
 		Page<EstabelecimentoDto> feira = null;
 		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
 			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
@@ -58,6 +64,15 @@ public class BuscaService {
 						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
 			}
 		}
+		List<EstabelecimentoDto> feiraImagem = new ArrayList<EstabelecimentoDto>();
+		feiraImagem = feira.getContent();
+		for(int i = 0; i < feiraImagem.size(); i++) {
+				if (feiraImagem.get(i).getImagem() != null) {
+					feiraImagem.get(i).getImagem().setBytesImagem(ImagemUtils.decompressBytes(feiraImagem.get(i).getImagem().getBytesImagem()));
+				}
+		}
+		Page<EstabelecimentoDto> estabelecimento = new PageImpl(feiraImagem, feira.getPageable(), feira.getTotalElements());
+		
 		return feira;
 	}
 

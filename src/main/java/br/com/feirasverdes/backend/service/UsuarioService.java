@@ -105,7 +105,7 @@ public class UsuarioService {
 
 	public DetalhesDoUsuarioDto getDetalhes() throws IOException, DataFormatException {
 		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		final Usuario usuario = dao.pesquisarPorEmail(email);
+		 Usuario usuario = dao.pesquisarPorEmail(email);
 
 		if (usuario != null) {
 			if (usuario.getImagem() != null) {
