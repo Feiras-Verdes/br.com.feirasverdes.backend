@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.config.JwtTokenUtil;
+import br.com.feirasverdes.backend.dto.NovaSenhaDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.dto.RespostaJwt;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
@@ -144,6 +145,12 @@ public class UsuarioController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/estandes")
 	public ResponseEntity<List<Estande>> listarEstandesPorUsuario(@PathVariable(value = "id") Long id) {
 		return ResponseEntity.ok(estandeService.buscarEstandesPorUsuario(id));
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "senha")
+	public ResponseEntity<?> login(@RequestBody NovaSenhaDto novaSenhaDto) throws Exception {
+		service.alterarSenha(novaSenhaDto.getSenha());
+		return ResponseEntity.ok("Senha alterada com sucesso");
 	}
 
 }
