@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dto.NoticiaDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Noticia;
+import br.com.feirasverdes.backend.exception.NoticiaNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.service.NoticiaService;
 
 @RestController
@@ -49,20 +50,25 @@ public class NoticiaController {
 	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarNoticia(@Valid @PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute NoticiaDto noticia) {
+			@ModelAttribute NoticiaDto noticia) throws IOException {
 		try {
 			service.atualizarNoticia(id, noticia);
 			return ResponseEntity.ok("Atualizado com sucesso.");
-		} catch (IOException e) {
+		} catch (NoticiaNaoPertenceAoUsuarioException e) {
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
 		}
 	}
 
 	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		service.excluirNoticia(id);
-		return Response.ok().build();
+	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
+		try {
+			service.excluirNoticia(id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (NoticiaNaoPertenceAoUsuarioException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET)

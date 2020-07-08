@@ -5,11 +5,18 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
+import br.com.feirasverdes.backend.dao.EstandeDao;
+import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
+import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Feira;
+import br.com.feirasverdes.backend.exception.AvaliacaoNaoPertenceAoUsuarioException;
+import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
 
 @Service
 @Transactional
@@ -17,19 +24,44 @@ public class AvaliacaoService {
 
 	@Autowired
 	AvaliacaoDao dao;
+	
+	@Autowired
+	private EstandeDao estandeDao;
+
+	@Autowired
+	private FeiraDao feiraDao;
+
 
 	public Avaliacao avaliar(@Valid Avaliacao avaliacao) {
 		return dao.save(avaliacao);
 	}
 
-	public void atualizarAvaliacao(@Valid Long id, Avaliacao avaliacao) {
-		// TODO verificar se usuário chamando método foi quem criou
+	public void atualizarAvaliacao(@Valid Long id, Avaliacao avaliacao) throws AvaliacaoNaoPertenceAoUsuarioException {
+		
+		if(avaliacao.getEstande().getId() != null) {
+			Estande verificar = estandeDao.getOne(avaliacao.getEstande().getId());
+			if(verificar.getUsuario().getId().equals(id)) {
+				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar seu próprio estande.");
+			}
+		}
+		
+		if(avaliacao.getFeira().getId() != null) {
+			Feira verificar = feiraDao.getOne(avaliacao.getFeira().getId());
+			if(verificar.getUsuario().getId().equals(id)) {
+				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar sua própria feira.");
+			}
+		}
+		
 		avaliacao.setId(id);
 		dao.save(avaliacao);
 	}
 
-	public void excluirAvaliacao(Long id) {
-		// TODO verificar se usuário chamando método foi quem criou
+	public void excluirAvaliacao(Long id) throws AvaliacaoNaoPertenceAoUsuarioException {
+		Avaliacao avaliacao = dao.getOne(id);
+
+		if (!avaliacao.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+			throw new AvaliacaoNaoPertenceAoUsuarioException("Esta avaliação não foi cadastrada por você.");
+		}
 		dao.deleteById(id);
 	}
 
