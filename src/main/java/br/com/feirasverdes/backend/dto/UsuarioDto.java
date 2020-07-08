@@ -3,7 +3,8 @@ package br.com.feirasverdes.backend.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.springframework.web.multipart.MultipartFile;
+
+import br.com.feirasverdes.backend.entidade.Imagem;
 
 public class UsuarioDto implements Serializable {
 
@@ -21,14 +22,14 @@ public class UsuarioDto implements Serializable {
 
 	private boolean ativo;
 
-	private MultipartFile imagem;
+	private Imagem imagem;
 
 	public UsuarioDto() {
 		super();
 	}
 
 	public UsuarioDto(String nome, String cpf, String cnpj, String telefone, String email, Date dataNascimento,
-			boolean ativo, MultipartFile imagem) {
+			boolean ativo, Imagem imagem) {
 		super();
 		this.nome = nome;
 		this.cpf = cpf;
@@ -96,11 +97,11 @@ public class UsuarioDto implements Serializable {
 		this.ativo = ativo;
 	}
 
-	public MultipartFile getImagem() {
+	public Imagem getImagem() {
 		return this.imagem;
 	}
 
-	public void setImagem(MultipartFile imagem) {
+	public void setImagem(Imagem imagem) {
 		this.imagem = imagem;
 	}
 

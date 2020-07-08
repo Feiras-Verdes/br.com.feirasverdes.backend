@@ -13,18 +13,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
-import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.exception.EmailInvalidoException;
 import br.com.feirasverdes.backend.exception.TipoInvalidoException;
-import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
 @Transactional
@@ -60,16 +57,8 @@ public class UsuarioService {
 
 	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
 		Usuario usuario = dao.getOne(id);
-		
-		if (usuarioAtualizado.getImagem() != null) {
-			Imagem imagem = new Imagem();
-			MultipartFile foto = usuarioAtualizado.getImagem();
-			imagem.setNome(foto.getOriginalFilename());
-			imagem.setTipo(foto.getContentType());
-			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
-
-			usuario.setImagem(imagem); 
-		}
+	
+	    usuario.setImagem(usuarioAtualizado.getImagem()); 
 		usuario.setCnpj(usuarioAtualizado.getCnpj());
 		usuario.setCpf(usuarioAtualizado.getCpf());
 		usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
@@ -108,10 +97,6 @@ public class UsuarioService {
 		 Usuario usuario = dao.pesquisarPorEmail(email);
 
 		if (usuario != null) {
-			if (usuario.getImagem() != null) {
-				usuario.getImagem().setBytesImagem(ImagemUtils.decompressBytes(usuario.getImagem().getBytesImagem()));
-			}
-
 			String dataFormatada = null;
 			if (usuario.getDataNascimento() != null) {
 				SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");

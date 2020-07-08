@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import br.com.feirasverdes.backend.entidade.Imagem;
+
 @JsonInclude(Include.NON_NULL)
 public class FeiraDto implements Serializable {
 
@@ -43,7 +45,7 @@ public class FeiraDto implements Serializable {
 	@NotNull
 	private Long idUsuario;
 
-	private MultipartFile imagem;
+	private Imagem imagem;
 
 	public FeiraDto() {
 		super();
@@ -97,11 +99,11 @@ public class FeiraDto implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public MultipartFile getImagem() {
+	public Imagem getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(MultipartFile imagem) {
+	public void setImagem(Imagem imagem) {
 		this.imagem = imagem;
 	}
 

@@ -125,7 +125,7 @@ public class UsuarioController {
 	}
 
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, value = "detalhes")
 	public ResponseEntity<?> getDetalhes() throws Exception {
 		try {
 			return ResponseEntity.ok(service.getDetalhes());

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.feirasverdes.backend.entidade.Imagem;
+
 public class EstandeDto implements Serializable {
 	
 	private Long id;
@@ -19,7 +21,7 @@ public class EstandeDto implements Serializable {
 	
 	private String nome;
 
-	private MultipartFile imagem;
+	private Imagem imagem;
 	
 	private String cep;
 
@@ -41,7 +43,7 @@ public class EstandeDto implements Serializable {
 	}
 
 	public EstandeDto(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
-			String nome, MultipartFile imagem) {
+			String nome, Imagem imagem) {
 		super();
 		this.id = id;
 		this.horaInicio = hora_inicio;
@@ -87,11 +89,11 @@ public class EstandeDto implements Serializable {
 		this.nome = nome;
 	}
 
-	public MultipartFile getImagem() {
+	public Imagem getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(MultipartFile imagem) {
+	public void setImagem(Imagem imagem) {
 		this.imagem = imagem;
 	}
 	

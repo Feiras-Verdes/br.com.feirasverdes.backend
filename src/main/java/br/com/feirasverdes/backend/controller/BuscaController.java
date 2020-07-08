@@ -85,6 +85,7 @@ public class BuscaController {
 		} catch (final BadCredentialsException | DisabledException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de produtos inválida"));
 		} catch (final Exception e) {
+			e.printStackTrace();
 			throw new AutenticacaoException();
 		}
 	}

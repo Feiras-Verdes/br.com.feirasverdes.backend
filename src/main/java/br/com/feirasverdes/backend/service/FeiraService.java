@@ -23,7 +23,6 @@ import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.exception.UsuarioNaoEOrganizadorException;
-import br.com.feirasverdes.backend.util.ImagemUtils;
 
 @Service
 @Transactional
@@ -78,14 +77,7 @@ public class FeiraService {
 		feira.setTelefone(feiraDto.getTelefone());
 		feira.setEndereco(paraEndereco(feiraDto));
 
-		if (feiraDto.getImagem() != null) {
-			Imagem imagem = new Imagem();
-			MultipartFile foto = feiraDto.getImagem();
-			imagem.setNome(foto.getOriginalFilename());
-			imagem.setTipo(foto.getContentType());
-			imagem.setBytesImagem(ImagemUtils.compressBytes(foto.getBytes()));
-			feira.setImagem(imagem);
-		}
+			feira.setImagem(feiraDto.getImagem());
 	}
 
 	private Endereco paraEndereco(FeiraDto feiraDto) {
@@ -111,13 +103,6 @@ public class FeiraService {
 		}
 
 		List<Feira> feiras = dao.buscarFeirasDeUsuario(id);
-
-		for (Feira feira : feiras) {
-			if (feira.getImagem() != null) {
-				feira.getImagem().setBytesImagem(ImagemUtils.decompressBytes(feira.getImagem().getBytesImagem()));
-			}
-		}
-
 		return feiras;
 	}
 	

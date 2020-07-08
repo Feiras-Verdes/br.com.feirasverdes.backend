@@ -2,6 +2,8 @@ package br.com.feirasverdes.backend.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.feirasverdes.backend.entidade.Imagem;
+
 public class ProdutoDto {
 
 	private Long id;
@@ -14,13 +16,13 @@ public class ProdutoDto {
 
 	private String unidade;
 
-	private MultipartFile imagem;
+	private Imagem imagem;
 
 	public ProdutoDto() {
 		super();
 	}
 
-	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, MultipartFile imagem) {
+	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, Imagem imagem) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -70,11 +72,11 @@ public class ProdutoDto {
 		this.unidade = unidade;
 	}
 
-	public MultipartFile getImagem() {
+	public Imagem getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(MultipartFile imagem) {
+	public void setImagem(Imagem imagem) {
 		this.imagem = imagem;
 	}
 
