@@ -1,7 +1,9 @@
 package br.com.feirasverdes.backend.dto;
 
 
-import br.com.feirasverdes.backend.entidade.Imagem;
+import java.time.LocalDateTime;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class NoticiaDto {
 
@@ -11,14 +13,25 @@ public class NoticiaDto {
 
 	private String descricao;
 
-	private Imagem imagem;
+	private MultipartFile imagem;
+	
+	private LocalDateTime dataPublicacao;
 
-	public NoticiaDto(Long id, String titulo, String descricao, Imagem imagem) {
+	public NoticiaDto(Long id, String titulo, String descricao, MultipartFile imagem, LocalDateTime dataPublicacao) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.descricao = descricao;
 		this.imagem = imagem;
+		this.dataPublicacao = dataPublicacao;
+	}
+
+	public LocalDateTime getDataPublicacao() {
+		return dataPublicacao;
+	}
+
+	public void setDataPublicacao(LocalDateTime dataPublicacao) {
+		this.dataPublicacao = dataPublicacao;
 	}
 
 	public Long getId() {
@@ -45,12 +58,14 @@ public class NoticiaDto {
 		this.descricao = descricao;
 	}
 
-	public Imagem getImagem() {
+	public MultipartFile getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
+	
+	
 
 }
