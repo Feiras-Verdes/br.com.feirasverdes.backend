@@ -84,7 +84,7 @@ public class ProdutoTest {
 
 		mockMvc.perform(put("/produtos/" + produto.getId() + "/atualizar").headers(TestUtil.autHeaders())
 				.param("nome", produto.getNome()).param("descricao", produto.getDescricao())
-				.param("preco", produto.getPreco().toString())).andExpect(status().isOk());
+				.param("preco", produto.getPreco().toString()).param("unidade", produto.getUnidade())).andExpect(status().isOk());
 
 		Produto produtoSalvo = produtodao.findById(produtoCadastrado.getId()).get();
 		assertEquals(produto.getNome(), produtoSalvo.getNome());
@@ -148,6 +148,7 @@ public class ProdutoTest {
 		produto.setNome("Laranja");
 		produto.setPreco(3.00f);
 		produto.setDescricao("do sitio");
+		produto.setUnidade("kg");
 		return produto;
 
 	}

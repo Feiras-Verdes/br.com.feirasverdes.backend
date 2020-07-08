@@ -17,7 +17,6 @@ import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
-import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;

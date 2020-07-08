@@ -21,16 +21,15 @@ public class UsuarioTestUtil {
 	
 	public Usuario criarUsuarioLogin(String email, String senha, Long tipoUsuario) {
 		Usuario usuario = dao.pesquisarPorEmail(email);
-		if (usuario != null) {
-			return usuario;
+		if (usuario == null) {
+			usuario = new Usuario();
 		}
-		usuario = new Usuario();
 		usuario.setNome(email);
 		usuario.setSenha(senha);
 		usuario.setEmail(email);
 		usuario.setAtivo(true);
 		usuario.setTipoUsuario(tipoUsuarioDao.getOne(tipoUsuario));
-		usuario.setCpf("000.000.000-00");
+		usuario.setCpf("598.680.400-78");
 		return dao.save(usuario);
 	}
 

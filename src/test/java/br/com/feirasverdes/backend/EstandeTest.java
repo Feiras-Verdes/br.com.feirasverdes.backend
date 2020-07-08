@@ -54,7 +54,7 @@ public class EstandeTest {
 	public void testCadastrarEstande() throws Exception {
 		Estande estande = criarEstande();
 		MvcResult result = mockMvc
-				.perform(post("/estandes/cadastrar").headers(TestUtil.autHeaders())
+				.perform(post("/estandes").headers(TestUtil.autHeaders())
 						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(estande)))
 				.andExpect(status().isOk()).andReturn();
 		Estande estandeResult = (Estande) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
@@ -82,7 +82,7 @@ public class EstandeTest {
 		estande.setHora_inicio("08:00");
 		estande.setHora_fim("17:00");
 
-		mockMvc.perform(put("/estandes/" + estande.getId() + "/atualizar").headers(TestUtil.autHeaders())
+		mockMvc.perform(put("/estandes/" + estande.getId()).headers(TestUtil.autHeaders())
 				.param("nome", estande.getNome()).param("telefone", estande.getTelefone())
 				.param("frequencia", estande.getFrequencia()).param("horaInicio", estande.getHora_inicio())
 				.param("horaFim", estande.getHora_fim())).andExpect(status().isOk()).andReturn();
@@ -98,7 +98,7 @@ public class EstandeTest {
 		Estande estande = criarEstande();
 		Estande estandeCadastrado = estandeDao.save(estande);
 
-		mockMvc.perform(delete("/estandes/" + estandeCadastrado.getId() + "/excluir").headers(TestUtil.autHeaders())
+		mockMvc.perform(delete("/estandes/" + estandeCadastrado.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		assertFalse(estandeDao.findById(estandeCadastrado.getId()).isPresent());
 
@@ -129,7 +129,7 @@ public class EstandeTest {
 		Estande estande = criarEstande();
 		Estande estandeCadastrado = estandeDao.save(estande);
 		mockMvc.perform(
-				get("/estandes/pesquisar-por-id/" + estandeCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
+				get("/estandes/" + estandeCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.nome").value(estandeCadastrado.getNome()));
 
 	}

@@ -1,17 +1,8 @@
 package br.com.feirasverdes.backend;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
 
-import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
-import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 
 @AutoConfigureMockMvc
@@ -55,7 +42,7 @@ public class BuscaTest {
 		estande2.setNome("zzza");
 		estandeDao.save(estande1);
 		estandeDao.save(estande2);
-		mockMvc.perform(get("/busca/estabelecimentos?nome=zzz&limite=10&pagina=0&ordenacao=nome&tipoOrdenacao=asc").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/busca/estandes?nome=zzz&limite=10&pagina=0&ordenacao=nome&tipoOrdenacao=asc").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.content[0].nome").value("zzza"))
 		.andExpect(jsonPath("$.content[1].nome").value("zzzz"));

@@ -79,9 +79,6 @@ public class AvaliacaoTest {
 		Avaliacao avaliacaoSalva = dao.getOne(avaliacaoResult.getId());
 		assertNotNull(avaliacaoSalva);
 		assertEquals(avaliacao.getNota(), avaliacaoSalva.getNota());
-		assertEquals(avaliacao.getFeira().getNome(), avaliacaoSalva.getFeira().getNome());
-		assertEquals(avaliacao.getEstande().getNome(), avaliacaoSalva.getEstande().getNome());
-		assertEquals(avaliacao.getUsuario().getNome(), avaliacaoSalva.getUsuario().getNome());
 	}
 
 	@Test

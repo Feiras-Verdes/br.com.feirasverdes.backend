@@ -65,7 +65,7 @@ public class UsuarioTest {
 	public void testCadastarUsuario() throws IOException, Exception {
 		Usuario usuario = criarUsuario("A", "a@localhost");
 		usuario.setEmail("usuariocadastrar@localhost");
-		mockMvc.perform(post("/usuarios/cadastrar")
+		mockMvc.perform(post("/usuarios")
 				.headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(TestUtil.convertObjectToJsonBytes(usuario)))
@@ -84,7 +84,7 @@ public class UsuarioTest {
 		usuarAtualizarUsuarioDto.setNome("Usuario 2");
 		usuarAtualizarUsuarioDto.setEmail("usuarioatualizar@localhost");
 		usuarAtualizarUsuarioDto.setDataNascimento(null);
-		mockMvc.perform(put("/usuarios/"+usuarioCadastrado.getId()+"/atualizar")
+		mockMvc.perform(put("/usuarios/"+usuarioCadastrado.getId())
 				.headers(TestUtil.autHeaders())
 				.param("nome", usuarAtualizarUsuarioDto.getNome())
 				.param("cnpj", usuarAtualizarUsuarioDto.getCnpj())
@@ -159,7 +159,7 @@ public class UsuarioTest {
 	
 	@Test
 	public void testGetDetalhes() throws Exception {
-		MvcResult result = mockMvc.perform(get("/usuarios/detalhes")
+		MvcResult result = mockMvc.perform(get("/usuarios")
 				.headers(TestUtil.autHeaders())
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -218,19 +218,19 @@ public class UsuarioTest {
 	private Usuario criarUsuario(String nome, String email) {
 		Usuario  usuario = new Usuario();
 		usuario.setNome(nome);
-		usuario.setCpf("000.000.000-01");
+		usuario.setCpf("497.518.190-83");
 		usuario.setDataNascimento(Date.from(LocalDate.of(2020, 6, 21).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		usuario.setEmail(email);
 		usuario.setSenha("123");
 		usuario.setTelefone("(00) 0000-0000");
-		usuario.setTipoUsuario(new TipoUsuario(1L));
+		usuario.setTipoUsuario(new TipoUsuario(3L));
 		return usuario;
 	}
 	
 	private UsuarioDto criarAtualizarUsuarioDto() {
 		UsuarioDto  usuario = new UsuarioDto();
 		usuario.setNome("Atualizar");
-		usuario.setCpf("000.000.000-01");
+		usuario.setCpf("497.518.190-83");
 		usuario.setDataNascimento(Date.from(LocalDate.of(2020, 6, 21).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		usuario.setEmail("teste1@email.com");
 		usuario.setTelefone("(00) 0000-0000");

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +74,7 @@ public class FeiraTest {
 	public void testCadastrarFeira() throws IOException, Exception {
 		Feira feira = criarFeira();
 		MvcResult result = mockMvc
-				.perform(post("/feiras/cadastrar").headers(TestUtil.autHeaders())
+				.perform(post("/feiras").headers(TestUtil.autHeaders())
 						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(feira)))
 				.andExpect(status().isOk()).andReturn();
 		Feira feiraResult = (Feira) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
@@ -94,7 +95,7 @@ public class FeiraTest {
 	public void testCadastrarFeiraErro() throws IOException, Exception {
 		FeiraDto feira = criarFeiraDto();
 		feira.setNome(null);
-		mockMvc.perform(post("/feiras/cadastrar").headers(TestUtil.autHeaders()).contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/feiras").headers(TestUtil.autHeaders()).contentType(MediaType.APPLICATION_JSON)
 				.content(TestUtil.convertObjectToJsonBytes(feira))).andExpect(status().is(400));
 	}
 
@@ -107,10 +108,12 @@ public class FeiraTest {
 		feira.setNome("Feira 2");
 		feira.setTelefone("(11) 1111-11111");
 
-		mockMvc.perform(put("/feiras/" + feira.getId() + "/atualizar").headers(TestUtil.autHeaders())
+		mockMvc.perform(put("/feiras/" + feira.getId()).headers(TestUtil.autHeaders())
 				.param("nome", feira.getNome()).param("telefone", feira.getTelefone())
 				.param("frequencia", feira.getFrequencia()).param("horaFim", feira.getHoraFim())
-				.param("horaInicio", feira.getHoraInicio())).andExpect(status().isOk());
+				.param("horaInicio", feira.getHoraInicio())
+				.param("idUsuario", feiraCadastrada.getUsuario().getId().toString()))
+		.andExpect(status().isOk());
 
 		Feira feiraSalva = feiraDao.getOne(feiraCadastrada.getId());
 		assertEquals(feira.getNome(), feiraSalva.getNome());
@@ -123,7 +126,7 @@ public class FeiraTest {
 		Feira feira = criarFeira();
 		Feira feiraCadastrada = feiraService.cadastrarFeira(feira);
 
-		mockMvc.perform(delete("/feiras/" + feiraCadastrada.getId() + "/excluir").headers(TestUtil.autHeaders())
+		mockMvc.perform(delete("/feiras/" + feiraCadastrada.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
 		assertFalse(feiraDao.findById(feiraCadastrada.getId()).isPresent());
@@ -161,7 +164,7 @@ public class FeiraTest {
 		Feira feira = feiraService.cadastrarFeira(criarFeira());
 		Avaliacao avaliacao = criaAvaliacao(feira);
 		MvcResult result = mockMvc
-				.perform(post("/feiras/cadastrarAvaliacaoFeira").headers(TestUtil.autHeaders())
+				.perform(post("/feiras/"+feira.getId()+"/avaliar").headers(TestUtil.autHeaders())
 						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
 				.andExpect(status().isOk()).andReturn();
 		Avaliacao avaliacaoResult = (Avaliacao) TestUtil
@@ -224,9 +227,10 @@ public class FeiraTest {
 		noticia.setDescricao("Descrição noticia 1");
 		noticia.setFeira(feiraCadastrada);
 		noticia.setTitulo("Noticia 1");
+		noticia.setDataPublicacao(LocalDateTime.now());
 		noticiaDao.save(noticia);
 
-		mockMvc.perform(get("/feiras/pesquisar-por-noticias-feiras/" + feiraCadastrada.getId())
+		mockMvc.perform(get("/feiras/" + feiraCadastrada.getId()+"/noticias")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
 	}

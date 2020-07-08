@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +72,8 @@ public class NoticiaTest {
 		Noticia noticia = criarNoticia();
 		MvcResult result = mockMvc
 				.perform(post("/noticias/cadastrar").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(noticia)))
+				.param("titulo", noticia.getTitulo())
+				.param("descricao", noticia.getDescricao()))
 				.andExpect(status().isOk()).andReturn();
 		Noticia noticiaResult = (Noticia) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Noticia.class);
@@ -80,8 +82,6 @@ public class NoticiaTest {
 		assertNotNull(noticiaSalvo);
 		assertEquals(noticia.getTitulo(), noticiaSalvo.getTitulo());
 		assertEquals(noticia.getDescricao(), noticiaSalvo.getDescricao());
-		assertEquals(noticia.getFeira().getNome(), noticiaSalvo.getFeira().getNome());
-		assertEquals(noticia.getEstande().getNome(), noticiaSalvo.getEstande().getNome());
 	}
 
 	@Test
@@ -138,6 +138,7 @@ public class NoticiaTest {
 		noticia.setDescricao("A laranja chegou no estande");
 		noticia.setFeira(feira);
 		noticia.setEstande(estande);
+		noticia.setDataPublicacao(LocalDateTime.now());
 		return noticia;
 
 	}
