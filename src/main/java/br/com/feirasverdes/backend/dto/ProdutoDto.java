@@ -16,13 +16,13 @@ public class ProdutoDto {
 
 	private String unidade;
 
-	private Imagem imagem;
+	private MultipartFile imagem;
 
 	public ProdutoDto() {
 		super();
 	}
 
-	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, Imagem imagem) {
+	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, MultipartFile imagem) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -72,11 +72,11 @@ public class ProdutoDto {
 		this.unidade = unidade;
 	}
 
-	public Imagem getImagem() {
+	public MultipartFile getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
 

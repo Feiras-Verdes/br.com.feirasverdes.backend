@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.EnderecoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Imagem;
 
 @Service
 public class EstandeService {
@@ -24,7 +26,15 @@ public class EstandeService {
 	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException{
 		Estande estande = dao.getOne(id);
 
-	    estande.setImagem(estandeAtualizado.getImagem() );
+		if (estandeAtualizado.getImagem() != null) {
+			Imagem imagem = new Imagem();
+			MultipartFile foto = estandeAtualizado.getImagem();
+			imagem.setNome(foto.getOriginalFilename());
+			imagem.setTipo(foto.getContentType());
+			imagem.setBytesImagem(foto.getBytes());
+
+			estande.setImagem(imagem);
+		}
 		estande.setHora_inicio(estandeAtualizado.getHoraInicio());
 		estande.setFrequencia(estandeAtualizado.getFrequencia());
 		estande.setHora_fim(estandeAtualizado.getHoraFim());

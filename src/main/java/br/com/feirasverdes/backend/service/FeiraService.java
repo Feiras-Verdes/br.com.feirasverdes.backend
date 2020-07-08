@@ -17,6 +17,7 @@ import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
+import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -77,7 +78,14 @@ public class FeiraService {
 		feira.setTelefone(feiraDto.getTelefone());
 		feira.setEndereco(paraEndereco(feiraDto));
 
-			feira.setImagem(feiraDto.getImagem());
+		if (feiraDto.getImagem() != null) {
+			Imagem imagem = new Imagem();
+			MultipartFile foto = feiraDto.getImagem();
+			imagem.setNome(foto.getOriginalFilename());
+			imagem.setTipo(foto.getContentType());
+			imagem.setBytesImagem(foto.getBytes());
+			feira.setImagem(imagem);
+		}
 	}
 
 	private Endereco paraEndereco(FeiraDto feiraDto) {

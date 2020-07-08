@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.entidade.Imagem;
 
@@ -31,25 +31,11 @@ public class UsuarioDto implements Serializable {
 
 	private boolean ativo;
 
-	private Imagem imagem;
+	private MultipartFile imagem;
 
 	public UsuarioDto() {
 		super();
 	}
-
-	public UsuarioDto(String nome, String cpf, String cnpj, String telefone, String email, Date dataNascimento,
-			boolean ativo, Imagem imagem) {
-		super();
-		this.nome = nome;
-		this.cpf = cpf;
-		this.cnpj = cnpj;
-		this.telefone = telefone;
-		this.email = email;
-		this.dataNascimento = dataNascimento;
-		this.ativo = ativo;
-		this.imagem = imagem;
-	}
-
 	public String getNome() {
 		return this.nome;
 	}
@@ -113,13 +99,10 @@ public class UsuarioDto implements Serializable {
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
 	}
-
-	public Imagem getImagem() {
-		return this.imagem;
+	public MultipartFile getImagem() {
+		return imagem;
 	}
-
-	public void setImagem(Imagem imagem) {
+	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
-
 }

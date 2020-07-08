@@ -13,11 +13,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
+import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.exception.EmailInvalidoException;
@@ -58,7 +60,15 @@ public class UsuarioService {
 	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
 		Usuario usuario = dao.getOne(id);
 	
-	    usuario.setImagem(usuarioAtualizado.getImagem()); 
+		if (usuarioAtualizado.getImagem() != null) {
+			Imagem imagem = new Imagem();
+			MultipartFile foto = usuarioAtualizado.getImagem();
+			imagem.setNome(foto.getOriginalFilename());
+			imagem.setTipo(foto.getContentType());
+			imagem.setBytesImagem(foto.getBytes());
+			usuario.setImagem(imagem);
+		}
+		
 		usuario.setCnpj(usuarioAtualizado.getCnpj());
 		usuario.setCpf(usuarioAtualizado.getCpf());
 		usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
