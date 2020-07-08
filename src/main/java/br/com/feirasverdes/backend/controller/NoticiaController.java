@@ -40,7 +40,7 @@ public class NoticiaController {
 		Noticia noticiaSalvo = new Noticia();
 		try {
 			noticia.setDataPublicacao(LocalDateTime.now());
-			noticiaSalvo = dao.save(noticia);
+			noticiaSalvo = service.salvar(noticia);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -55,7 +55,7 @@ public class FeiraController {
 	private FeiraDao dao;
 
 	@RolesAllowed({ "ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,  value = "/feiras")
 	public ResponseEntity<Feira> salvarFeira(@Valid @RequestBody Feira feira) {
 		try {
 			return new ResponseEntity<>(service.cadastrarFeira(feira), HttpStatus.OK);
