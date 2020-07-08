@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -40,9 +43,11 @@ public class Usuario implements Serializable {
 	@Column(nullable = false)
 	private String nome;
 
+	@CPF(message = "CPF Incorreto")
 	@Column(nullable = true)
 	private String cpf;
 
+	@CNPJ(message = "CNPJ Incorreto")
 	@Column(nullable = true)
 	private String cnpj;
 
@@ -92,7 +97,11 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
+		if (cnpj == null || cnpj.length() == 0) {
+			this.cnpj = null;
+		} else {
+			this.cnpj = cnpj;
+		}
 	}
 
 	public Long getId() {
@@ -132,7 +141,11 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		if (cpf == null || cpf.length() == 0) {
+			this.cpf = null;
+		} else {
+			this.cpf = cpf;
+		}
 	}
 
 	public String getTelefone() {

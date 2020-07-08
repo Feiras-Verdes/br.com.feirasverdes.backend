@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
+import br.com.feirasverdes.backend.dto.NovaSenhaDto;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -165,6 +166,20 @@ public class UsuarioTest {
 			.andReturn();
 		DetalhesDoUsuarioDto usuarioRetorno = (DetalhesDoUsuarioDto) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(), DetalhesDoUsuarioDto.class);
 		assertDetalheUsuario(usuarioRetorno, usuarioLogado);
+	}
+	
+	@Test
+	public void testAtualizarSenha() throws IOException, Exception {
+		NovaSenhaDto novaSenhaDto = new NovaSenhaDto();
+		novaSenhaDto.setSenha("abcde");
+		mockMvc.perform(put("/usuarios/senha")
+				.headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(TestUtil.convertObjectToJsonBytes(novaSenhaDto)))
+				.andExpect(status().isOk())
+				.andReturn();
+		Usuario usuarioSalvo = service.pesquisarPorId(usuarioLogado.getId()).get();
+		assertTrue(passwordEncoder.matches(novaSenhaDto.getSenha(), usuarioSalvo.getSenha()));
 	}
 
 	private void assertUsuario(Usuario usuario, Usuario usuarioSalvo) {

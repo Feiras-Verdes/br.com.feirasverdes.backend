@@ -110,5 +110,12 @@ public class UsuarioService {
 			return null;
 		}
 	}
+	
+	public void alterarSenha(String novaSenha) {
+		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		Usuario usuario = dao.pesquisarPorEmail(email);
+		usuario.setSenha(passwordEncoder.encode(novaSenha));
+		dao.save(usuario);
+	}
 
 }
