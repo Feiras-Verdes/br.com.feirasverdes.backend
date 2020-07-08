@@ -2,6 +2,8 @@ package br.com.feirasverdes.backend.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
+import br.com.feirasverdes.backend.dto.NoticiaDetalhesDto;
 import br.com.feirasverdes.backend.dto.NoticiaDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
@@ -75,17 +78,43 @@ public class NoticiaService {
 			noticia.setImagem(imagem);
 		}
 		noticia.setTitulo(noticiaAtualizada.getTitulo());
-		noticia.setDescricao(noticiaAtualizada.getTitulo());
+		noticia.setDescricao(noticiaAtualizada.getDescricao());
 
 		dao.save(noticia);
 	}
 
-	public List<Noticia> buscarUltimasNoticiadaEstande(Long idEstande) {
-		return dao.buscarUltimasNoticiadaEstande(idEstande);
+	public List<NoticiaDetalhesDto> buscarUltimasNoticiadaEstande(Long idEstande) {
+		List<Noticia> noticias = dao.buscarUltimasNoticiadaEstande(idEstande);
+		List<NoticiaDetalhesDto> noticiasDto = new ArrayList<NoticiaDetalhesDto>();
+
+		for (Noticia noticia : noticias) {
+			noticiasDto.add(paraNoticiaDetalhesDto(noticia));
+		}
+		return noticiasDto;
 	}
 
-	public List<Noticia> buscarUltimasNoticiadaFeira(Long idFeira) {
-		return dao.buscarUltimasNoticiadaFeira(idFeira);
+	private NoticiaDetalhesDto paraNoticiaDetalhesDto(Noticia noticia) {
+		NoticiaDetalhesDto noticiaDto = new NoticiaDetalhesDto();
+		noticiaDto.setId(noticia.getId());
+		noticiaDto.setTitulo(noticia.getTitulo());
+		noticiaDto.setDescricao(noticia.getDescricao());
+		noticiaDto.setFeira(noticia.getFeira());
+		noticiaDto.setEstande(noticia.getEstande());
+		noticiaDto.setDataPublicacao(
+				noticia.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+		noticiaDto.setImagem(noticia.getImagem());
+
+		return noticiaDto;
+	}
+
+	public List<NoticiaDetalhesDto> buscarUltimasNoticiadaFeira(Long idFeira) {
+		List<Noticia> noticias = dao.buscarUltimasNoticiadaFeira(idFeira);
+		List<NoticiaDetalhesDto> noticiasDto = new ArrayList<NoticiaDetalhesDto>();
+
+		for (Noticia noticia : noticias) {
+			noticiasDto.add(paraNoticiaDetalhesDto(noticia));
+		}
+		return noticiasDto;
 	}
 
 	public void excluirNoticia(Long id) {
@@ -93,16 +122,29 @@ public class NoticiaService {
 		dao.deleteById(id);
 	}
 
-	public List<Noticia> listarTodos() {
-		return dao.findAll();
+	public List<NoticiaDetalhesDto> listarTodos() {
+		List<Noticia> noticias = dao.findAll();
+		List<NoticiaDetalhesDto> noticiasDto = new ArrayList<NoticiaDetalhesDto>();
+
+		for (Noticia noticia : noticias) {
+			noticiasDto.add(paraNoticiaDetalhesDto(noticia));
+		}
+		return noticiasDto;
 	}
 
-	public Noticia pesquisarPorId(Long id) {
-		return dao.getOne(id);
+	public NoticiaDetalhesDto pesquisarPorId(Long id) {
+		Noticia noticia = dao.getOne(id);
+		return paraNoticiaDetalhesDto(noticia);
 	}
 
-	public List<Noticia> buscarUltimasNoticias() {
-		return dao.buscarUltimasNoticias();
+	public List<NoticiaDetalhesDto> buscarUltimasNoticias() {
+		List<Noticia> noticias = dao.buscarUltimasNoticias();
+		List<NoticiaDetalhesDto> noticiasDto = new ArrayList<NoticiaDetalhesDto>();
+
+		for (Noticia noticia : noticias) {
+			noticiasDto.add(paraNoticiaDetalhesDto(noticia));
+		}
+		return noticiasDto;
 	}
 
 }
