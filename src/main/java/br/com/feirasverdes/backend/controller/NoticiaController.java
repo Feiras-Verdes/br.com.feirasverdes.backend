@@ -36,7 +36,7 @@ public class NoticiaController {
 	private NoticiaDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
-	public ResponseEntity<Noticia> salvarNoticia(@Valid @ModelAttribute Noticia noticia) {
+	public ResponseEntity<Noticia> salvarNoticia(@Valid @ModelAttribute NoticiaDto noticia) {
 		Noticia noticiaSalvo = new Noticia();
 		try {
 			noticia.setDataPublicacao(LocalDateTime.now());
