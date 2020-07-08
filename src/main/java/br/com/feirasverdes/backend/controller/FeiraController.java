@@ -23,6 +23,8 @@ import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
+import br.com.feirasverdes.backend.dto.FeiraDetalheDTO;
+import br.com.feirasverdes.backend.dto.ListFeiraDTO;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
@@ -106,9 +108,23 @@ public class FeiraController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}")
-	public ResponseEntity<Feira> pesquisarPorId(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<FeiraDetalheDTO> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		Feira feira = dao.getOne(id);
-		return ResponseEntity.ok(feira);
+		FeiraDetalheDTO feiraDto = new FeiraDetalheDTO();
+		feiraDto.setId(feira.getId());
+		feiraDto.setEndereco(feira.getEndereco());
+		feiraDto.setFrequencia(feira.getFrequencia());
+		feiraDto.setHoraFim(feira.getHoraFim());
+		feiraDto.setHoraInicio(feira.getHoraInicio());
+		feiraDto.setImagem(feira.getImagem());
+		feiraDto.setNome(feira.getNome());
+		feiraDto.setTelefone(feira.getTelefone());
+		feiraDto.setUsuario(feira.getUsuario());
+		Number avaliacao = dao.avaliacaoPorFeira(id);
+		if (avaliacao != null) {
+			feiraDto.setAvaliacao(avaliacao.doubleValue());
+		}
+		return ResponseEntity.ok(feiraDto);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/listarAvaliacaoUsuario/{idUsuario}")
@@ -144,8 +160,8 @@ public class FeiraController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-melhores-feiras")
-	public ResponseEntity<List> pesquisarPorMelhoresFeiras() {
-		List<Feira> feiras = dao.buscarMelhoresFeiras();
+	public ResponseEntity<List<ListFeiraDTO>> pesquisarPorMelhoresFeiras() {
+		List<ListFeiraDTO> feiras = dao.buscarMelhoresFeiras();
 		return ResponseEntity.ok(feiras);
 	}
 

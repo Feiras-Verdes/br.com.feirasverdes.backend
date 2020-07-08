@@ -45,7 +45,7 @@ public class FeiraDto implements Serializable {
 	@NotNull
 	private Long idUsuario;
 
-	private Imagem imagem;
+	private MultipartFile imagem;
 
 	public FeiraDto() {
 		super();
@@ -99,11 +99,11 @@ public class FeiraDto implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public Imagem getImagem() {
+	public MultipartFile getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
 

@@ -1,8 +1,11 @@
 package br.com.feirasverdes.backend.dto;
 
 
+<<<<<<< HEAD
 import java.time.LocalDateTime;
 
+=======
+>>>>>>> branch 'imagemBusca' of https://github.com/Feiras-Verdes/br.com.feirasverdes.backend.git
 import org.springframework.web.multipart.MultipartFile;
 
 public class NoticiaDto {
@@ -14,10 +17,17 @@ public class NoticiaDto {
 	private String descricao;
 
 	private MultipartFile imagem;
+<<<<<<< HEAD
 	
 	private LocalDateTime dataPublicacao;
+=======
+>>>>>>> branch 'imagemBusca' of https://github.com/Feiras-Verdes/br.com.feirasverdes.backend.git
 
+<<<<<<< HEAD
 	public NoticiaDto(Long id, String titulo, String descricao, MultipartFile imagem, LocalDateTime dataPublicacao) {
+=======
+	public NoticiaDto(Long id, String titulo, String descricao, MultipartFile imagem) {
+>>>>>>> branch 'imagemBusca' of https://github.com/Feiras-Verdes/br.com.feirasverdes.backend.git
 		super();
 		this.id = id;
 		this.titulo = titulo;

@@ -21,7 +21,7 @@ public class EstandeDto implements Serializable {
 	
 	private String nome;
 
-	private Imagem imagem;
+	private MultipartFile imagem;
 	
 	private String cep;
 
@@ -43,7 +43,7 @@ public class EstandeDto implements Serializable {
 	}
 
 	public EstandeDto(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone,
-			String nome, Imagem imagem) {
+			String nome, MultipartFile imagem) {
 		super();
 		this.id = id;
 		this.horaInicio = hora_inicio;
@@ -89,11 +89,11 @@ public class EstandeDto implements Serializable {
 		this.nome = nome;
 	}
 
-	public Imagem getImagem() {
+	public MultipartFile getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
 	
