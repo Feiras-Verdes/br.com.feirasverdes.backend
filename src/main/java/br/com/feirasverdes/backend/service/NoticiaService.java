@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,8 @@ import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.Noticia;
+import br.com.feirasverdes.backend.exception.AvaliacaoNaoPertenceAoUsuarioException;
+import br.com.feirasverdes.backend.exception.NoticiaNaoPertenceAoUsuarioException;
 
 @Service
 public class NoticiaService {
@@ -63,10 +66,22 @@ public class NoticiaService {
 		}
 	}
 
-	public void atualizarNoticia(final Long id, NoticiaDto noticiaAtualizada) throws IOException {
-		// TODO verificar se usuário chamando método foi quem criou
-
+	public void atualizarNoticia(final Long id, NoticiaDto noticiaAtualizada) throws IOException, NoticiaNaoPertenceAoUsuarioException {
 		Noticia noticia = dao.getOne(id);
+		
+		if (noticiaAtualizada.getIdEstande() != null) {
+			Estande estande = estandeDao.getOne(noticiaAtualizada.getIdEstande());
+			if(!estande.getUsuario().getId().equals(noticia.getId())) {
+				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
+			}
+		}
+
+		if (noticiaAtualizada.getIdFeira() != null) {
+			Feira feira = feiraDao.getOne(noticiaAtualizada.getIdFeira());
+			if(!feira.getUsuario().getId().equals(noticia.getId())) {
+				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
+			}
+		}
 
 		if (noticiaAtualizada.getImagem() != null) {
 			Imagem imagem = new Imagem();
@@ -117,8 +132,21 @@ public class NoticiaService {
 		return noticiasDto;
 	}
 
-	public void excluirNoticia(Long id) {
-		// TODO verificar se usuário chamando método foi quem criou
+	public void excluirNoticia(Long id) throws NoticiaNaoPertenceAoUsuarioException {
+		Noticia noticia = dao.getOne(id);
+		if (noticia.getEstande().getId() != null) {
+			Estande estande = estandeDao.getOne(noticia.getEstande().getId());
+			if(!estande.getUsuario().getId().equals(noticia.getId())) {
+				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
+			}
+		}
+
+		if (noticia.getFeira().getId() != null) {
+			Feira feira = feiraDao.getOne(noticia.getFeira().getId());
+			if(!feira.getUsuario().getId().equals(noticia.getId())) {
+				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
+			}
+		}
 		dao.deleteById(id);
 	}
 

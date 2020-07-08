@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
+import br.com.feirasverdes.backend.exception.AvaliacaoNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.service.AvaliacaoService;
 
 @RestController
@@ -35,16 +37,27 @@ public class AvaliacaoController {
 
 	@RolesAllowed({ "ROLE_CONSUMIDOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
-	public Response atualizarAvaliacao(@Valid @PathVariable(value = "id", required = true) Long id,
+	public ResponseEntity<?> atualizarAvaliacao(@Valid @PathVariable(value = "id", required = true) Long id,
 			@RequestBody Avaliacao avaliacao) {
-		service.atualizarAvaliacao(id, avaliacao);
-		return Response.ok().build();
+		try {
+			service.atualizarAvaliacao(id, avaliacao);
+			return ResponseEntity.ok("Atualizado com sucesso.");
+		} catch (AvaliacaoNaoPertenceAoUsuarioException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
+		}
+		
 	}
 
 	@RolesAllowed({ "ROLE_CONSUMIDOR" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public ResponseEntity excluir(@PathVariable(value = "id", required = true) Long id) {
-		service.excluirAvaliacao(id);
+		try {
+			service.excluirAvaliacao(id);
+		} catch (AvaliacaoNaoPertenceAoUsuarioException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
+		}
 		return ResponseEntity.ok("Avaliação excluída com sucesso");
 	}
 

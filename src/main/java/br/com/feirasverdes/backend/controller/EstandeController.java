@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.exception.EstandeNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.service.AvaliacaoService;
 import br.com.feirasverdes.backend.service.EstandeService;
 import br.com.feirasverdes.backend.service.NoticiaService;
@@ -52,11 +53,11 @@ public class EstandeController {
 	@RolesAllowed({ "ROLE_FEIRANTE" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute EstandeDto estande) {
+			@ModelAttribute EstandeDto estande) throws IOException {
 		try {
 			service.atualizarEstande(id, estande);
 			return ResponseEntity.ok("Atualizado com sucesso.");
-		} catch (IOException e) {
+		} catch (EstandeNaoPertenceAoUsuarioException e) {
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new RespostaDto(e.getMessage()));
 		}
 	}
@@ -64,8 +65,13 @@ public class EstandeController {
 	@RolesAllowed({ "ROLE_FEIRANTE" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
-		service.excluirEstande(id);
-		return ResponseEntity.ok().build();
+		try {
+			service.excluirEstande(id);
+			return ResponseEntity.ok().build();
+		} catch (EstandeNaoPertenceAoUsuarioException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RespostaDto(e.getMessage()));
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
