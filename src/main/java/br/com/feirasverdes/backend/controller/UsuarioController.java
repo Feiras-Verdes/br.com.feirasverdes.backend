@@ -73,9 +73,9 @@ public class UsuarioController {
 	}
 
 	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarCliente(@PathVariable(value = "id", required = true) Long id,
-			@ModelAttribute UsuarioDto usuario) {
+			@Valid @ModelAttribute UsuarioDto usuario) {
 		try {
 			service.atualizarUsuario(id, usuario);
 			return ResponseEntity.ok("Atualizado com sucesso.");
