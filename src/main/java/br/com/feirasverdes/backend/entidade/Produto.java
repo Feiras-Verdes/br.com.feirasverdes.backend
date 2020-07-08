@@ -1,7 +1,6 @@
 package br.com.feirasverdes.backend.entidade;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public class Produto implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@NotNull(message = "Nome do produto não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
@@ -41,15 +41,16 @@ public class Produto implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
-	@ManyToMany(mappedBy = "produtos", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	private List<Estande> estandes;
+	@ManyToOne
+	@JoinColumn(name = "id_estande")
+	private Estande estande;
 
 	public Produto() {
 		super();
 	}
 
 	public Produto(Long id, String nome, String descricao, Float preco, String unidade, Imagem imagem,
-			List<Estande> estandes) {
+			Estande estande) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -57,7 +58,7 @@ public class Produto implements Serializable {
 		this.preco = preco;
 		this.unidade = unidade;
 		this.imagem = imagem;
-		this.estandes = estandes;
+		this.estande = estande;
 	}
 
 	public Long getId() {
@@ -108,12 +109,12 @@ public class Produto implements Serializable {
 		this.imagem = imagem;
 	}
 
-	public List<Estande> getEstandes() {
-		return estandes;
+	public Estande getEstande() {
+		return estande;
 	}
 
-	public void setEstandes(List<Estande> estandes) {
-		this.estandes = estandes;
+	public void setEstande(Estande estande) {
+		this.estande = estande;
 	}
 
 }

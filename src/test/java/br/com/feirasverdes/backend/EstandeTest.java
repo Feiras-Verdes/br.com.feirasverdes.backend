@@ -53,9 +53,8 @@ public class EstandeTest {
 	@Transactional
 	public void testCadastrarEstande() throws Exception {
 		Estande estande = criarEstande();
-		MvcResult result = mockMvc
-				.perform(post("/estandes").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(estande)))
+		MvcResult result = mockMvc.perform(post("/estandes").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(estande)))
 				.andExpect(status().isOk()).andReturn();
 		Estande estandeResult = (Estande) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Estande.class);
@@ -64,8 +63,8 @@ public class EstandeTest {
 		assertNotNull(estandeSalvo);
 		assertEquals(estande.getNome(), estandeSalvo.getNome());
 		assertEquals(estande.getTelefone(), estandeSalvo.getTelefone());
-		assertEquals(estande.getHora_inicio(), estandeSalvo.getHora_inicio());
-		assertEquals(estande.getHora_fim(), estandeSalvo.getHora_fim());
+		assertEquals(estande.getHoraInicio(), estandeSalvo.getHoraInicio());
+		assertEquals(estande.getHoraFim(), estandeSalvo.getHoraFim());
 		assertEquals(estande.getFrequencia(), estandeSalvo.getFrequencia());
 
 	}
@@ -79,13 +78,14 @@ public class EstandeTest {
 		estande.setNome("barraca2");
 		estande.setTelefone("(00) 0000-0000");
 		estande.setFrequencia("segunda á sabado");
-		estande.setHora_inicio("08:00");
-		estande.setHora_fim("17:00");
+		estande.setHoraInicio("08:00");
+		estande.setHoraFim("17:00");
 
-		mockMvc.perform(put("/estandes/" + estande.getId()).headers(TestUtil.autHeaders())
-				.param("nome", estande.getNome()).param("telefone", estande.getTelefone())
-				.param("frequencia", estande.getFrequencia()).param("horaInicio", estande.getHora_inicio())
-				.param("horaFim", estande.getHora_fim())).andExpect(status().isOk()).andReturn();
+		mockMvc.perform(
+				put("/estandes/" + estande.getId()).headers(TestUtil.autHeaders()).param("nome", estande.getNome())
+						.param("telefone", estande.getTelefone()).param("frequencia", estande.getFrequencia())
+						.param("horaInicio", estande.getHoraInicio()).param("horaFim", estande.getHoraFim()))
+				.andExpect(status().isOk()).andReturn();
 
 		Estande estandeSalvo = estandeDao.getOne(estandeCadastrado.getId());
 		assertEquals(estande.getNome(), estandeSalvo.getNome());
@@ -119,7 +119,7 @@ public class EstandeTest {
 		Estande estande = criarEstande();
 		estande.setNome("b");
 		Estande estandeCadastrado = estandeDao.save(estande);
-		mockMvc.perform(get("/estandes/pesquisar-por-nome/b").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/estandes/pesquisar-por-nome?nome=b").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nome").value(hasItem(estandeCadastrado.getNome())));
 	}
@@ -128,8 +128,7 @@ public class EstandeTest {
 	public void testListarPorId() throws Exception {
 		Estande estande = criarEstande();
 		Estande estandeCadastrado = estandeDao.save(estande);
-		mockMvc.perform(
-				get("/estandes/" + estandeCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/estandes/" + estandeCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.nome").value(estandeCadastrado.getNome()));
 
 	}
@@ -139,8 +138,8 @@ public class EstandeTest {
 		estande.setNome("barraca1");
 		estande.setTelefone("(00) 0000-0000");
 		estande.setFrequencia("segunda á sexta");
-		estande.setHora_inicio("09:00");
-		estande.setHora_fim("18:00");
+		estande.setHoraInicio("09:00");
+		estande.setHoraFim("18:00");
 		return estande;
 
 	}

@@ -16,7 +16,9 @@ import br.com.feirasverdes.backend.dao.EnderecoDao;
 import br.com.feirasverdes.backend.dao.FeiraDao;
 import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
+import br.com.feirasverdes.backend.dto.FeiraDetalheDTO;
 import br.com.feirasverdes.backend.dto.FeiraDto;
+import br.com.feirasverdes.backend.dto.ListFeiraDTO;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -35,7 +37,7 @@ public class FeiraService {
 	private EnderecoDao enderecoDao;
 
 	@Autowired
-	private AvaliacaoDao avaliacaodao;
+	private AvaliacaoDao avaliacaoDao;
 
 	@Autowired
 	private NoticiaDao noticiaDao;
@@ -112,9 +114,41 @@ public class FeiraService {
 		List<Feira> feiras = dao.buscarFeirasDeUsuario(id);
 		return feiras;
 	}
-	
+
 	public List<Feira> buscarFeirasPorUsuario(Long idUsuario) {
 		return dao.findByUsuarioId(idUsuario);
+	}
+
+	public List<Feira> listarTodos() {
+		return dao.findAll();
+	}
+
+	public List<Feira> pesquisarPorNome(String nome) {
+		return dao.pesquisarPorNome(nome.toUpperCase());
+	}
+
+	public FeiraDetalheDTO pesquisarPorId(Long id) {
+		Feira feira = dao.getOne(id);
+		FeiraDetalheDTO feiraDto = new FeiraDetalheDTO();
+		feiraDto.setId(feira.getId());
+		feiraDto.setEndereco(feira.getEndereco());
+		feiraDto.setFrequencia(feira.getFrequencia());
+		feiraDto.setHoraFim(feira.getHoraFim());
+		feiraDto.setHoraInicio(feira.getHoraInicio());
+		feiraDto.setImagem(feira.getImagem());
+		feiraDto.setNome(feira.getNome());
+		feiraDto.setTelefone(feira.getTelefone());
+		feiraDto.setUsuario(feira.getUsuario());
+		Number avaliacao = dao.avaliacaoPorFeira(id);
+		if (avaliacao != null) {
+			feiraDto.setAvaliacao(avaliacao.doubleValue());
+		}
+
+		return feiraDto;
+	}
+
+	public List<ListFeiraDTO> buscarMelhoresFeiras() {
+		return dao.buscarMelhoresFeiras();
 	}
 
 }

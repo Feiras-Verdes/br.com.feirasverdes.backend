@@ -31,7 +31,6 @@ import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Endereco;
-import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.entidade.Usuario;
@@ -73,9 +72,8 @@ public class FeiraTest {
 	@Transactional
 	public void testCadastrarFeira() throws IOException, Exception {
 		Feira feira = criarFeira();
-		MvcResult result = mockMvc
-				.perform(post("/feiras").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(feira)))
+		MvcResult result = mockMvc.perform(post("/feiras").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(feira)))
 				.andExpect(status().isOk()).andReturn();
 		Feira feiraResult = (Feira) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Feira.class);
@@ -108,12 +106,10 @@ public class FeiraTest {
 		feira.setNome("Feira 2");
 		feira.setTelefone("(11) 1111-11111");
 
-		mockMvc.perform(put("/feiras/" + feira.getId()).headers(TestUtil.autHeaders())
-				.param("nome", feira.getNome()).param("telefone", feira.getTelefone())
-				.param("frequencia", feira.getFrequencia()).param("horaFim", feira.getHoraFim())
-				.param("horaInicio", feira.getHoraInicio())
-				.param("idUsuario", feiraCadastrada.getUsuario().getId().toString()))
-		.andExpect(status().isOk());
+		mockMvc.perform(put("/feiras/" + feira.getId()).headers(TestUtil.autHeaders()).param("nome", feira.getNome())
+				.param("telefone", feira.getTelefone()).param("frequencia", feira.getFrequencia())
+				.param("horaFim", feira.getHoraFim()).param("horaInicio", feira.getHoraInicio())
+				.param("idUsuario", feiraCadastrada.getUsuario().getId().toString())).andExpect(status().isOk());
 
 		Feira feiraSalva = feiraDao.getOne(feiraCadastrada.getId());
 		assertEquals(feira.getNome(), feiraSalva.getNome());
@@ -137,7 +133,7 @@ public class FeiraTest {
 		Feira feira = criarFeira();
 		feira.setNome("AAA");
 		Feira feiraCadastrada = feiraService.cadastrarFeira(feira);
-		mockMvc.perform(get("/feiras/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/feiras").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nome").value(hasItem(feiraCadastrada.getNome())));
 	}
 
@@ -146,7 +142,7 @@ public class FeiraTest {
 		Feira feira = criarFeira();
 		feira.setNome("ZZZ");
 		Feira feiraCadastrada = feiraService.cadastrarFeira(feira);
-		mockMvc.perform(get("/feiras/pesquisar-por-nome/z").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/feiras/pesquisar-por-nome?nome=z").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.[*].nome").value(hasItem(feiraCadastrada.getNome())));
 	}
 
@@ -159,24 +155,6 @@ public class FeiraTest {
 	}
 
 	@Test
-	@Transactional
-	public void testCadastrarAvaliacaoFeira() throws IOException, Exception {
-		Feira feira = feiraService.cadastrarFeira(criarFeira());
-		Avaliacao avaliacao = criaAvaliacao(feira);
-		MvcResult result = mockMvc
-				.perform(post("/feiras/"+feira.getId()+"/avaliar").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
-				.andExpect(status().isOk()).andReturn();
-		Avaliacao avaliacaoResult = (Avaliacao) TestUtil
-				.convertJsonToObject(result.getResponse().getContentAsByteArray(), Avaliacao.class);
-		Avaliacao avaliacaoSalva = avaliacaoDao.getOne(avaliacaoResult.getId());
-		assertNotNull(avaliacaoSalva);
-		assertEquals(feira.getId(), avaliacaoSalva.getFeira().getId());
-		assertEquals(usuario.getId(), avaliacaoSalva.getUsuario().getId());
-		assertEquals(avaliacao.getNota(), avaliacaoSalva.getNota());
-	}
-
-	@Test
 	public void testListarAvaliacaoUsuario() throws Exception {
 		Feira feiraCadastrada = feiraService.cadastrarFeira(criarFeira());
 		avaliacaoDao.save(criaAvaliacao(feiraCadastrada));
@@ -184,24 +162,21 @@ public class FeiraTest {
 				.andExpect(status().isOk()).andExpect(jsonPath("$.[*].nota").value(hasItem(6d)));
 	}
 
-	@Test
-	public void testPesquisarPortodosEstandesdaFeira() throws Exception {
-		Feira feiraCadastrada = feiraService.cadastrarFeira(criarFeira());
-
-		Estande estande = new Estande();
-		estande.setFeira(feiraCadastrada);
-		estande.setUsuario(usuario);
-		estande.setFrequencia("Todos os dias");
-		estande.setHora_inicio("10:00");
-		estande.setHora_fim("17:00");
-		estande.setNome("Estande 1");
-		estande.setTelefone("(00) 0000-00000");
-		estandeDao.save(estande);
-
-		mockMvc.perform(get("/feiras/" + feiraCadastrada.getId() + "/pesquisar-por-todas-estandes-da-feira/es")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.[*].nome").value(hasItem(estande.getNome())));
-	}
+	/*
+	 * @Test public void testPesquisarPortodosEstandesdaFeira() throws Exception {
+	 * Feira feiraCadastrada = feiraService.cadastrarFeira(criarFeira());
+	 * 
+	 * Estande estande = new Estande(); estande.setFeira(feiraCadastrada);
+	 * estande.setUsuario(usuario); estande.setFrequencia("Todos os dias");
+	 * estande.setHoraInicio("10:00"); estande.setHoraFim("17:00");
+	 * estande.setNome("Estande 1"); estande.setTelefone("(00) 0000-00000");
+	 * estandeDao.save(estande);
+	 * 
+	 * mockMvc.perform(get("/feiras/" + feiraCadastrada.getId() +
+	 * "/pesquisar-por-todas-estandes-da-feira/es")
+	 * .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+	 * .andExpect(jsonPath("$.[*].nome").value(hasItem(estande.getNome()))); }
+	 */
 
 	@Test
 	public void testPesquisarPorMelhoresFeiras() throws Exception {
@@ -230,9 +205,8 @@ public class FeiraTest {
 		noticia.setDataPublicacao(LocalDateTime.now());
 		noticiaDao.save(noticia);
 
-		mockMvc.perform(get("/feiras/" + feiraCadastrada.getId()+"/noticias")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
+		mockMvc.perform(get("/feiras/" + feiraCadastrada.getId() + "/noticias").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
 	}
 
 	public FeiraDto criarFeiraDto() {

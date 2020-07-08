@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,52 +15,41 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.AvaliacaoDao;
-import br.com.feirasverdes.backend.dao.EstandeDao;
-import br.com.feirasverdes.backend.dao.NoticiaDao;
-import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
-import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
-import br.com.feirasverdes.backend.entidade.Noticia;
-import br.com.feirasverdes.backend.entidade.Produto;
+import br.com.feirasverdes.backend.service.AvaliacaoService;
 import br.com.feirasverdes.backend.service.EstandeService;
+import br.com.feirasverdes.backend.service.NoticiaService;
+import br.com.feirasverdes.backend.service.ProdutoService;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/estandes")
 public class EstandeController {
-	
+
 	@Autowired
 	private EstandeService service;
-	
+
 	@Autowired
-	private AvaliacaoDao avaliacaoDao;
-	
+	private AvaliacaoService avaliacaoService;
+
 	@Autowired
-	private EstandeDao dao;
-	
+	private NoticiaService noticiaService;
+
 	@Autowired
-	private NoticiaDao noticiaDao;
-	
-	@Autowired
-	private ProdutoDao produtoDao;
-	
+	private ProdutoService produtoService;
+
+	@RolesAllowed({ "ROLE_FEIRANTE" })
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Estande> salvarEstande(@Valid @RequestBody Estande estande) {
-		Estande estandeSalva = new Estande();
-		try {
-			estandeSalva = dao.save(estande);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(estandeSalva, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<>(estandeSalva, HttpStatus.OK);
+		return new ResponseEntity<>(service.cadastrarEstande(estande), HttpStatus.OK);
 	}
-	
+
+	@RolesAllowed({ "ROLE_FEIRANTE" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute EstandeDto estande) {
@@ -73,58 +61,40 @@ public class EstandeController {
 		}
 	}
 
+	@RolesAllowed({ "ROLE_FEIRANTE" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		dao.deleteById(id);
-		return Response.ok().build();
+	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
+		service.excluirEstande(id);
+		return ResponseEntity.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.findAll());
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
-
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome") String nome) {
-		List<Estande> estandes = dao.pesquisarPorNome("%" + nome + "%");
-		return ResponseEntity.ok(estandes);
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome")
+	public ResponseEntity<List> pesquisarPorNome(@RequestParam(required = true) String nome) {
+		return ResponseEntity.ok(service.pesquisarPorNome(nome));
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Estande estande = dao.getOne(id);
-		return ResponseEntity.ok(estande);
+		return ResponseEntity.ok(service.pesquisarPorId(id));
 	}
-	
-	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.POST, value = "{id}/avaliar")
-	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "id") Long idEstande, @RequestBody Avaliacao avaliacao) {
-		Avaliacao cadastro = new Avaliacao();
-		try {
-			avaliacao.setEstande(new Estande(idEstande));
-			cadastro = avaliacaoDao.save(avaliacao);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<>(cadastro, HttpStatus.OK);
-	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "{id}/noticias")
 	public ResponseEntity<List> pesquisarPorNoticiasDasFeiras(@PathVariable(value = "id") Long idEstande) {
-		List<Noticia> noticias = noticiaDao.buscarUltimasNoticiadaEstande(idEstande);
-		return ResponseEntity.ok(noticias);
+		return ResponseEntity.ok(noticiaService.buscarUltimasNoticiadaEstande(idEstande));
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "{id}/produtos")
 	public ResponseEntity<List> produtosDoEstande(@PathVariable(value = "id") Long idEstande) {
-		List<Produto> produtos = produtoDao.findByEstandeId(idEstande);
-		return ResponseEntity.ok(produtos);
+		return ResponseEntity.ok(produtoService.listarProdutosDeEstande(idEstande));
 	}
-	
+
 	// Métodos que prentencem em outros controllers
-	
+
 //	@RequestMapping(method = RequestMethod.POST, value = "cadastrarAvaliacaoEstande")
 //	public ResponseEntity<Avaliacao> salvarAvaliacaoEstande(@RequestBody Avaliacao avalicaoEstande) {
 //		Avaliacao cadastro = new Avaliacao();
@@ -136,18 +106,17 @@ public class EstandeController {
 //		}
 //		return new ResponseEntity<>(cadastro, HttpStatus.OK);
 //	}
-	
+
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todos-produtos-da-feira/{nome}")
 //	public ResponseEntity<List> pesquisarPortodosProdutosdaFeira(@PathVariable(value = "nome") String nome) {
 //		List<Estande> estandes = dao.pesquisarPorNome(nome);
 //		return ResponseEntity.ok(estandes);
 //	}
-	
-	
+
 //	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-todas-noticias-da-feira/{nome}")
 //	public ResponseEntity<List> pesquisarPortodasNoticiasdaEstande(@PathVariable(value = "nome") String nome) {
 //		List<Estande> estandes = dao.pesquisarPorNome(nome);
 //		return ResponseEntity.ok(estandes);
 //	}
-		
+
 }

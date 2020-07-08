@@ -16,23 +16,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.AvaliacaoDao;
-import br.com.feirasverdes.backend.dao.EstandeDao;
-import br.com.feirasverdes.backend.dao.FeiraDao;
-import br.com.feirasverdes.backend.dao.NoticiaDao;
-import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.FeiraDetalheDTO;
+import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.ListFeiraDTO;
 import br.com.feirasverdes.backend.dto.RespostaDto;
-import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
-import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
-import br.com.feirasverdes.backend.exception.UsuarioNaoEOrganizadorException;
+import br.com.feirasverdes.backend.service.AvaliacaoService;
+import br.com.feirasverdes.backend.service.EstandeService;
 import br.com.feirasverdes.backend.service.FeiraService;
+import br.com.feirasverdes.backend.service.NoticiaService;
 
 @RestController
 @CrossOrigin
@@ -43,16 +40,13 @@ public class FeiraController {
 	private FeiraService service;
 
 	@Autowired
-	private AvaliacaoDao avaliacaodao;
+	private AvaliacaoService avaliacaoService;
 
 	@Autowired
-	private NoticiaDao noticiadao;
+	private NoticiaService noticiaService;
 
 	@Autowired
-	private EstandeDao estandedao;
-
-	@Autowired
-	private FeiraDao dao;
+	private EstandeService estandeService;
 
 	@RolesAllowed({ "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -91,97 +85,65 @@ public class FeiraController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
-	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.findAll());
-	}
-	
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List> listar() {
-		return ResponseEntity.ok(dao.findAll());
+	public ResponseEntity<List> listarTodos() {
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome/{nome}")
-	public ResponseEntity<List> pesquisarPorNome(@PathVariable(value = "nome", required = true) String nome) {
-		List<Feira> feiras = dao.pesquisarPorNome("%" + nome.toUpperCase() + "%");
-		return ResponseEntity.ok(feiras);
+	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-nome")
+	public ResponseEntity<List> pesquisarPorNome(@RequestParam(required = true) String nome) {
+		return ResponseEntity.ok(service.pesquisarPorNome(nome));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<FeiraDetalheDTO> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Feira feira = dao.getOne(id);
-		FeiraDetalheDTO feiraDto = new FeiraDetalheDTO();
-		feiraDto.setId(feira.getId());
-		feiraDto.setEndereco(feira.getEndereco());
-		feiraDto.setFrequencia(feira.getFrequencia());
-		feiraDto.setHoraFim(feira.getHoraFim());
-		feiraDto.setHoraInicio(feira.getHoraInicio());
-		feiraDto.setImagem(feira.getImagem());
-		feiraDto.setNome(feira.getNome());
-		feiraDto.setTelefone(feira.getTelefone());
-		feiraDto.setUsuario(feira.getUsuario());
-		Number avaliacao = dao.avaliacaoPorFeira(id);
-		if (avaliacao != null) {
-			feiraDto.setAvaliacao(avaliacao.doubleValue());
-		}
-		return ResponseEntity.ok(feiraDto);
+		return ResponseEntity.ok(service.pesquisarPorId(id));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/listarAvaliacaoUsuario/{idUsuario}")
 	public ResponseEntity<List> listarAvaliacaoUsuario(@PathVariable("idUsuario") Long idUsuario) {
-		return ResponseEntity.ok(avaliacaodao.findByUsuarioId(idUsuario));
+		return ResponseEntity.ok(avaliacaoService.listarAvaliacaoPorUsuario(idUsuario));
 	}
 
-	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
-	@RequestMapping(method = RequestMethod.POST, value = "{idFeira}/avaliar")
-	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "idFeira") Long idFeira, @RequestBody Avaliacao avaliacaofeira) {
-		Avaliacao cadastro = new Avaliacao();
-		try {
-			avaliacaofeira.setFeira(new Feira(idFeira));
-			cadastro = avaliacaodao.save(avaliacaofeira);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(cadastro, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<>(cadastro, HttpStatus.OK);
-	}
+	/*
+	 * @RequestMapping(method = RequestMethod.GET, value =
+	 * "{idFeira}/pesquisar-por-todas-estandes-da-feira/{nome}") public
+	 * ResponseEntity<List<Estande>>
+	 * pesquisarPorodosEstandesdaFeira(@PathVariable(value = "idFeira") Long
+	 * idFeira,
+	 * 
+	 * @PathVariable(value = "nome") String nome) { List<Estande> estandes =
+	 * estandeService.pesquisarPorFeiraENome(idFeira, "%" + nome.toUpperCase() +
+	 * "%"); return ResponseEntity.ok(estandes); }
+	 */
 
-	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/pesquisar-por-todas-estandes-da-feira/{nome}")
-	public ResponseEntity<List<Estande>> pesquisarPorodosEstandesdaFeira(@PathVariable(value = "idFeira") Long idFeira,
-			@PathVariable(value = "nome") String nome) {
-		List<Estande> estandes = estandedao.pesquisarPorFeiraENome(idFeira, "%" + nome.toUpperCase() + "%");
-		return ResponseEntity.ok(estandes);
-	}
-	
 	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/estandes")
 	public ResponseEntity<List<Estande>> estandesDaFeira(@PathVariable(value = "idFeira") Long idFeira) {
-		List<Estande> estandes = estandedao.findByFeiraId(idFeira);
-		return ResponseEntity.ok(estandes);
+		return ResponseEntity.ok(estandeService.buscarEstandesDeFeira(idFeira));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-melhores-feiras")
 	public ResponseEntity<List<ListFeiraDTO>> pesquisarPorMelhoresFeiras() {
-		List<ListFeiraDTO> feiras = dao.buscarMelhoresFeiras();
-		return ResponseEntity.ok(feiras);
+		return ResponseEntity.ok(service.buscarMelhoresFeiras());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/noticias")
 	public ResponseEntity<List> pesquisarPorNoticiasDasFeiras(@PathVariable(value = "idFeira") Long idFeira) {
-		List<Noticia> noticiadasfeiras = noticiadao.buscarUltimasNoticiadaFeira(idFeira);
-		return ResponseEntity.ok(noticiadasfeiras);
+		return ResponseEntity.ok(noticiaService.buscarUltimasNoticiadaFeira(idFeira));
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "listar-por-organizador/{id}")
-	public ResponseEntity<?> getFeirasDeFeirante(@PathVariable(value = "id") Long id) throws Exception {
-		try {
-			return ResponseEntity.ok(service.getFeirasDeOrganizador(id));
-		} catch (final UsuarioNaoEOrganizadorException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RespostaDto(e.getMessage()));
-		}
-	}
-
+	/*
+	 * @RequestMapping(method = RequestMethod.GET, value =
+	 * "listar-por-organizador/{id}") public ResponseEntity<?>
+	 * getFeirasDeFeirante(@PathVariable(value = "id") Long id) throws Exception {
+	 * try { return ResponseEntity.ok(service.getFeirasDeOrganizador(id)); } catch
+	 * (final UsuarioNaoEOrganizadorException e) { return
+	 * ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new
+	 * RespostaDto(e.getMessage())); } }
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "ultimas-noticias")
 	public ResponseEntity<List> ultimasNoticias() {
-		return ResponseEntity.ok(noticiadao.buscarUltimasNoticias());
+		return ResponseEntity.ok(noticiaService.buscarUltimasNoticias());
 	}
+
 }

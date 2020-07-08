@@ -49,9 +49,8 @@ public class ProdutoTest {
 	@Transactional
 	public void testCadastrarProduto() throws IOException, Exception {
 		ProdutoDto produto = criarProdutoDto();
-		MvcResult result = mockMvc
-				.perform(post("/produtos/cadastrar").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
+		MvcResult result = mockMvc.perform(post("/produtos").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
 				.andExpect(status().isOk()).andReturn();
 		Produto produtoResult = (Produto) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Produto.class);
@@ -69,9 +68,8 @@ public class ProdutoTest {
 	public void testCadastrarFeiraErro() throws IOException, Exception {
 		ProdutoDto produto = criarProdutoDto();
 		produto.setNome(null);
-		mockMvc.perform(post("/produtos/cadastrar").headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
-				.andExpect(status().is(400));
+		mockMvc.perform(post("/produtos").headers(TestUtil.autHeaders()).contentType(MediaType.APPLICATION_JSON)
+				.content(TestUtil.convertObjectToJsonBytes(produto))).andExpect(status().is(400));
 	}
 
 	@Test
@@ -82,9 +80,10 @@ public class ProdutoTest {
 		produto.setNome("Laranja lima");
 		produto.setPreco(5.00f);
 
-		mockMvc.perform(put("/produtos/" + produto.getId() + "/atualizar").headers(TestUtil.autHeaders())
+		mockMvc.perform(put("/produtos/" + produto.getId()).headers(TestUtil.autHeaders())
 				.param("nome", produto.getNome()).param("descricao", produto.getDescricao())
-				.param("preco", produto.getPreco().toString()).param("unidade", produto.getUnidade())).andExpect(status().isOk());
+				.param("preco", produto.getPreco().toString()).param("unidade", produto.getUnidade()))
+				.andExpect(status().isOk());
 
 		Produto produtoSalvo = produtodao.findById(produtoCadastrado.getId()).get();
 		assertEquals(produto.getNome(), produtoSalvo.getNome());
@@ -96,7 +95,7 @@ public class ProdutoTest {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
 
-		mockMvc.perform(delete("/produtos/" + produtoCadastrado.getId() + "/excluir").headers(TestUtil.autHeaders())
+		mockMvc.perform(delete("/produtos/" + produtoCadastrado.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
 		assertFalse(produtodao.findById(produtoCadastrado.getId()).isPresent());
@@ -106,7 +105,7 @@ public class ProdutoTest {
 	public void testListarTodos() throws Exception {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(get("/produtos/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/produtos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
 	}
 
@@ -115,7 +114,7 @@ public class ProdutoTest {
 		Produto produto = criarProduto();
 		produto.setNome("AA");
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(get("/produtos/pesquisar-por-nome/AA").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/produtos/pesquisar-por-nome?nome=AA").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nome").value(hasItem(produtoCadastrado.getNome())));
 	}
@@ -124,8 +123,7 @@ public class ProdutoTest {
 	public void testPesquisarPorId() throws Exception {
 		Produto produto = criarProduto();
 		Produto produtoCadastrado = produtodao.save(produto);
-		mockMvc.perform(
-				get("/produtos/pesquisar-por-id/" + produtoCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/produtos/" + produtoCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.nome").value(produtoCadastrado.getNome()));
 	}
 

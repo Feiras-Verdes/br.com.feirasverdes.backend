@@ -69,9 +69,8 @@ public class AvaliacaoTest {
 	@Transactional
 	public void testCadastrarAvaliacao() throws IOException, Exception {
 		Avaliacao avaliacao = criaAvaliacao();
-		MvcResult result = mockMvc
-				.perform(post("/avaliacao/cadastrar").headers(TestUtil.autHeaders())
-						.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
+		MvcResult result = mockMvc.perform(post("/avaliacao").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
 				.andExpect(status().isOk()).andReturn();
 
 		Avaliacao avaliacaoResult = (Avaliacao) TestUtil
@@ -89,7 +88,7 @@ public class AvaliacaoTest {
 		avaliacao.setId(avaliacaoCadastrada.getId());
 		avaliacao.setNota(7.0);
 
-		mockMvc.perform(put("/avaliacao/" + avaliacaoCadastrada.getId() + "/atualizar").headers(TestUtil.autHeaders())
+		mockMvc.perform(put("/avaliacao/" + avaliacaoCadastrada.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
 				.andExpect(status().isOk());
 
@@ -104,7 +103,7 @@ public class AvaliacaoTest {
 		Avaliacao avaliacao = criaAvaliacao();
 		Avaliacao avaliacaoCadastrada = dao.save(avaliacao);
 
-		mockMvc.perform(delete("/avaliacao/" + avaliacaoCadastrada.getId() + "/excluir").headers(TestUtil.autHeaders())
+		mockMvc.perform(delete("/avaliacao/" + avaliacaoCadastrada.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		assertFalse(dao.findById(avaliacaoCadastrada.getId()).isPresent());
 	}
@@ -114,7 +113,7 @@ public class AvaliacaoTest {
 		Avaliacao avaliacao = criaAvaliacao();
 		avaliacao.setNota(7.0);
 		dao.saveAndFlush(avaliacao);
-		mockMvc.perform(get("/avaliacao/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/avaliacao").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nota").value(hasItem(avaliacao.getNota())));
 	}
 
@@ -124,8 +123,7 @@ public class AvaliacaoTest {
 		Avaliacao avaliacao = criaAvaliacao();
 		avaliacao.setNota(7.0);
 		Avaliacao avaliacaoCadastrada = dao.saveAndFlush(avaliacao);
-		mockMvc.perform(
-				get("/avaliacao/pesquisar-por-id/" + avaliacaoCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/avaliacao/" + avaliacaoCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.nota").value(avaliacao.getNota()));
 	}
 

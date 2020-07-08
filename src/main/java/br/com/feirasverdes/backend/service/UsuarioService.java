@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.zip.DataFormatException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.feirasverdes.backend.dao.TipoUsuarioDao;
 import br.com.feirasverdes.backend.dao.UsuarioDao;
 import br.com.feirasverdes.backend.dto.DetalhesDoUsuarioDto;
+import br.com.feirasverdes.backend.dto.RecuperarSenhaDTO;
 import br.com.feirasverdes.backend.dto.UsuarioDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.TipoUsuario;
@@ -58,8 +61,9 @@ public class UsuarioService {
 	}
 
 	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
+		// TODO verificar se usuário chamando método foi quem criou
 		Usuario usuario = dao.getOne(id);
-	
+
 		if (usuarioAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
 			MultipartFile foto = usuarioAtualizado.getImagem();
@@ -68,7 +72,7 @@ public class UsuarioService {
 			imagem.setBytesImagem(foto.getBytes());
 			usuario.setImagem(imagem);
 		}
-		
+
 		usuario.setCnpj(usuarioAtualizado.getCnpj());
 		usuario.setCpf(usuarioAtualizado.getCpf());
 		usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
@@ -79,6 +83,7 @@ public class UsuarioService {
 	}
 
 	public void excluirUsuario(final Long id) {
+		// TODO verificar se usuário chamando método foi quem criou
 		Optional<Usuario> usuario = dao.pesquisarPorId(id);
 		if (usuario.isPresent()) {
 			usuario.get().setAtivo(false);
@@ -104,7 +109,7 @@ public class UsuarioService {
 
 	public DetalhesDoUsuarioDto getDetalhes() throws IOException, DataFormatException {
 		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		 Usuario usuario = dao.pesquisarPorEmail(email);
+		Usuario usuario = dao.pesquisarPorEmail(email);
 
 		if (usuario != null) {
 			String dataFormatada = null;
@@ -120,12 +125,30 @@ public class UsuarioService {
 			return null;
 		}
 	}
-	
+
 	public void alterarSenha(String novaSenha) {
 		final String email = SecurityContextHolder.getContext().getAuthentication().getName();
 		Usuario usuario = dao.pesquisarPorEmail(email);
 		usuario.setSenha(passwordEncoder.encode(novaSenha));
 		dao.save(usuario);
+	}
+
+	public SimpleMailMessage gerarSenha(RecuperarSenhaDTO recuperarSenhaDTO) throws EmailInvalidoException {
+		Usuario usuario = dao.pesquisarPorEmail(recuperarSenhaDTO.getEmail());
+		if (usuario != null) {
+			String senha = UUID.randomUUID().toString().replace("-", "");
+			usuario.setSenha(passwordEncoder.encode(senha));
+			dao.save(usuario);
+
+			SimpleMailMessage mensagem = new SimpleMailMessage();
+			mensagem.setSubject("Feiras verdes - Nova senha");
+			mensagem.setText("Segue abaixo a nova senha para acessar o sistema Feiras Verdes:\n " + senha);
+			mensagem.setTo(usuario.getEmail());
+			mensagem.setFrom("feirasverdes@gmail.com");
+
+			return mensagem;
+		}
+		throw new EmailInvalidoException("Email não encontrado.");
 	}
 
 }

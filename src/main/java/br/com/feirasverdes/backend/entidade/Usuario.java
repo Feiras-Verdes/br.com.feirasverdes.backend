@@ -43,11 +43,11 @@ public class Usuario implements Serializable {
 	@Column(nullable = false)
 	private String nome;
 
-	@CPF(message = "CPF Incorreto")
+	@CPF(message = "CPF inválido")
 	@Column(nullable = true)
 	private String cpf;
 
-	@CNPJ(message = "CNPJ Incorreto")
+	@CNPJ(message = "CNPJ inválido")
 	@Column(nullable = true)
 	private String cnpj;
 
@@ -86,7 +86,7 @@ public class Usuario implements Serializable {
 		this.ativo = ativo;
 		this.imagem = imagem;
 	}
-	
+
 	public Usuario(Long id) {
 		super();
 		this.id = id;

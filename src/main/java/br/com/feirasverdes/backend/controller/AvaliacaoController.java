@@ -2,6 +2,7 @@ package br.com.feirasverdes.backend.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
+import br.com.feirasverdes.backend.service.AvaliacaoService;
 
 @RestController
 @CrossOrigin
@@ -24,44 +25,37 @@ import br.com.feirasverdes.backend.entidade.Avaliacao;
 public class AvaliacaoController {
 
 	@Autowired
-	private AvaliacaoDao dao;
+	private AvaliacaoService service;
 
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
+	@RolesAllowed({ "ROLE_CONSUMIDOR" })
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Avaliacao> salvarAvaliacao(@Valid @RequestBody Avaliacao avaliacao) {
-		Avaliacao avaliacaoSalvo = new Avaliacao();
-		try {
-			avaliacaoSalvo = dao.save(avaliacao);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(avaliacaoSalvo, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<>(avaliacaoSalvo, HttpStatus.OK);
+		return new ResponseEntity<>(service.avaliar(avaliacao), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	@RolesAllowed({ "ROLE_CONSUMIDOR" })
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public Response atualizarAvaliacao(@Valid @PathVariable(value = "id", required = true) Long id,
 			@RequestBody Avaliacao avaliacao) {
-		avaliacao.setId(id);
-		dao.save(avaliacao);
+		service.atualizarAvaliacao(id, avaliacao);
 		return Response.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
-	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		dao.deleteById(id);
-		return Response.ok().build();
+	@RolesAllowed({ "ROLE_CONSUMIDOR" })
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
+	public ResponseEntity excluir(@PathVariable(value = "id", required = true) Long id) {
+		service.excluirAvaliacao(id);
+		return ResponseEntity.ok("Avaliação excluída com sucesso");
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.findAll());
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<Avaliacao> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Avaliacao avaliacao = dao.getOne(id);
-		return ResponseEntity.ok(avaliacao);
+		return ResponseEntity.ok(service.pesquisarPorId(id));
 	}
-	
+
 }

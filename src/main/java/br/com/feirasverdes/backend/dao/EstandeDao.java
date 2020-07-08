@@ -2,8 +2,6 @@ package br.com.feirasverdes.backend.dao;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,28 +13,24 @@ import br.com.feirasverdes.backend.entidade.Estande;
 
 @Repository
 public interface EstandeDao extends JpaRepository<Estande, Long> {
-	
-	@Query(value = "select e from Estande e where e.nome like ?1")
+
+	@Query(value = "select e from Estande e where e.nome like %?1%")
 	List<Estande> pesquisarPorNome(String nome);
-	
+
 	@Query(value = "select e from Estande e where e.feira.id = ?1 and upper(e.nome) like ?2")
 	List<Estande> pesquisarPorFeiraENome(Long idFeira, String nome);
-	
+
 	@Query(value = "select e from Estande e where e.feira.id = ?1")
 	List<Estande> pesquisarPortodosEstandesdaFeira(Long idFeira);
-	
+
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
-			 + "(e.id, e.nome, e.telefone, imagem, endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5))"
-			 + " from Estande e " +
-			   " left join e.endereco endereco" +
-			   " left join e.imagem imagem" +
-		       " left join e.avaliacoes a "  +
-		       " where upper(e.nome) like ?1 "
-		     + " group by e.nome, e.id, e.telefone, a.nota")
-    Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
+			+ "(e.id, e.nome, e.telefone, imagem, endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Estande e "
+			+ " left join e.endereco endereco" + " left join e.imagem imagem" + " left join e.avaliacoes a "
+			+ " where upper(e.nome) like ?1 " + " group by e.nome, e.id, e.telefone, a.nota")
+	Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
 
 	List<Estande> findByUsuarioId(Long usuarioId);
-	
+
 	List<Estande> findByFeiraId(Long idFeira);
-	
+
 }

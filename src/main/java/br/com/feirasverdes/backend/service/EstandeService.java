@@ -3,6 +3,8 @@ package br.com.feirasverdes.backend.service;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,11 +21,12 @@ public class EstandeService {
 
 	@Autowired
 	private EstandeDao dao;
-	
+
 	@Autowired
 	private EnderecoDao enderecoDao;
-	
-	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException{
+
+	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException {
+		// TODO verificar se usuário chamando método foi quem criou
 		Estande estande = dao.getOne(id);
 
 		if (estandeAtualizado.getImagem() != null) {
@@ -35,12 +38,12 @@ public class EstandeService {
 
 			estande.setImagem(imagem);
 		}
-		estande.setHora_inicio(estandeAtualizado.getHoraInicio());
+		estande.setHoraInicio(estandeAtualizado.getHoraInicio());
 		estande.setFrequencia(estandeAtualizado.getFrequencia());
-		estande.setHora_fim(estandeAtualizado.getHoraFim());
+		estande.setHoraFim(estandeAtualizado.getHoraFim());
 		estande.setNome(estandeAtualizado.getNome());
 		estande.setTelefone(estandeAtualizado.getTelefone());
-		
+
 		Endereco endereco = estande.getEndereco() != null ? estande.getEndereco() : new Endereco();
 		endereco.setBairro(estandeAtualizado.getBairro());
 		endereco.setCep(estandeAtualizado.getCep());
@@ -56,6 +59,31 @@ public class EstandeService {
 
 	public List<Estande> buscarEstandesPorUsuario(Long usuarioId) {
 		return dao.findByUsuarioId(usuarioId);
+	}
+
+	public Estande cadastrarEstande(@Valid Estande estande) {
+		return dao.save(estande);
+	}
+
+	public void excluirEstande(Long id) {
+		// TODO verificar se usuário chamando método foi quem criou
+		dao.deleteById(id);
+	}
+
+	public List<Estande> listarTodos() {
+		return dao.findAll();
+	}
+
+	public List<Estande> pesquisarPorNome(String nome) {
+		return dao.pesquisarPorNome(nome);
+	}
+
+	public Estande pesquisarPorId(Long id) {
+		return dao.getOne(id);
+	}
+
+	public List<Estande> buscarEstandesDeFeira(Long idFeira) {
+		return dao.findByFeiraId(idFeira);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 
@@ -13,12 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.NoticiaDao;
 import br.com.feirasverdes.backend.dto.NoticiaDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Noticia;
@@ -32,10 +31,8 @@ public class NoticiaController {
 	@Autowired
 	NoticiaService service;
 
-	@Autowired
-	private NoticiaDao dao;
-
-	@RequestMapping(method = RequestMethod.POST, value = "cadastrar")
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Noticia> salvarNoticia(@Valid @ModelAttribute NoticiaDto noticia) {
 		Noticia noticiaSalvo = new Noticia();
 		try {
@@ -49,7 +46,8 @@ public class NoticiaController {
 		return new ResponseEntity<>(noticiaSalvo, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "{id}/atualizar")
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarNoticia(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute NoticiaDto noticia) {
 		try {
@@ -60,20 +58,21 @@ public class NoticiaController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/excluir")
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public Response excluir(@PathVariable(value = "id", required = true) Long id) {
-		dao.deleteById(id);
+		service.excluirNoticia(id);
 		return Response.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/listarTodos")
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List> listarTodos() {
-		return ResponseEntity.ok(dao.findAll());
+		return ResponseEntity.ok(service.listarTodos());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "pesquisar-por-id/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<Noticia> pesquisarPorId(@PathVariable(value = "id") Long id) {
-		Noticia noticia = dao.getOne(id);
+		Noticia noticia = service.pesquisarPorId(id);
 		return ResponseEntity.ok(noticia);
 	}
 

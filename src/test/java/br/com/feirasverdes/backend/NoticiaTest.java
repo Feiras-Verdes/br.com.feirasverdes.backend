@@ -70,10 +70,8 @@ public class NoticiaTest {
 	@Transactional
 	public void testCadastrarNoticia() throws IOException, Exception {
 		Noticia noticia = criarNoticia();
-		MvcResult result = mockMvc
-				.perform(post("/noticias/cadastrar").headers(TestUtil.autHeaders())
-				.param("titulo", noticia.getTitulo())
-				.param("descricao", noticia.getDescricao()))
+		MvcResult result = mockMvc.perform(post("/noticias").headers(TestUtil.autHeaders())
+				.param("titulo", noticia.getTitulo()).param("descricao", noticia.getDescricao()))
 				.andExpect(status().isOk()).andReturn();
 		Noticia noticiaResult = (Noticia) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Noticia.class);
@@ -92,7 +90,7 @@ public class NoticiaTest {
 		noticia.setId(noticiaCadastrada.getId());
 		noticia.setTitulo("Chegou bananas");
 
-		mockMvc.perform(put("/noticias/" + noticia.getId() + "/atualizar").headers(TestUtil.autHeaders())
+		mockMvc.perform(put("/noticias/" + noticia.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(noticia)))
 				.andExpect(status().isOk());
 
@@ -107,7 +105,7 @@ public class NoticiaTest {
 		Noticia noticia = criarNoticia();
 		Noticia noticiaCadastrada = dao.save(noticia);
 
-		mockMvc.perform(delete("/noticias/" + noticiaCadastrada.getId() + "/excluir").headers(TestUtil.autHeaders())
+		mockMvc.perform(delete("/noticias/" + noticiaCadastrada.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		assertFalse(dao.findById(noticiaCadastrada.getId()).isPresent());
 	}
@@ -117,7 +115,7 @@ public class NoticiaTest {
 		Noticia noticia = criarNoticia();
 		noticia.setTitulo("BBB");
 		dao.saveAndFlush(noticia);
-		mockMvc.perform(get("/noticias/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/noticias").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].titulo").value(hasItem(noticia.getTitulo())));
 	}
 
@@ -127,8 +125,7 @@ public class NoticiaTest {
 		Noticia noticia = criarNoticia();
 		noticia.setTitulo("CCC");
 		Noticia noticiaCadastrada = dao.saveAndFlush(noticia);
-		mockMvc.perform(
-				get("/noticias/pesquisar-por-id/" + noticiaCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/noticias/" + noticiaCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.titulo").value(noticia.getTitulo()));
 	}
 
