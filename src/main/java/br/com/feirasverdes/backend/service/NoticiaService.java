@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.entidade.Noticia;
+import br.com.feirasverdes.backend.exception.AvaliacaoNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.exception.NoticiaNaoPertenceAoUsuarioException;
 
 @Service

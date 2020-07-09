@@ -19,45 +19,70 @@ import br.com.feirasverdes.backend.entidade.Produto;
 @Service
 @Transactional
 public class BuscaService {
-	
+
 	@Autowired
 	private EstandeDao estanteDao;
 
 	@Autowired
 	private FeiraDao feiraDao;
-	
+
 	@Autowired
 	private ProdutoDao produtoDao;
-	
-	public Page<EstabelecimentoDto> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
+
+	public Page<EstabelecimentoDto> verificarOrdenacaoEstande(String nome, Integer limite, Integer pagina,
+			String ordenacao, String tipoOrdenacao) {
 		Page<EstabelecimentoDto> estande = null;
 		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+			if (ordenacao.equals("nome")) {
+				if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+					estande = estanteDao.buscaEstandePorFiltroNome("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+				}
+				if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+					estande = estanteDao.buscaEstandePorFiltroNome("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
+				}
+			} else if (ordenacao.equals("a.nota")) {
+				if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+					estande = estanteDao.buscaEstandePorFiltroNotaAsc("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite));
+				}
+				if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+					estande = estanteDao.buscaEstandePorFiltroNotaDesc("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite));
+				}
 			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
+
 		}
-	 return estande;
+
+		return estande;
 	}
 
-	public Page<EstabelecimentoDto> verificarOrdenacaoFeira(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) throws IOException, DataFormatException {
+	public Page<EstabelecimentoDto> verificarOrdenacaoFeira(String nome, Integer limite, Integer pagina,
+			String ordenacao, String tipoOrdenacao) throws IOException, DataFormatException {
 		Page<EstabelecimentoDto> feira = null;
 		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				feira = feiraDao.buscaFeiraPorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+			if (ordenacao.equals("nome")) {
+				if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+					feira = feiraDao.buscaFeiraPorFiltroNome("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
+				}
+				if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+					feira = feiraDao.buscaFeiraPorFiltroNome("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
+				}
+			} else if (ordenacao.equals("a.nota")) {
+				if (tipoOrdenacao.toUpperCase().equals("ASC")) {
+					feira = feiraDao.buscaFeiraPorFiltroNotaAsc("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite));
+				}
+				if (tipoOrdenacao.toUpperCase().equals("DESC")) {
+					feira = feiraDao.buscaFeiraPorFiltroNotaDesc("%" + nome.toUpperCase() + "%",
+							PageRequest.of(pagina, limite));
+				}
 			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				feira = feiraDao.buscaFeiraPorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
-		}		
+
+		}
 		return feira;
 	}
 
