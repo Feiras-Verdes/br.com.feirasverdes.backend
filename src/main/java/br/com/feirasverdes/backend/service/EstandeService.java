@@ -6,11 +6,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EnderecoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.EstandeDetalheDto;
@@ -30,12 +28,17 @@ public class EstandeService {
 	@Autowired
 	private EnderecoDao enderecoDao;
 
-	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado) throws IOException, EstandeNaoPertenceAoUsuarioException {
+	public void atualizarEstande(final Long id, final EstandeDto estandeAtualizado)
+			throws IOException, EstandeNaoPertenceAoUsuarioException {
 		Estande estande = dao.getOne(id);
-		
-		if (!estande.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new EstandeNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você.");
-		}
+
+		/*
+		 * if
+		 * (!estande.getUsuario().getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * EstandeNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você."
+		 * ); }
+		 */
 
 		if (estandeAtualizado.getImagem() != null) {
 			Imagem imagem = new Imagem();
@@ -51,7 +54,7 @@ public class EstandeService {
 		estande.setHoraFim(estandeAtualizado.getHoraFim());
 		estande.setNome(estandeAtualizado.getNome());
 		estande.setTelefone(estandeAtualizado.getTelefone());
-		
+
 		if (estandeAtualizado.getIdFeira() != null) {
 			estande.setFeira(new Feira(estandeAtualizado.getIdFeira()));
 		} else {
@@ -81,10 +84,14 @@ public class EstandeService {
 
 	public void excluirEstande(Long id) throws EstandeNaoPertenceAoUsuarioException {
 		Estande estande = dao.getOne(id);
-		
-		if (!estande.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new EstandeNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você.");
-		}
+
+		/*
+		 * if
+		 * (!estande.getUsuario().getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * EstandeNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você."
+		 * ); }
+		 */
 		dao.deleteById(id);
 	}
 

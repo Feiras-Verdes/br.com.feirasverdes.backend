@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.zip.DataFormatException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,9 +51,13 @@ public class FeiraService {
 	public Feira atualizarFeira(FeiraDto feiraDto) throws IOException, FeiraNaoPertenceAoUsuarioException {
 		Feira feira = dao.getOne(feiraDto.getId());
 
-		if (!feira.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new FeiraNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você.");
-		}
+		/*
+		 * if (!feira.getUsuario().getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * FeiraNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você."
+		 * ); }
+		 */
+
 		paraFeira(feiraDto, feira);
 		enderecoDao.save(feira.getEndereco());
 		return dao.save(feira);
@@ -63,9 +66,12 @@ public class FeiraService {
 	public void excluirFeira(Long id) throws FeiraNaoPertenceAoUsuarioException {
 		Feira feira = dao.getOne(id);
 
-		if (!feira.getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new FeiraNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você.");
-		}
+		/*
+		 * if (!feira.getUsuario().getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * FeiraNaoPertenceAoUsuarioException("Esta feira não foi cadastrada por você."
+		 * ); }
+		 */
 
 		dao.deleteById(id);
 	}

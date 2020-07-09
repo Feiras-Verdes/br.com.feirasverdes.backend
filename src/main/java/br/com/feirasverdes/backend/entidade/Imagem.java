@@ -29,7 +29,7 @@ public class Imagem {
 	private String tipo;
 
 	@Lob
-	@Column(name = "bytesImagem", nullable = false, columnDefinition = "MEDIUMBLOB")
+	@Column(name = "bytesImagem", nullable = false, columnDefinition = "LONGBLOB")
 	private byte[] bytesImagem;
 
 	public Imagem() {

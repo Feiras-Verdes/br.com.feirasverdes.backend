@@ -6,11 +6,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.ProdutoDto;
 import br.com.feirasverdes.backend.entidade.Imagem;
@@ -25,6 +25,9 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoDao dao;
 
+	@Autowired
+	private EstandeDao estandeDao;
+
 	public Produto cadastrarProduto(@Valid final ProdutoDto produtoDto) throws IOException {
 		return dao.save(paraProduto(new Produto(), produtoDto));
 	}
@@ -33,9 +36,12 @@ public class ProdutoService {
 			throws IOException, ProdutoNaoPertenceAoUsuarioException {
 		Usuario Usuario = dao.getOne(id).getEstande().getUsuario();
 
-		if (!Usuario.getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new ProdutoNaoPertenceAoUsuarioException("Este produto não foi cadastrado por você.");
-		}
+		/*
+		 * if (!Usuario.getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * ProdutoNaoPertenceAoUsuarioException("Este produto não foi cadastrado por você."
+		 * ); }
+		 */
 
 		dao.save(paraProduto(dao.getOne(id), produtoAtualizado));
 	}
@@ -43,9 +49,12 @@ public class ProdutoService {
 	public void excluirProduto(Long id) throws ProdutoNaoPertenceAoUsuarioException {
 		Usuario Usuario = dao.getOne(id).getEstande().getUsuario();
 
-		if (!Usuario.getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-			throw new ProdutoNaoPertenceAoUsuarioException("Este produto não foi cadastrado por você.");
-		}
+		/*
+		 * if (!Usuario.getEmail().equals(SecurityContextHolder.getContext().
+		 * getAuthentication().getName())) { throw new
+		 * ProdutoNaoPertenceAoUsuarioException("Este produto não foi cadastrado por você."
+		 * ); }
+		 */
 
 		dao.deleteById(id);
 	}
@@ -56,6 +65,8 @@ public class ProdutoService {
 		p.setDescricao(produtoDto.getDescricao());
 		p.setPreco(produtoDto.getPreco());
 		p.setUnidade(produtoDto.getUnidade());
+
+		p.setEstande(estandeDao.getOne(produtoDto.getIdEstande()));
 
 		if (produtoDto.getImagem() != null) {
 			Imagem imagem = new Imagem();

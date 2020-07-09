@@ -2,11 +2,11 @@ package br.com.feirasverdes.backend.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.feirasverdes.backend.entidade.Imagem;
-
 public class ProdutoDto {
 
 	private Long id;
+
+	private Long idEstande;
 
 	private String nome;
 
@@ -22,9 +22,11 @@ public class ProdutoDto {
 		super();
 	}
 
-	public ProdutoDto(Long id, String nome, String descricao, Float preco, String unidade, MultipartFile imagem) {
+	public ProdutoDto(Long id, Long idEstande, String nome, String descricao, Float preco, String unidade,
+			MultipartFile imagem) {
 		super();
 		this.id = id;
+		this.idEstande = idEstande;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
@@ -38,6 +40,14 @@ public class ProdutoDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getIdEstande() {
+		return this.idEstande;
+	}
+
+	public void setIdEstande(Long idEstande) {
+		this.idEstande = idEstande;
 	}
 
 	public String getNome() {

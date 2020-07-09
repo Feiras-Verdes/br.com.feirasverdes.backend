@@ -61,7 +61,6 @@ public class UsuarioService {
 	}
 
 	public void atualizarUsuario(final Long id, final UsuarioDto usuarioAtualizado) throws IOException {
-		// TODO verificar se usuário chamando método foi quem criou
 		Usuario usuario = dao.getOne(id);
 
 		if (usuarioAtualizado.getImagem() != null) {
@@ -83,7 +82,6 @@ public class UsuarioService {
 	}
 
 	public void excluirUsuario(final Long id) {
-		// TODO verificar se usuário chamando método foi quem criou
 		Optional<Usuario> usuario = dao.pesquisarPorId(id);
 		if (usuario.isPresent()) {
 			usuario.get().setAtivo(false);
