@@ -37,21 +37,20 @@ public class AvaliacaoService {
 	}
 
 	public void atualizarAvaliacao(@Valid Long id, Avaliacao avaliacao) throws AvaliacaoNaoPertenceAoUsuarioException {
-		
-		if(avaliacao.getEstande().getId() != null) {
-			Estande verificar = estandeDao.getOne(avaliacao.getEstande().getId());
-			if(verificar.getUsuario().getId().equals(id)) {
-				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar seu próprio estande.");
-			}
-		}
-		
-		if(avaliacao.getFeira().getId() != null) {
-			Feira verificar = feiraDao.getOne(avaliacao.getFeira().getId());
-			if(verificar.getUsuario().getId().equals(id)) {
-				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar sua própria feira.");
-			}
-		}
-		
+//		if(avaliacao.getEstande().getId() != null) {
+//			Estande verificar = estandeDao.getOne(avaliacao.getEstande().getId());
+//			if(verificar.getUsuario().getId().equals(id)) {
+//				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar seu próprio estande.");
+//			}
+//		}
+//		
+//		if(avaliacao.getFeira().getId() != null) {
+//			Feira verificar = feiraDao.getOne(avaliacao.getFeira().getId());
+//			if(verificar.getUsuario().getId().equals(id)) {
+//				throw new AvaliacaoNaoPertenceAoUsuarioException("Não é possível avaliar sua própria feira.");
+//			}
+//		}
+//		
 		avaliacao.setId(id);
 		dao.save(avaliacao);
 	}

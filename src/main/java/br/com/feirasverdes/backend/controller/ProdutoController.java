@@ -31,7 +31,7 @@ public class ProdutoController {
 	@Autowired
 	private ProdutoService service;
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Produto> salvarProduto(@Valid @ModelAttribute ProdutoDto produto) {
 		Produto produtoSalvo = new Produto();
@@ -44,7 +44,7 @@ public class ProdutoController {
 		}
 	}
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarProduto(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute ProdutoDto produto) {
@@ -58,7 +58,7 @@ public class ProdutoController {
 		}
 	}
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
 		try {

@@ -58,7 +58,7 @@ public class UsuarioTest {
 	
 	@BeforeEach
 	public void iniciar() {
-		usuarioLogado = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
+		usuarioLogado = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 3L);
 	}
 
 	@Test

@@ -136,14 +136,14 @@ public class NoticiaService {
 		Noticia noticia = dao.getOne(id);
 		if (noticia.getEstande().getId() != null) {
 			Estande estande = estandeDao.getOne(noticia.getEstande().getId());
-			if(!estande.getUsuario().getId().equals(noticia.getId())) {
+			if(!estande.getId().equals(noticia.getEstande().getId())) {
 				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
 			}
 		}
 
 		if (noticia.getFeira().getId() != null) {
 			Feira feira = feiraDao.getOne(noticia.getFeira().getId());
-			if(!feira.getUsuario().getId().equals(noticia.getId())) {
+			if(!feira.getId().equals(noticia.getFeira().getId())) {
 				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
 			}
 		}

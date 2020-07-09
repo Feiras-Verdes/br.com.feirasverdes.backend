@@ -59,7 +59,7 @@ public class NoticiaTest {
 
 	@BeforeEach
 	public void iniciar() throws IOException {
-		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
+		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 3L);
 		Feira f = FeiraTest.criarFeiraDtoSemUsuario();
 		f.setUsuario(usuario);
 		feira = feiraService.cadastrarFeira(f);

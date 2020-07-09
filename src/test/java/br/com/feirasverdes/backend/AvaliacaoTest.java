@@ -87,6 +87,7 @@ public class AvaliacaoTest {
 		Avaliacao avaliacaoCadastrada = dao.save(avaliacao);
 		avaliacao.setId(avaliacaoCadastrada.getId());
 		avaliacao.setNota(7.0);
+		avaliacao.setUsuario(usuario);
 
 		mockMvc.perform(put("/avaliacao/" + avaliacaoCadastrada.getId()).headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))

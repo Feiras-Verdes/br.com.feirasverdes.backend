@@ -23,9 +23,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.feirasverdes.backend.dao.AvaliacaoDao;
+import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dao.ProdutoDao;
 import br.com.feirasverdes.backend.dto.ProdutoDto;
+import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Produto;
+import br.com.feirasverdes.backend.entidade.Usuario;
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = Application.class)
@@ -39,10 +43,20 @@ public class ProdutoTest {
 
 	@Autowired
 	private UsuarioTestUtil usuarioTestUtil;
+	
+	private Estande estande;
+
+	@Autowired
+	private EstandeDao estandeDao;
+
+	private Usuario usuarioLogado;
 
 	@BeforeEach
 	public void iniciar() {
-		usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
+		usuarioLogado = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 3L);
+		Estande criarEstande = EstandeTest.criarEstande();
+		criarEstande.setUsuario(usuarioLogado);
+		estande = estandeDao.save(criarEstande);
 	}
 
 	@Test
@@ -61,15 +75,6 @@ public class ProdutoTest {
 		assertEquals(produto.getPreco(), produtoSalvo.getPreco());
 		assertEquals(produto.getDescricao(), produtoSalvo.getDescricao());
 
-	}
-
-	@Test
-	@Transactional
-	public void testCadastrarFeiraErro() throws IOException, Exception {
-		ProdutoDto produto = criarProdutoDto();
-		produto.setNome(null);
-		mockMvc.perform(post("/produtos").headers(TestUtil.autHeaders()).contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(produto))).andExpect(status().is(400));
 	}
 
 	@Test
@@ -147,6 +152,7 @@ public class ProdutoTest {
 		produto.setPreco(3.00f);
 		produto.setDescricao("do sitio");
 		produto.setUnidade("kg");
+		produto.setEstande(estande);
 		return produto;
 
 	}

@@ -27,6 +27,7 @@ import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Usuario;
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = Application.class)
@@ -44,15 +45,18 @@ public class EstandeTest {
 	@Autowired
 	private UsuarioTestUtil usuarioTestUtil;
 
+	private Usuario usuarioLogado;
+
 	@BeforeEach
 	public void iniciar() {
-		usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
+		usuarioLogado = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 3L);
 	}
 
 	@Test
 	@Transactional
 	public void testCadastrarEstande() throws Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		MvcResult result = mockMvc.perform(post("/estandes").headers(TestUtil.autHeaders())
 				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(estande)))
 				.andExpect(status().isOk()).andReturn();
@@ -73,6 +77,7 @@ public class EstandeTest {
 	@Transactional
 	public void testAtualizarEstande() throws IOException, Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		Estande estandeCadastrado = estandeDao.save(estande);
 		estande.setId(estandeCadastrado.getId());
 		estande.setNome("barraca2");
@@ -85,7 +90,7 @@ public class EstandeTest {
 				put("/estandes/" + estande.getId()).headers(TestUtil.autHeaders()).param("nome", estande.getNome())
 						.param("telefone", estande.getTelefone()).param("frequencia", estande.getFrequencia())
 						.param("horaInicio", estande.getHoraInicio()).param("horaFim", estande.getHoraFim()))
-				.andExpect(status().isOk()).andReturn();
+				.andExpect(status().isOk());
 
 		Estande estandeSalvo = estandeDao.getOne(estandeCadastrado.getId());
 		assertEquals(estande.getNome(), estandeSalvo.getNome());
@@ -96,6 +101,7 @@ public class EstandeTest {
 	@Transactional
 	public void testExcluirEstande() throws Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		Estande estandeCadastrado = estandeDao.save(estande);
 
 		mockMvc.perform(delete("/estandes/" + estandeCadastrado.getId()).headers(TestUtil.autHeaders())
@@ -107,16 +113,18 @@ public class EstandeTest {
 	@Test
 	public void testListarTodos() throws Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		estande.setNome("b");
 
 		Estande estandecadastrado = estandeDao.save(estande);
-		mockMvc.perform(get("/estandes/listarTodos").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/estandes").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.[*].nome").value(hasItem(estandecadastrado.getNome())));
 	}
 
 	@Test
 	public void testListarPornome() throws Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		estande.setNome("b");
 		Estande estandeCadastrado = estandeDao.save(estande);
 		mockMvc.perform(get("/estandes/pesquisar-por-nome?nome=b").accept(MediaType.APPLICATION_JSON))
@@ -127,6 +135,7 @@ public class EstandeTest {
 	@Test
 	public void testListarPorId() throws Exception {
 		Estande estande = criarEstande();
+		estande.setUsuario(usuarioLogado);
 		Estande estandeCadastrado = estandeDao.save(estande);
 		mockMvc.perform(get("/estandes/" + estandeCadastrado.getId()).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.nome").value(estandeCadastrado.getNome()));
