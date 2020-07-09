@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import br.com.feirasverdes.backend.dto.EstabelecimentoDto;
+import br.com.feirasverdes.backend.dto.EstandeDetalheDto;
 import br.com.feirasverdes.backend.entidade.Estande;
 
 @Repository
@@ -28,9 +29,25 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 			+ " left join e.endereco endereco" + " left join e.imagem imagem" + " left join e.avaliacoes a "
 			+ " where upper(e.nome) like ?1 " + " group by e.nome, e.id, e.telefone, a.nota")
 	Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
+	
 
 	List<Estande> findByUsuarioId(Long usuarioId);
 
-	List<Estande> findByFeiraId(Long idFeira);
+	
+	//Long id, String horaInicio, String frequencia, String horaFim, String telefone, String nome, Feira feira, Endereco endereco, Usuario usuario, Imagem imagem, Double avaliacao
+	@Query(value = "select new br.com.feirasverdes.backend.dto.EstandeDetalheDto"
+			+ "(e.id, e.horaInicio, e.frequencia, e.horaFim, e.telefone, e.nome, feira, endereco, usuario, imagem, (CEILING(AVG(a.nota) / 0.5) * 0.5))" 
+			+ " from Estande e "
+			+ " join e.feira feira "
+			+ " left join e.endereco endereco " 
+			+ " left join e.imagem imagem " 
+			+ " left join e.avaliacoes a "
+			+ " left join e.usuario usuario "
+			+ " where feira.id = ?1 "
+			+ " group by e.id, e.horaInicio, e.frequencia, e.horaFim, e.telefone, e.nome, feira, endereco, usuario, imagem ")
+	List<EstandeDetalheDto> findByFeiraId(Long idFeira);
+	
+	@Query(value = "select COALESCE(avg(avaliacao.nota), 0) from Avaliacao avaliacao right join avaliacao.estande estande where estande.id = ?1")
+	Number avaliacaoPorEstande(Long id);
 
 }

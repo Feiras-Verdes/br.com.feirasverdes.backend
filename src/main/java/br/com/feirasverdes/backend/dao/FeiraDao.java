@@ -33,4 +33,5 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 
 	@Query(value = "select COALESCE(avg(avaliacao.nota), 0) from Avaliacao avaliacao right join avaliacao.feira feira where feira.id = ?1")
 	Number avaliacaoPorFeira(Long id);
+	
 }

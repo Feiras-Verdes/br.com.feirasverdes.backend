@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.feirasverdes.backend.dto.EstandeDetalheDto;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
@@ -86,7 +87,7 @@ public class EstandeController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}")
-	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<EstandeDetalheDto> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		return ResponseEntity.ok(service.pesquisarPorId(id));
 	}
 	

@@ -64,7 +64,11 @@ public class ProdutoTest {
 	public void testCadastrarProduto() throws IOException, Exception {
 		ProdutoDto produto = criarProdutoDto();
 		MvcResult result = mockMvc.perform(post("/produtos").headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(produto)))
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("nome", produto.getNome())
+				.param("descricao", produto.getDescricao())
+				.param("preco", produto.getPreco().toString())
+				.param("unidade", produto.getUnidade()))
 				.andExpect(status().isOk()).andReturn();
 		Produto produtoResult = (Produto) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(),
 				Produto.class);
