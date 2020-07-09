@@ -6,24 +6,31 @@ public class ProdutoDto {
 
 	private Long id;
 
+	private Long idEstande;
+
 	private String nome;
 
 	private String descricao;
 
 	private Float preco;
 
+	private String unidade;
+
 	private MultipartFile imagem;
-	
+
 	public ProdutoDto() {
 		super();
 	}
 
-	public ProdutoDto(Long id, String nome, String descricao, Float preco, MultipartFile imagem) {
+	public ProdutoDto(Long id, Long idEstande, String nome, String descricao, Float preco, String unidade,
+			MultipartFile imagem) {
 		super();
 		this.id = id;
+		this.idEstande = idEstande;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.preco = preco;
+		this.unidade = unidade;
 		this.imagem = imagem;
 	}
 
@@ -33,6 +40,14 @@ public class ProdutoDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getIdEstande() {
+		return this.idEstande;
+	}
+
+	public void setIdEstande(Long idEstande) {
+		this.idEstande = idEstande;
 	}
 
 	public String getNome() {
@@ -57,6 +72,14 @@ public class ProdutoDto {
 
 	public void setPreco(Float preco) {
 		this.preco = preco;
+	}
+
+	public String getUnidade() {
+		return this.unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
 	}
 
 	public MultipartFile getImagem() {

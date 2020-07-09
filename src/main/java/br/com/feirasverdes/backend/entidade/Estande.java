@@ -11,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -21,7 +19,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 
 @Entity
 @Table(name = "estande")
@@ -32,18 +29,18 @@ public class Estande implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "hora_inicio", nullable = false, length = 200)
-	private String hora_inicio;
+	@Column(name = "hora_inicio", length = 200)
+	private String horaInicio;
 
-	@Column(name = "frequencia", nullable = false, length = 200)
+	@Column(name = "frequencia", length = 200)
 	private String frequencia;
 
-	@Column(name = "hora_fim", nullable = false, length = 200)
-	private String hora_fim;
-	
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column(name = "hora_fim", length = 200)
+	private String horaFim;
+
+	@Column(name = "telefone", length = 200)
 	private String telefone;
-	
+
 	@NotNull(message = "Nome do estande não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
@@ -53,40 +50,53 @@ public class Estande implements Serializable {
 	private Feira feira;
 
 	@ManyToOne
+	@JoinColumn(name = "id_endereco")
+	private Endereco endereco;
+
+	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Noticia> noticias;
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-	@JoinTable(name = "vende", joinColumns = {
-			@JoinColumn(name = "id_produto", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "id_estande", referencedColumnName = "id") })
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Avaliacao> avaliacoes;
+
+	@OneToMany(mappedBy = "estande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Produto> produtos;
 
-	public Estande(Long id, String hora_inicio, String frequencia, String hora_fim, String telefone, String nome,
-			Feira feira, Usuario usuario, Endereco endereco, Imagem imagem, List<Noticia> noticias,
+	public Estande(Long id, String horaInicio, String frequencia, String horaFim, String telefone,
+			@NotNull(message = "Nome do estande não pode ser vazio") String nome, Feira feira, Endereco endereco,
+			Usuario usuario, Imagem imagem, List<Noticia> noticias, List<Avaliacao> avaliacoes,
 			List<Produto> produtos) {
 		super();
 		this.id = id;
-		this.hora_inicio = hora_inicio;
+		this.horaInicio = horaInicio;
 		this.frequencia = frequencia;
-		this.hora_fim = hora_fim;
+		this.horaFim = horaFim;
 		this.telefone = telefone;
 		this.nome = nome;
 		this.feira = feira;
+		this.endereco = endereco;
 		this.usuario = usuario;
 		this.imagem = imagem;
 		this.noticias = noticias;
+		this.avaliacoes = avaliacoes;
 		this.produtos = produtos;
 	}
-	
+
+	public Estande(Long id) {
+		super();
+		this.id = id;
+	}
+
 	public Estande() {
 		super();
 	}
@@ -99,12 +109,12 @@ public class Estande implements Serializable {
 		this.id = id;
 	}
 
-	public String getHora_inicio() {
-		return hora_inicio;
+	public String getHoraInicio() {
+		return horaInicio;
 	}
 
-	public void setHora_inicio(String hora_inicio) {
-		this.hora_inicio = hora_inicio;
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
 	}
 
 	public String getFrequencia() {
@@ -115,12 +125,12 @@ public class Estande implements Serializable {
 		this.frequencia = frequencia;
 	}
 
-	public String getHora_fim() {
-		return hora_fim;
+	public String getHoraFim() {
+		return horaFim;
 	}
 
-	public void setHora_fim(String hora_fim) {
-		this.hora_fim = hora_fim;
+	public void setHoraFim(String horaFim) {
+		this.horaFim = horaFim;
 	}
 
 	public String getTelefone() {
@@ -179,12 +189,27 @@ public class Estande implements Serializable {
 		this.produtos = produtos;
 	}
 
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+	public List<Avaliacao> getAvaliacoes() {
+		return avaliacoes;
+	}
+
+	public void setAvaliacoes(List<Avaliacao> avaliacoes) {
+		this.avaliacoes = avaliacoes;
+	}
+
 	@Override
 	public String toString() {
-		return "Estande [id=" + id + ", hora_inicio=" + hora_inicio + ", frequencia=" + frequencia + ", hora_fim="
-				+ hora_fim + ", telefone=" + telefone + ", nome=" + nome + ", feira=" + feira + ", usuario=" + usuario
-				+ ", imagem=" + imagem + ", noticias=" + noticias + ", produtos=" + produtos
-				+ "]";
+		return "Estande [id=" + id + ", hora_inicio=" + horaInicio + ", frequencia=" + frequencia + ", hora_fim="
+				+ horaFim + ", telefone=" + telefone + ", nome=" + nome + ", feira=" + feira + ", usuario=" + usuario
+				+ ", imagem=" + imagem + ", noticias=" + noticias + ", produtos=" + produtos + "]";
 	}
 
 }

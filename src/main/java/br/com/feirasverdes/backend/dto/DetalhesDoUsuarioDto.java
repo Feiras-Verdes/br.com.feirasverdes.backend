@@ -1,7 +1,6 @@
 package br.com.feirasverdes.backend.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,7 +27,7 @@ public class DetalhesDoUsuarioDto implements Serializable {
 
 	private String telefone;
 
-	private Date dataNascimento;
+	private String dataNascimento;
 
 	private TipoUsuario tipoUsuario;
 
@@ -43,7 +42,7 @@ public class DetalhesDoUsuarioDto implements Serializable {
 		dataNascimento = builder.dataNascimento;
 		tipoUsuario = builder.tipoUsuario;
 	}
-	
+
 	public DetalhesDoUsuarioDto() {
 		super();
 	}
@@ -104,11 +103,11 @@ public class DetalhesDoUsuarioDto implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public Date getDataNascimento() {
+	public String getDataNascimento() {
 		return this.dataNascimento;
 	}
 
-	public void setDataNascimento(Date dataNascimento) {
+	public void setDataNascimento(String dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 
@@ -144,7 +143,7 @@ public class DetalhesDoUsuarioDto implements Serializable {
 
 		private String telefone;
 
-		private Date dataNascimento;
+		private String dataNascimento;
 
 		private TipoUsuario tipoUsuario;
 
@@ -186,7 +185,7 @@ public class DetalhesDoUsuarioDto implements Serializable {
 			return this;
 		}
 
-		public Builder withDataNascimento(final Date dataNascimento) {
+		public Builder withDataNascimento(final String dataNascimento) {
 			this.dataNascimento = dataNascimento;
 			return this;
 		}

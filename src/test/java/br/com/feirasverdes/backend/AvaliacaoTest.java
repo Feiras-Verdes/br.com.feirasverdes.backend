@@ -25,11 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
-import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
-import br.com.feirasverdes.backend.entidade.Noticia;
 import br.com.feirasverdes.backend.entidade.Usuario;
 import br.com.feirasverdes.backend.service.FeiraService;
 
@@ -38,13 +36,13 @@ import br.com.feirasverdes.backend.service.FeiraService;
 public class AvaliacaoTest {
 
 	@Autowired
-    private MockMvc mockMvc;
-	
+	private MockMvc mockMvc;
+
 	@Autowired
 	private UsuarioTestUtil usuarioTestUtil;
-	
+
 	private Usuario usuario;
-	
+
 	private Feira feira;
 
 	private Estande estande;
@@ -54,39 +52,34 @@ public class AvaliacaoTest {
 
 	@Autowired
 	private EstandeDao estandeDao;
-	
+
 	@Autowired
 	private FeiraService feiraService;
-	
+
 	@BeforeEach
 	public void iniciar() throws IOException {
 		usuario = usuarioTestUtil.criarUsuarioLogin("test@localhost", "123456", 1L);
-		FeiraDto feiraDto = FeiraTest.criarFeiraDtoSemUsuario();
-		feiraDto.setIdUsuario(usuario.getId());
-		feira = feiraService.cadastrarFeira(feiraDto);
+		Feira feira = FeiraTest.criarFeiraDtoSemUsuario();
+		feira.setUsuario(usuario);
+		feira = feiraService.cadastrarFeira(feira);
 		estande = estandeDao.save(EstandeTest.criarEstande());
 	}
-	
+
 	@Test
 	@Transactional
 	public void testCadastrarAvaliacao() throws IOException, Exception {
 		Avaliacao avaliacao = criaAvaliacao();
-		MvcResult result = mockMvc.perform(post("/avaliacao/cadastrar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(avaliacao)))
-				.andExpect(status().isOk())
-				.andReturn();
-		
-		Avaliacao avaliacaoResult = (Avaliacao) TestUtil.convertJsonToObject(result.getResponse().getContentAsByteArray(), Avaliacao.class);
+		MvcResult result = mockMvc.perform(post("/avaliacao").headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
+				.andExpect(status().isOk()).andReturn();
+
+		Avaliacao avaliacaoResult = (Avaliacao) TestUtil
+				.convertJsonToObject(result.getResponse().getContentAsByteArray(), Avaliacao.class);
 		Avaliacao avaliacaoSalva = dao.getOne(avaliacaoResult.getId());
 		assertNotNull(avaliacaoSalva);
 		assertEquals(avaliacao.getNota(), avaliacaoSalva.getNota());
-		assertEquals(avaliacao.getFeira().getNome(), avaliacaoSalva.getFeira().getNome());
-		assertEquals(avaliacao.getEstande().getNome(), avaliacaoSalva.getEstande().getNome());
-		assertEquals(avaliacao.getUsuario().getNome(),avaliacaoSalva.getUsuario().getNome());
 	}
-	
+
 	@Test
 	@Transactional
 	public void testAtualizarAvaliacao() throws IOException, Exception {
@@ -94,52 +87,47 @@ public class AvaliacaoTest {
 		Avaliacao avaliacaoCadastrada = dao.save(avaliacao);
 		avaliacao.setId(avaliacaoCadastrada.getId());
 		avaliacao.setNota(7.0);
-		
-		mockMvc.perform(put("/avaliacao/"+avaliacaoCadastrada.getId()+"/atualizar")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(TestUtil.convertObjectToJsonBytes(avaliacao)))
+		avaliacao.setUsuario(usuario);
+
+		mockMvc.perform(put("/avaliacao/" + avaliacaoCadastrada.getId()).headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(avaliacao)))
 				.andExpect(status().isOk());
-		
+
 		Avaliacao avaliacaoSalva = dao.getOne(avaliacaoCadastrada.getId());
 		assertEquals(avaliacao.getNota(), avaliacaoSalva.getNota());
 
 	}
-	
+
 	@Test
 	@Transactional
-	public void testExcluirAvaliacao() throws Exception  {
+	public void testExcluirAvaliacao() throws Exception {
 		Avaliacao avaliacao = criaAvaliacao();
 		Avaliacao avaliacaoCadastrada = dao.save(avaliacao);
-		
-		mockMvc.perform(delete("/avaliacao/"+avaliacaoCadastrada.getId()+"/excluir")
-				.headers(TestUtil.autHeaders())
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+
+		mockMvc.perform(delete("/avaliacao/" + avaliacaoCadastrada.getId()).headers(TestUtil.autHeaders())
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		assertFalse(dao.findById(avaliacaoCadastrada.getId()).isPresent());
 	}
-	
+
 	@Test
 	public void testListarTodos() throws Exception {
 		Avaliacao avaliacao = criaAvaliacao();
 		avaliacao.setNota(7.0);
 		dao.saveAndFlush(avaliacao);
-		mockMvc.perform(get("/avaliacao/listarTodos").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.[*].nota").value(hasItem(avaliacao.getNota())));
+		mockMvc.perform(get("/avaliacao").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.[*].nota").value(hasItem(avaliacao.getNota())));
 	}
+
 	@Test
 	@Transactional
 	public void testPesquisarPorId() throws Exception {
 		Avaliacao avaliacao = criaAvaliacao();
 		avaliacao.setNota(7.0);
 		Avaliacao avaliacaoCadastrada = dao.saveAndFlush(avaliacao);
-		mockMvc.perform(get("/avaliacao/pesquisar-por-id/" + avaliacaoCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.nota").value(avaliacao.getNota()));
+		mockMvc.perform(get("/avaliacao/" + avaliacaoCadastrada.getId()).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.nota").value(avaliacao.getNota()));
 	}
-	
-	
+
 	private Avaliacao criaAvaliacao() {
 		Avaliacao avaliacao = new Avaliacao();
 		avaliacao.setFeira(feira);

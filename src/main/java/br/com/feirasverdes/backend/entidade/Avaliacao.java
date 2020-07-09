@@ -19,7 +19,8 @@ public class Avaliacao implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@NotNull(message = "Nota de feira não pode ser vazio")
+
+	@NotNull(message = "Nota de feira não pode estar vazia")
 	@Column(name = "nota", nullable = false, length = 200)
 	private Double nota;
 

@@ -2,8 +2,6 @@ package br.com.feirasverdes.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.EstabelecimentoDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
-import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Produto;
 import br.com.feirasverdes.backend.exception.AutenticacaoException;
+import br.com.feirasverdes.backend.service.BuscaService;
 
 @RestController
 @CrossOrigin
@@ -27,40 +25,82 @@ import br.com.feirasverdes.backend.exception.AutenticacaoException;
 public class BuscaController {
 
 	@Autowired
-	private EstandeDao estanteDao;
+	private BuscaService service;
 
-	@GetMapping("/estabelecimentos")
+	@GetMapping("/estandes")
 	@ResponseBody
-	public ResponseEntity<?> buscaEstabelecimento(@RequestParam(required = false) String nome,
+	public ResponseEntity<?> buscaEstande(@RequestParam(required = false) String nome,
 			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
-			Page<Estande> estande = verificarOrdenacao(nome, limite, pagina, ordenacao, tipoOrdenacao);
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
+
+			Page<EstabelecimentoDto> estande = service.verificarOrdenacaoEstande(nome, limite, pagina, ordenacao,
+					tipoOrdenacao);
 
 			return ResponseEntity.ok(estande);
-
 		} catch (final BadCredentialsException | DisabledException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Email ou senha inválidos"));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(new RespostaDto("Busca de estabelecimento inválida"));
 		} catch (final Exception e) {
+			e.printStackTrace();
 			throw new AutenticacaoException();
 		}
 	}
 
-	public Page<Estande> verificarOrdenacao(String nome, Integer limite, Integer pagina, String ordenacao,
-			String tipoOrdenacao) {
-		Page<Estande> estande = null;
-		if (!tipoOrdenacao.isEmpty() && tipoOrdenacao != null) {
-			if (tipoOrdenacao.toUpperCase().equals("ASC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.ASC, ordenacao));
-			}
-			if (tipoOrdenacao.toUpperCase().equals("DESC")) {
-				estande = estanteDao.buscaEstandePorFiltro("%" + nome.toUpperCase() + "%",
-						PageRequest.of(pagina, limite, Sort.Direction.DESC, ordenacao));
-			}
+	@GetMapping("/feiras")
+	@ResponseBody
+	public ResponseEntity<?> buscaFeira(@RequestParam(required = false) String nome,
+			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
+			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
+			throws Exception {
+		try {
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
+			
+			Page<EstabelecimentoDto> feira = service.verificarOrdenacaoFeira(nome, limite, pagina, ordenacao,
+					tipoOrdenacao);
+
+			return ResponseEntity.ok(feira);
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(new RespostaDto("Busca de estabelecimento inválida"));
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new AutenticacaoException();
 		}
-		return estande;
 	}
 
+	@GetMapping("/produtos")
+	@ResponseBody
+	public ResponseEntity<?> buscaProduto(@RequestParam(required = false) String nome,
+			@RequestParam(required = false) Integer limite, @RequestParam(required = false) Integer pagina,
+			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
+			throws Exception {
+		try {
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
+
+			final Page<Produto> produto = service.verificarOrdenacaoProduto(nome, limite, pagina, ordenacao,
+					tipoOrdenacao);
+
+			return ResponseEntity.ok(produto);
+		} catch (final BadCredentialsException | DisabledException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RespostaDto("Busca de produtos inválida"));
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new AutenticacaoException();
+		}
+	}
 }

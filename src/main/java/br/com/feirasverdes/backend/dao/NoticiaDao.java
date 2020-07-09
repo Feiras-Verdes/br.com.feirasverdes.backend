@@ -12,4 +12,10 @@ public interface NoticiaDao extends JpaRepository<Noticia, Long> {
 	@Query("select n from Noticia n where n.feira.id = ?1 order by id desc")
 	public List<Noticia> buscarUltimasNoticiadaFeira(Long idfeira);
 
+	@Query("select n from Noticia n order by id desc")
+	public List<Noticia> buscarUltimasNoticias();
+	
+	@Query("select n from Noticia n where n.estande.id = ?1")
+	public List<Noticia> buscarUltimasNoticiadaEstande(Long idEstande);
+
 }

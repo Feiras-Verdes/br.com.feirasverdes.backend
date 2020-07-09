@@ -3,18 +3,28 @@ package br.com.feirasverdes.backend.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.web.multipart.MultipartFile;
+
+import br.com.feirasverdes.backend.entidade.Imagem;
 
 public class UsuarioDto implements Serializable {
 
+	@NotBlank(message = "Nome não pode ser vazio")
 	private String nome;
 
+	@CPF(message = "CPF Incorreto")
 	private String cpf;
 
+	@CNPJ(message = "CNPJ Incorreto")
 	private String cnpj;
 
 	private String telefone;
 
+	@NotBlank(message = "E-mail não pode ser vazio")
 	private String email;
 
 	private Date dataNascimento;
@@ -26,20 +36,6 @@ public class UsuarioDto implements Serializable {
 	public UsuarioDto() {
 		super();
 	}
-
-	public UsuarioDto(String nome, String cpf, String cnpj, String telefone, String email, Date dataNascimento,
-			boolean ativo, MultipartFile imagem) {
-		super();
-		this.nome = nome;
-		this.cpf = cpf;
-		this.cnpj = cnpj;
-		this.telefone = telefone;
-		this.email = email;
-		this.dataNascimento = dataNascimento;
-		this.ativo = ativo;
-		this.imagem = imagem;
-	}
-
 	public String getNome() {
 		return this.nome;
 	}
@@ -53,7 +49,11 @@ public class UsuarioDto implements Serializable {
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		if (cpf == null || cpf.length() == 0) {
+			this.cpf = null;
+		} else {
+			this.cpf = cpf;
+		}
 	}
 
 	public String getCnpj() {
@@ -61,7 +61,11 @@ public class UsuarioDto implements Serializable {
 	}
 
 	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
+		if (cnpj == null || cnpj.length() == 0) {
+			this.cnpj = null;
+		} else {
+			this.cnpj = cnpj;
+		}
 	}
 
 	public String getTelefone() {
@@ -95,13 +99,10 @@ public class UsuarioDto implements Serializable {
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
 	}
-
 	public MultipartFile getImagem() {
-		return this.imagem;
+		return imagem;
 	}
-
 	public void setImagem(MultipartFile imagem) {
 		this.imagem = imagem;
 	}
-
 }

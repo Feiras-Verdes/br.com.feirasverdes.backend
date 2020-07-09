@@ -6,14 +6,14 @@ public class RespostaJwt implements Serializable {
 
 	private static final long serialVersionUID = -8091879091924046844L;
 
-	private final String jwttoken;
+	private final String token;
 
-	public RespostaJwt(final String jwttoken) {
-		this.jwttoken = jwttoken;
+	public RespostaJwt(final String token) {
+		this.token = token;
 	}
 
 	public String getToken() {
-		return jwttoken;
+		return this.token;
 	}
 
 }

@@ -29,25 +29,23 @@ public class Feira implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "hora_inicio", nullable = false, length = 200)
-	private String hora_inicio;
-	
+	@Column(name = "hora_inicio", nullable = true, length = 200)
+	private String horaInicio;
+
 	@NotNull(message = "Nome de feira não pode ser vazio")
 	@Column(name = "nome", nullable = false, length = 200)
 	private String nome;
 
-	@Column(name = "frequencia", nullable = false, length = 200)
+	@Column(name = "frequencia", nullable = true, length = 200)
 	private String frequencia;
 
-	@Column(name = "hora_fim", nullable = false, length = 200)
-	private String hora_fim;
+	@Column(name = "hora_fim", nullable = true, length = 200)
+	private String horaFim;
 
-	
-	@Column(name = "telefone", nullable = false, length = 200)
+	@Column(name = "telefone", nullable = true, length = 200)
 	private String telefone;
-	
-	@NotNull(message = "Endereço de feira não pode ser vazio")
-	@OneToOne
+
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Endereco endereco;
 
 	@ManyToOne
@@ -58,13 +56,13 @@ public class Feira implements Serializable {
 	@JsonIgnore
 	private List<Estande> estandes;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Imagem imagem;
 
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Noticia> noticias;
-	
+
 	@OneToMany(mappedBy = "feira", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Avaliacao> avaliacoes;
@@ -72,15 +70,20 @@ public class Feira implements Serializable {
 	public Feira() {
 		super();
 	}
+	
+	public Feira(Long id) {
+		super();
+		this.id = id;
+	}
 
-	public Feira(Long id, String hora_inicio, String nome, String frequencia, String hora_fim, String telefone,
+	public Feira(Long id, String horaInicio, String nome, String frequencia, String horaFim, String telefone,
 			Endereco endereco, Usuario usuario, Imagem imagem) {
 		super();
 		this.id = id;
-		this.hora_inicio = hora_inicio;
+		this.horaInicio = horaInicio;
 		this.nome = nome;
 		this.frequencia = frequencia;
-		this.hora_fim = hora_fim;
+		this.horaFim = horaFim;
 		this.telefone = telefone;
 		this.endereco = endereco;
 		this.usuario = usuario;
@@ -95,12 +98,12 @@ public class Feira implements Serializable {
 		this.id = id;
 	}
 
-	public String getHora_inicio() {
-		return hora_inicio;
+	public String getHoraInicio() {
+		return horaInicio;
 	}
 
-	public void setHora_inicio(String hora_inicio) {
-		this.hora_inicio = hora_inicio;
+	public void setHoraInicio(String hora_inicio) {
+		this.horaInicio = hora_inicio;
 	}
 
 	public String getNome() {
@@ -119,12 +122,12 @@ public class Feira implements Serializable {
 		this.frequencia = frequencia;
 	}
 
-	public String getHora_fim() {
-		return hora_fim;
+	public String getHoraFim() {
+		return horaFim;
 	}
 
-	public void setHora_fim(String hora_fim) {
-		this.hora_fim = hora_fim;
+	public void setHoraFim(String hora_fim) {
+		this.horaFim = hora_fim;
 	}
 
 	public String getTelefone() {
