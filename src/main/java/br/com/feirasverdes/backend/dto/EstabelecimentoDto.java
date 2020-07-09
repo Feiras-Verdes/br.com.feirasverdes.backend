@@ -13,21 +13,21 @@ public class EstabelecimentoDto {
 	private String telefone;
 	private Imagem imagem;
 	private Endereco endereco;
-	private double nota;
+	private double avaliacao;
 
 	public EstabelecimentoDto() {
 		super();
 	}
 
-	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem, Endereco endereco, Number nota) {
+	public EstabelecimentoDto(Long id, String nome, String telefone, Imagem imagem, Endereco endereco, Number avaliacao) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
 		this.imagem = imagem;
 		this.endereco = endereco;
-		if(nota != null) {
-			this.nota = nota.doubleValue();
+		if(avaliacao != null) {
+			this.avaliacao = avaliacao.doubleValue();
 		}
 	}
 
@@ -72,12 +72,12 @@ public class EstabelecimentoDto {
 		this.endereco = endereco;
 	}
 
-	public double getNota() {
-		return nota;
+	public double getAvaliacao() {
+		return avaliacao;
 	}
 
-	public void setNota(double nota) {
-		this.nota = nota;
+	public void setAvaliacao(double avaliacao) {
+		this.avaliacao = avaliacao;
 	}
 
 	

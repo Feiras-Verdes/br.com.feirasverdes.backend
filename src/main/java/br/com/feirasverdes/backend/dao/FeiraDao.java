@@ -26,11 +26,23 @@ public interface FeiraDao extends JpaRepository<Feira, Long> {
 	List<Feira> findByUsuarioId(Long idUsuario);
 
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
-			+ "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5)) " + " from Feira f "
+			+ "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Feira f "
 			+ " left join f.endereco e" + " left join f.imagem i" + " left join f.avaliacoes a "
-			+ "where upper(f.nome) like ?1 group by f.nome, f.id, f.telefone")
-	Page<EstabelecimentoDto> buscaFeiraPorFiltro(String nome, Pageable pageable);
+			+ "where upper(f.nome) like ?1 or upper(e.bairro) like ?1 group by f.id, f.nome, f.telefone, i, e ")
+	Page<EstabelecimentoDto> buscaFeiraPorFiltroNome(String nome, Pageable pageable);
 
+	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
+			+ "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Feira f "
+			+ " left join f.endereco e" + " left join f.imagem i" + " left join f.avaliacoes a "
+			+ "where upper(f.nome) like ?1 or upper(e.bairro) like ?1 group by f.id, f.nome, f.telefone, i, e order by AVG(a.nota) ASC")
+	Page<EstabelecimentoDto> buscaFeiraPorFiltroNotaAsc(String nome, Pageable pageable);
+	
+	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
+			+ "(f.id, f.nome, f.telefone, i, e , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Feira f "
+			+ " left join f.endereco e" + " left join f.imagem i" + " left join f.avaliacoes a "
+			+ "where upper(f.nome) like ?1 or upper(e.bairro) like ?1 group by f.id, f.nome, f.telefone, i, e order by AVG(a.nota) DESC")
+	Page<EstabelecimentoDto> buscaFeiraPorFiltroNotaDesc(String nome, Pageable pageable);
+	
 	@Query(value = "select COALESCE(avg(avaliacao.nota), 0) from Avaliacao avaliacao right join avaliacao.feira feira where feira.id = ?1")
 	Number avaliacaoPorFeira(Long id);
 }

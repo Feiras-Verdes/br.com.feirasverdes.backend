@@ -26,8 +26,20 @@ public interface EstandeDao extends JpaRepository<Estande, Long> {
 	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
 			+ "(e.id, e.nome, e.telefone, imagem, endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Estande e "
 			+ " left join e.endereco endereco" + " left join e.imagem imagem" + " left join e.avaliacoes a "
-			+ " where upper(e.nome) like ?1 " + " group by e.nome, e.id, e.telefone, a.nota")
-	Page<EstabelecimentoDto> buscaEstandePorFiltro(String nome, Pageable pageable);
+			+ " where upper(e.nome) like ?1 or upper(endereco.bairro) like ?1 " + " group by e.nome, e.id, e.telefone, imagem, endereco")
+	Page<EstabelecimentoDto> buscaEstandePorFiltroNome(String nome, Pageable pageable);
+	
+	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
+			+ "(e.id, e.nome, e.telefone, imagem, endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Estande e "
+			+ " left join e.endereco endereco" + " left join e.imagem imagem" + " left join e.avaliacoes a "
+			+ " where upper(e.nome) like ?1 or upper(endereco.bairro) like ?1 " + " group by e.nome, e.id, e.telefone, imagem, endereco order by AVG(a.nota) ASC")
+	Page<EstabelecimentoDto> buscaEstandePorFiltroNotaAsc(String nome, Pageable pageable);
+	
+	@Query(value = "select new br.com.feirasverdes.backend.dto.EstabelecimentoDto"
+			+ "(e.id, e.nome, e.telefone, imagem, endereco , (CEILING(AVG(a.nota) / 0.5) * 0.5))" + " from Estande e "
+			+ " left join e.endereco endereco" + " left join e.imagem imagem" + " left join e.avaliacoes a "
+			+ " where upper(e.nome) like ?1 or upper(endereco.bairro) like ?1 " + " group by e.nome, e.id, e.telefone, imagem, endereco order by AVG(a.nota) DESC")
+	Page<EstabelecimentoDto> buscaEstandePorFiltroNotaDesc(String nome, Pageable pageable);
 
 	List<Estande> findByUsuarioId(Long usuarioId);
 
