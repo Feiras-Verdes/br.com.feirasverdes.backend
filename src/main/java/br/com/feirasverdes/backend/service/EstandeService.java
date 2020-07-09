@@ -10,8 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.feirasverdes.backend.dao.AvaliacaoDao;
 import br.com.feirasverdes.backend.dao.EnderecoDao;
 import br.com.feirasverdes.backend.dao.EstandeDao;
+import br.com.feirasverdes.backend.dto.EstandeDetalheDto;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
@@ -94,11 +96,27 @@ public class EstandeService {
 		return dao.pesquisarPorNome(nome);
 	}
 
-	public Estande pesquisarPorId(Long id) {
-		return dao.getOne(id);
+	public EstandeDetalheDto pesquisarPorId(Long id) {
+		Estande estande = dao.getOne(id);
+		EstandeDetalheDto dto = new EstandeDetalheDto();
+		dto.setEndereco(estande.getEndereco());
+		dto.setFeira(estande.getFeira());
+		dto.setFrequencia(estande.getFrequencia());
+		dto.setHoraFim(estande.getHoraFim());
+		dto.setHoraInicio(estande.getHoraInicio());
+		dto.setId(estande.getId());
+		dto.setImagem(estande.getImagem());
+		dto.setNome(estande.getNome());
+		dto.setTelefone(estande.getTelefone());
+		dto.setUsuario(estande.getUsuario());
+		Number avaliacao = dao.avaliacaoPorEstande(estande.getId());
+		if (avaliacao != null) {
+			dto.setAvaliacao(avaliacao.doubleValue());
+		}
+		return dto;
 	}
 
-	public List<Estande> buscarEstandesDeFeira(Long idFeira) {
+	public List<EstandeDetalheDto> buscarEstandesDeFeira(Long idFeira) {
 		return dao.findByFeiraId(idFeira);
 	}
 

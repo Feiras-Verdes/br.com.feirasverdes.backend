@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.feirasverdes.backend.dto.EstandeDetalheDto;
 import br.com.feirasverdes.backend.dto.FeiraDetalheDTO;
 import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.ListFeiraDTO;
 import br.com.feirasverdes.backend.dto.RespostaDto;
 import br.com.feirasverdes.backend.entidade.Avaliacao;
-import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.service.AvaliacaoService;
@@ -129,7 +129,7 @@ public class FeiraController {
 	 */
 
 	@RequestMapping(method = RequestMethod.GET, value = "{idFeira}/estandes")
-	public ResponseEntity<List<Estande>> estandesDaFeira(@PathVariable(value = "idFeira") Long idFeira) {
+	public ResponseEntity<List<EstandeDetalheDto>> estandesDaFeira(@PathVariable(value = "idFeira") Long idFeira) {
 		return ResponseEntity.ok(estandeService.buscarEstandesDeFeira(idFeira));
 	}
 
