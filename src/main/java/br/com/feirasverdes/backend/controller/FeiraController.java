@@ -23,6 +23,7 @@ import br.com.feirasverdes.backend.dto.FeiraDetalheDTO;
 import br.com.feirasverdes.backend.dto.FeiraDto;
 import br.com.feirasverdes.backend.dto.ListFeiraDTO;
 import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
@@ -105,6 +106,16 @@ public class FeiraController {
 		return ResponseEntity.ok(avaliacaoService.listarAvaliacaoPorUsuario(idUsuario));
 	}
 
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.POST, value = "{idFeira}/avaliar")
+	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "idFeira") Long idFeira, @RequestBody Avaliacao avaliacaofeira) {
+		try {
+			return new ResponseEntity<>(avaliacaoService.avaliarFeira(idFeira, avaliacaofeira), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	/*
 	 * @RequestMapping(method = RequestMethod.GET, value =
 	 * "{idFeira}/pesquisar-por-todas-estandes-da-feira/{nome}") public

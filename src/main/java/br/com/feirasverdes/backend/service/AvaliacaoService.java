@@ -77,4 +77,14 @@ public class AvaliacaoService {
 		return dao.findByUsuarioId(idUsuario);
 	}
 
+	public Avaliacao avaliarEstande(Long idEstande, Avaliacao avaliacao) {
+		avaliacao.setEstande(new Estande(idEstande));
+		return dao.save(avaliacao);		
+	}
+	
+	public Avaliacao avaliarFeira(Long idFeira, Avaliacao avaliacao) {
+		avaliacao.setFeira(new Feira(idFeira));
+		return dao.save(avaliacao);		
+	}
+
 }

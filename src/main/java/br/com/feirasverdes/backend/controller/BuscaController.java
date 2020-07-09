@@ -34,6 +34,11 @@ public class BuscaController {
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
 
 			Page<EstabelecimentoDto> estande = service.verificarOrdenacaoEstande(nome, limite, pagina, ordenacao,
 					tipoOrdenacao);
@@ -55,6 +60,12 @@ public class BuscaController {
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
+			
 			Page<EstabelecimentoDto> feira = service.verificarOrdenacaoFeira(nome, limite, pagina, ordenacao,
 					tipoOrdenacao);
 
@@ -75,6 +86,11 @@ public class BuscaController {
 			@RequestParam(required = false) String ordenacao, @RequestParam(required = false) String tipoOrdenacao)
 			throws Exception {
 		try {
+			if (nome == null) nome = "";
+			if (limite == null) limite = 50;
+			if (pagina == null) pagina = 0;
+			if (ordenacao == null || ordenacao.length() == 0) ordenacao = "nome";
+			if (tipoOrdenacao == null || tipoOrdenacao.length() == 0) tipoOrdenacao = "asc";
 
 			final Page<Produto> produto = service.verificarOrdenacaoProduto(nome, limite, pagina, ordenacao,
 					tipoOrdenacao);

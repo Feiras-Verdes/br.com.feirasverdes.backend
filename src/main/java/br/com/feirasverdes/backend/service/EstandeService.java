@@ -15,9 +15,9 @@ import br.com.feirasverdes.backend.dao.EstandeDao;
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.entidade.Endereco;
 import br.com.feirasverdes.backend.entidade.Estande;
+import br.com.feirasverdes.backend.entidade.Feira;
 import br.com.feirasverdes.backend.entidade.Imagem;
 import br.com.feirasverdes.backend.exception.EstandeNaoPertenceAoUsuarioException;
-import br.com.feirasverdes.backend.exception.FeiraNaoPertenceAoUsuarioException;
 
 @Service
 public class EstandeService {
@@ -49,6 +49,12 @@ public class EstandeService {
 		estande.setHoraFim(estandeAtualizado.getHoraFim());
 		estande.setNome(estandeAtualizado.getNome());
 		estande.setTelefone(estandeAtualizado.getTelefone());
+		
+		if (estandeAtualizado.getIdFeira() != null) {
+			estande.setFeira(new Feira(estandeAtualizado.getIdFeira()));
+		} else {
+			estande.setFeira(null);
+		}
 
 		Endereco endereco = estande.getEndereco() != null ? estande.getEndereco() : new Endereco();
 		endereco.setBairro(estandeAtualizado.getBairro());

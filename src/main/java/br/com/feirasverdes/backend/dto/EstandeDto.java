@@ -36,6 +36,8 @@ public class EstandeDto implements Serializable {
 	private Integer numero;
 
 	private String complemento;
+	
+	private Long idFeira;
 
 	public EstandeDto() {
 		super();
@@ -167,6 +169,14 @@ public class EstandeDto implements Serializable {
 
 	public void setHoraFim(String horaFim) {
 		this.horaFim = horaFim;
+	}
+
+	public Long getIdFeira() {
+		return idFeira;
+	}
+
+	public void setIdFeira(Long idFeira) {
+		this.idFeira = idFeira;
 	}
 
 }

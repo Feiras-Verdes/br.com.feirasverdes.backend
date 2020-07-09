@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.feirasverdes.backend.dto.EstandeDto;
 import br.com.feirasverdes.backend.dto.RespostaDto;
+import br.com.feirasverdes.backend.entidade.Avaliacao;
 import br.com.feirasverdes.backend.entidade.Estande;
 import br.com.feirasverdes.backend.exception.EstandeNaoPertenceAoUsuarioException;
 import br.com.feirasverdes.backend.service.AvaliacaoService;
@@ -44,13 +45,13 @@ public class EstandeController {
 	@Autowired
 	private ProdutoService produtoService;
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Estande> salvarEstande(@Valid @RequestBody Estande estande) {
 		return new ResponseEntity<>(service.cadastrarEstande(estande), HttpStatus.OK);
 	}
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<?> atualizarEstande(@Valid @PathVariable(value = "id", required = true) Long id,
 			@ModelAttribute EstandeDto estande) throws IOException {
@@ -62,7 +63,7 @@ public class EstandeController {
 		}
 	}
 
-	@RolesAllowed({ "ROLE_FEIRANTE" })
+	@RolesAllowed({ "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
 	public ResponseEntity<?> excluir(@PathVariable(value = "id", required = true) Long id) {
 		try {
@@ -87,6 +88,17 @@ public class EstandeController {
 	@RequestMapping(method = RequestMethod.GET, value = "{id}")
 	public ResponseEntity<Estande> pesquisarPorId(@PathVariable(value = "id") Long id) {
 		return ResponseEntity.ok(service.pesquisarPorId(id));
+	}
+	
+	@RolesAllowed({ "ROLE_CONSUMIDOR", "ROLE_FEIRANTE", "ROLE_ORGANIZADOR" })
+	@RequestMapping(method = RequestMethod.POST, value = "{id}/avaliar")
+	public ResponseEntity<Avaliacao> salvarAvaliacaoFeira(@PathVariable(value = "id") Long idEstande, @RequestBody Avaliacao avaliacao) {
+		try {
+			return new ResponseEntity<>(avaliacaoService.avaliarEstande(idEstande, avaliacao), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{id}/noticias")
