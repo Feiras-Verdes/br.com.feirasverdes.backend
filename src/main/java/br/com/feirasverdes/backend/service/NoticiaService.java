@@ -134,14 +134,14 @@ public class NoticiaService {
 
 	public void excluirNoticia(Long id) throws NoticiaNaoPertenceAoUsuarioException {
 		Noticia noticia = dao.getOne(id);
-		if (noticia.getEstande().getId() != null) {
+		if (noticia.getEstande() != null) {
 			Estande estande = estandeDao.getOne(noticia.getEstande().getId());
 			if(!estande.getId().equals(noticia.getEstande().getId())) {
 				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
 			}
 		}
 
-		if (noticia.getFeira().getId() != null) {
+		if (noticia.getFeira() != null) {
 			Feira feira = feiraDao.getOne(noticia.getFeira().getId());
 			if(!feira.getId().equals(noticia.getFeira().getId())) {
 				throw new NoticiaNaoPertenceAoUsuarioException("Esta notícia não foi cadastrada por você.");
